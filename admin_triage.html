@@ -26,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Header & Nav --- */
+        /* --- Header & Nav (Matched to Dashboard) --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -50,28 +50,29 @@
         /* --- Triage Layout --- */
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         
-        .action-bar { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .action-bar { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
         .btn-small { padding: 10px 15px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .btn-back { background: #ddd; color: #333; }
         .btn-code { background: var(--urgent-red); color: white; }
 
         .triage-card { 
             background: white; 
-            padding: 25px; 
+            padding: 20px; 
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             border-top: 6px solid var(--pgh-emerald); 
         }
         
-        .triage-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin: 0; font-size: 1.4rem; }
-        .triage-header p { color: #666; font-size: 0.8rem; margin: 5px 0 20px; }
+        .triage-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin: 0; font-size: 1.3rem; }
+        .triage-header p { color: #666; font-size: 0.8rem; margin: 5px 0 20px; line-height: 1.4; }
 
         h3 { font-size: 0.85rem; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; margin-top: 25px; text-transform: uppercase; letter-spacing: 0.5px; }
 
         label { display: block; margin: 15px 0 6px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.8rem; }
-        select, input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.95rem; background: #fafafa; outline: none; -webkit-appearance: none; }
+        select, input, textarea { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 8px; font-size: 1rem; background: #fafafa; outline: none; -webkit-appearance: none; }
         select:focus, input:focus, textarea:focus { border-color: var(--pgh-emerald); background: white; }
         
+        /* Responsive Grid for Age/Sex */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         .btn-submit { 
@@ -79,10 +80,10 @@
             background: var(--pgh-emerald); 
             color: white; 
             border: none; 
-            padding: 16px; 
+            padding: 18px; 
             border-radius: 8px; 
             font-weight: 800; 
-            font-size: 0.95rem; 
+            font-size: 1rem; 
             margin-top: 30px; 
             cursor: pointer; 
             text-transform: uppercase;
@@ -91,6 +92,14 @@
         .btn-submit:active { transform: scale(0.98); }
 
         footer { text-align: center; padding: 30px 15px; color: #999; font-size: 0.7rem; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            .triage-card { padding: 15px; }
+            .triage-header h1 { font-size: 1.1rem; }
+            .action-bar { flex-direction: row; }
+            .btn-small { flex: 1; justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -106,9 +115,9 @@
 <nav>
     <ul>
         <li><a href="admin_dashboard.html">ER Dashboard</a></li>
-        <li><a href="patient_records.html">Patient Records</a></li>
-        <li><a href="admin_triage.html" class="active-nav">Admit Patient</a></li>
-        <li><a href="admin_analytics.html">ER Analytics</a></li>
+        <li><a href="patient_records.html">Records</a></li>
+        <li><a href="admin_triage.html" class="active-nav">Admit</a></li>
+        <li><a href="admin_analytics.html">Analytics</a></li>
     </ul>
 </nav>
 
@@ -195,3 +204,5 @@
 
 </body>
 </html>
+</html>
+
