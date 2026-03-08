@@ -23,9 +23,7 @@
 
         /* --- Header & Nav --- */
         header { background-color: var(--white); padding: 10px 5%; display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald); }
-        
         .hospital-logo { width: 50px; height: 50px; object-fit: contain; }
-        
         .brand-text h2 { margin: 0; font-size: 1.2rem; color: var(--pgh-dark-green); text-transform: uppercase; }
 
         nav { background: var(--pgh-dark-green); padding: 12px 5%; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
@@ -146,7 +144,25 @@
 
     function renderDashboard(filter = activeFilter) {
         activeFilter = filter;
-        let patients = JSON.parse(localStorage.getItem('patients')) || [];
+        
+        // FIX: Combine both storage keys to ensure portal appointments show up
+        const manualPatients = JSON.parse(localStorage.getItem('patients')) || [];
+        const portalPatients = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
+        
+        // Normalize portal data to match dashboard format
+        const normalizedPortal = portalPatients.map(p => ({
+            name: p.name,
+            age: p.age || 'N/A',
+            sex: p.gender || 'N/A',
+            complaint: p.symptoms || 'Appointment Request',
+            level: p.level || 'NORMAL',
+            arrived: p.date + ' ' + p.time,
+            status: p.status === 'Scheduled' ? 'WAITING' : p.status,
+            isDischarged: false
+        }));
+
+        const patients = [...manualPatients, ...normalizedPortal];
+        
         const tableBody = document.getElementById('patientTableBody');
         tableBody.innerHTML = '';
 
@@ -157,15 +173,20 @@
 
             counts.today++;
             if (p.level === 'CRITICAL') counts.critical++;
-            if (p.status === 'WAITING') counts.waiting++;
-            if (p.status === 'IN TREATMENT') counts.treatment++;
-            if (p.status === 'READY FOR DISCHARGE') counts.discharge++;
+            
+            // Map status for counting
+            const currentStatus = (p.status === 'Scheduled' || p.status === 'WAITING') ? 'WAITING' : p.status;
+            
+            if (currentStatus === 'WAITING') counts.waiting++;
+            if (currentStatus === 'IN TREATMENT') counts.treatment++;
+            if (currentStatus === 'READY FOR DISCHARGE') counts.discharge++;
 
-            if (filter !== 'ALL' && p.status !== filter && p.level !== filter) return;
+            // Apply filter logic
+            if (filter !== 'ALL' && currentStatus !== filter && p.level !== filter) return;
 
             let statusClass = 'bg-treatment';
-            if (p.status === 'WAITING') statusClass = 'bg-waiting';
-            if (p.status === 'READY FOR DISCHARGE') statusClass = 'bg-discharge';
+            if (currentStatus === 'WAITING') statusClass = 'bg-waiting';
+            if (currentStatus === 'READY FOR DISCHARGE') statusClass = 'bg-discharge';
 
             const row = `
                 <tr onclick="window.location.href='patient_status.html?id=${index}'">
@@ -176,7 +197,7 @@
                     <td>${p.arrived || '---'}</td>
                     <td>
                         <span class="badge ${statusClass}">
-                            ${p.status === 'WAITING' ? 'QUEUED' : p.status}
+                            ${currentStatus === 'WAITING' ? 'QUEUED' : currentStatus}
                         </span>
                     </td>
                 </tr>
