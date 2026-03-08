@@ -320,7 +320,7 @@
         window.scrollTo(0, 0);
     }
 
-    // --- 3. SUBMISSION & REDIRECT TO PATIENT RECORD ---
+   // --- 3. SUBMISSION WITHOUT REDIRECT ---
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
         
@@ -329,17 +329,28 @@
             doctor: document.getElementById('docSelect').value,
             date: document.getElementById('appDate').value,
             time: document.getElementById('appTime').value,
-            status: "Scheduled"
+            status: "Scheduled",
+            timestamp: new Date().toLocaleString()
         };
 
-        // Saving to localStorage so patient_record.html can read it
+        // Saving to localStorage (patient_record.html will still see this)
         let records = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
         records.push(appointmentData);
         localStorage.setItem('hospitalAppointments', JSON.stringify(records));
 
-        alert("Success! Your appointment has been sent to your records.");
-        window.location.href = "patient_record.html";
+        // UI Update: Hide the form and show a success message instead of redirecting
+        const card = document.querySelector('.card');
+        card.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--pgh-emerald); margin-bottom: 20px;"></i>
+                <h2 style="color: var(--pgh-dark-green);">Appointment Requested!</h2>
+                <p>Thank you, <strong>${appointmentData.name}</strong>. Your request for <strong>${appointmentData.doctor}</strong> on <strong>${appointmentData.date}</strong> has been logged.</p>
+                <button class="btn-next" onclick="location.reload()" style="max-width: 200px; margin-top: 20px;">Book Another</button>
+                <p style="margin-top: 20px;"><small>You can view your full history in the Patient Records tab.</small></p>
+            </div>
+        `;
     };
 </script>
 </body>
+
 </html>
