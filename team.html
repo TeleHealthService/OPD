@@ -21,47 +21,87 @@
             margin: 0;
             background: var(--white);
             color: var(--pgh-black);
+            overflow-x: hidden;
         }
 
-        /* --- Updated Header with bg1.png --- */
+        /* --- Header --- */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
             background-position: center;
-            padding: 20px 5%;
+            padding: 15px 5%;
             display: flex;
             align-items: center;
-            gap: 15px; 
+            justify-content: space-between;
             border-bottom: 4px solid var(--pgh-emerald);
         }
 
-        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; }
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .hospital-logo { width: 50px; height: 50px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1.1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.7rem; }
 
-        /* --- Navigation Matched --- */
-        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        .header-feedback {
+            text-decoration: none;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .header-feedback:hover { background: var(--pgh-emerald); }
+
+        /* --- Navigation --- */
+        nav { 
+            background: var(--pgh-dark-green); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            padding: 10px 5%;
+        }
+
+        nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 5px; 
+        }
+
+        nav ul li { flex: 1; }
+
         nav ul li a { 
             color: white; 
             text-decoration: none; 
-            padding: 8px 22px; 
+            padding: 8px 5px; 
             display: block; 
-            font-size: 0.75rem; 
+            font-size: 0.6rem; 
             text-transform: uppercase; 
             font-weight: 600; 
             border-radius: 50px; 
+            background: rgba(255,255,255,0.08);
+            text-align: center;
+            white-space: nowrap;
         }
-        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+
         nav ul li a.active-nav { background: var(--pgh-emerald); }
 
-        .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        /* --- Specialist Content --- */
+        .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
 
         .doctor-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .doctor-card {
@@ -76,7 +116,7 @@
 
         .doc-image-container {
             width: 100%;
-            height: 300px;
+            height: 250px;
             background: #f0f0f0;
             overflow: hidden;
         }
@@ -87,11 +127,11 @@
             object-fit: cover;
         }
 
-        .doc-info h3 { margin: 20px 0 5px; color: var(--pgh-dark-green); }
-        .specialty { color: var(--pgh-emerald); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; display: block; margin-bottom: 15px; }
+        .doc-info h3 { margin: 15px 0 5px; color: var(--pgh-dark-green); font-size: 1.1rem; }
+        .specialty { color: var(--pgh-emerald); font-weight: bold; font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 15px; }
 
         .btn-view {
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: var(--pgh-emerald);
             color: white;
             text-decoration: none;
@@ -99,11 +139,10 @@
             font-weight: bold;
             cursor: pointer;
             border: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .btn-view:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
-
+        /* --- Modal --- */
         .modal {
             display: none;
             position: fixed;
@@ -118,7 +157,7 @@
         .modal-content {
             background: white;
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             border-radius: 15px;
             overflow: hidden;
             position: relative;
@@ -127,29 +166,49 @@
 
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #333; }
-        .modal-body { padding: 40px; text-align: center; }
-        .modal-profile-img { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px; object-fit: cover; border: 4px solid var(--pgh-emerald); }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #333; }
+        .modal-body { padding: 30px; text-align: center; }
+        .modal-profile-img { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 15px; object-fit: cover; border: 3px solid var(--pgh-emerald); }
 
-        .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
-        .btn-contact { padding: 14px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.9rem; }
+        .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; }
+        .btn-contact { padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.85rem; }
         .btn-call { background: var(--pgh-emerald); color: white; }
         .btn-email { border: 2px solid var(--pgh-emerald); color: var(--pgh-emerald); }
 
-        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 60px; border-top: 1px solid #ddd; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        /* --- Footer --- */
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 40px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
         .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; }
+
+        /* --- Desktop Tweaks --- */
+        @media (min-width: 768px) {
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
+            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+            .header-feedback { font-size: 0.8rem; padding: 10px 20px; }
+            .doctor-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .doctor-grid { grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Telehealth Patient Portal</small>
+    <div class="brand-container">
+        <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Telehealth Patient Portal</small>
+        </div>
     </div>
+    <a href="feedback.html" class="header-feedback">
+        <i class="fas fa-comment-dots"></i> Feedback
+    </a>
 </header>
 
 <nav>
@@ -158,12 +217,11 @@
         <li><a href="about.html">About</a></li>
         <li><a href="services.html">Services</a></li>
         <li><a href="team.html" class="active-nav">Our Doctors</a></li>
-        <li><a href="feedback.html">Feedback</a></li>
     </ul>
 </nav>
 
 <div class="container">
-    <h2 style="text-align:center; color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 40px;">Our Specialist Team</h2>
+    <h2 style="text-align:center; color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 30px;">Our Specialist Team</h2>
     
     <div class="doctor-grid">
         <div class="doctor-card">
@@ -171,7 +229,7 @@
             <div class="doc-info">
                 <h3>Dr. Elena Rossi</h3>
                 <span class="specialty">Cardiology</span>
-                <button class="btn-view" onclick="openModal('Dr. Elena Rossi', 'Cardiology', 'Board-certified cardiologist specializing in cardiovascular health and internal medicine.', 'doc1female.png')">View Profile</button>
+                <button class="btn-view" onclick="openModal('Dr. Elena Rossi', 'Cardiology', 'Board-certified cardiologist specializing in cardiovascular health.', 'doc1female.png')">View Profile</button>
             </div>
         </div>
 
@@ -180,7 +238,7 @@
             <div class="doc-info">
                 <h3>Dr. Sarah Lim</h3>
                 <span class="specialty">Pediatrics</span>
-                <button class="btn-view" onclick="openModal('Dr. Sarah Lim', 'Pediatrics', 'Expert in pediatric care, focusing on early childhood development and nutrition.', 'doc2female.png')">View Profile</button>
+                <button class="btn-view" onclick="openModal('Dr. Sarah Lim', 'Pediatrics', 'Expert in pediatric care and early childhood development.', 'doc2female.png')">View Profile</button>
             </div>
         </div>
 
@@ -216,7 +274,7 @@
             <div class="doc-info">
                 <h3>Dr. Robert Vance</h3>
                 <span class="specialty">General Surgery</span>
-                <button class="btn-view" onclick="openModal('Dr. Robert Vance', 'General Surgery', 'Highly experienced in minimally invasive procedures and emergency care.', 'doc6male.png')">View Profile</button>
+                <button class="btn-view" onclick="openModal('Dr. Robert Vance', 'General Surgery', 'Experienced in minimally invasive procedures and emergency care.', 'doc6male.png')">View Profile</button>
             </div>
         </div>
     </div>
@@ -229,11 +287,11 @@
             <img id="modalProfileImg" src="" alt="Profile" class="modal-profile-img">
             <h2 id="modalName" style="color: var(--pgh-dark-green); margin-bottom: 5px;"></h2>
             <span id="modalSpec" class="specialty"></span>
-            <p id="modalBio" style="color: #666; font-size: 0.95rem; line-height: 1.6; margin-top: 20px;"></p>
+            <p id="modalBio" style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-top: 15px;"></p>
             
             <div class="contact-actions">
-                <a href="tel:+63287230101" class="btn-contact btn-call"><i class="fas fa-phone"></i> Call Doctor</a>
-                <a href="mailto:customer.care@hospital.com.ph" class="btn-contact btn-email"><i class="fas fa-envelope"></i> Email</a>
+                <a href="tel:+63287230101" class="btn-contact btn-call"><i class="fas fa-phone"></i> Call</a>
+                <a href="mailto:customer.care@opd.com.ph" class="btn-contact btn-email"><i class="fas fa-envelope"></i> Email</a>
             </div>
         </div>
     </div>
@@ -242,14 +300,14 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-col">
-             <h4>Services</h4>
+            <h4>Services</h4>
             <a href="#">Consultations & Check-ups</a>
-            <a href="#">E-Pescriptions</a>
+            <a href="#">E-Prescriptions</a>
             <a href="#">Urgent Care</a>
         </div>
         <div class="footer-col">
             <h4>Location</h4>
-            <p>Ibabang Dupay Lucena, City, Philippines</p>
+            <p>Ibabang Dupay Lucena City, Philippines</p>
             <p>Direct: WJVJ+M9 Lucena City, Quezon</p>
         </div>
         <div class="footer-col">
@@ -257,7 +315,7 @@
             <p>customer.care@opd.com.ph</p>
         </div>
     </div>
-    <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">&copy; 2026 General Hospital OPD Portal</p>
+    <p style="text-align: center; margin-top: 30px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal</p>
 </footer>
 
 <script>
