@@ -134,13 +134,11 @@
 </footer>
 
 <script>
-    // --- 1. CONSOLIDATED LOAD FUNCTION ---
+    // --- 1. LOAD DATA FROM BOTH SOURCES ---
     function loadRecords(filter = 'ALL') {
-        // Fetch from both storage keys
         const portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
         const triageData = JSON.parse(localStorage.getItem('patients')) || [];
 
-        // Combine data with source tags
         const allPatients = [
             ...portalData.map(p => ({ ...p, source: 'PORTAL' })),
             ...triageData.map(p => ({ ...p, source: 'TRIAGE' }))
@@ -150,14 +148,15 @@
         tbody.innerHTML = '';
 
         allPatients.forEach((p, index) => {
-            // Unify Status
             const isDischarged = p.status === 'Discharged' || p.isDischarged === true;
             if (filter === 'ACTIVE' && isDischarged) return;
             if (filter === 'DISCHARGED' && !isDischarged) return;
 
-            // Normalize fields across different schemas
             const name = p.name || "Unknown";
-            const contact = p.contact || "N/A";
+            
+            // Safety Check: Display contact number regardless of variable name used
+            const contact = p.contact || p.phone || p.contactNo || "Not Provided";
+            
             const time = p.timestamp || p.arrived || "N/A";
             const detail = p.source === 'PORTAL' ? (p.doctor || "General") : (p.level || "Stable");
             const subtext = p.source === 'PORTAL' ? "Online Portal" : (p.age + " Y.O. | " + p.sex);
@@ -203,7 +202,7 @@
         }
     }
 
-    // --- 2. SOURCE-AWARE VIEW DETAILS ---
+    // --- 2. VIEW FULL DETAILS IN MODAL ---
     function viewDetails(source, index) {
         const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
         const data = JSON.parse(localStorage.getItem(key));
@@ -213,9 +212,12 @@
         
         document.getElementById('modalName').innerText = p.name;
         
+        const contactVal = p.contact || p.phone || p.contactNo || 'N/A';
+
         if (source === 'PORTAL') {
             body.innerHTML = `
                 <div class="detail-row"><span class="detail-label">Origin:</span> <span>Patient Portal</span></div>
+                <div class="detail-row"><span class="detail-label">Contact:</span> <span>${contactVal}</span></div>
                 <div class="detail-row"><span class="detail-label">Doctor:</span> <span>${p.doctor}</span></div>
                 <div class="detail-row"><span class="detail-label">Scheduled:</span> <span>${p.date} @ ${p.time}</span></div>
                 <div class="detail-row"><span class="detail-label">Symptoms:</span> <br><span>${p.symptoms || 'None'}</span></div>
@@ -223,6 +225,7 @@
         } else {
             body.innerHTML = `
                 <div class="detail-row"><span class="detail-label">Origin:</span> <span>Admin Triage</span></div>
+                <div class="detail-row"><span class="detail-label">Contact:</span> <span>${contactVal}</span></div>
                 <div class="detail-row"><span class="detail-label">Age/Sex:</span> <span>${p.age} / ${p.sex}</span></div>
                 <div class="detail-row"><span class="detail-label">Severity:</span> <span style="font-weight:bold">${p.level}</span></div>
                 <div class="detail-row"><span class="detail-label">Complaint:</span> <br><span>${p.complaint}</span></div>
@@ -232,7 +235,7 @@
         modal.style.display = 'flex';
     }
 
-    // --- 3. SOURCE-AWARE DELETE ---
+    // --- 3. DELETE RECORD LOGIC ---
     function deleteRecord(source, index) {
         if(confirm("Permanently delete this medical record?")) {
             const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
