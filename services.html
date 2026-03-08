@@ -23,21 +23,31 @@
             color: var(--pgh-black);
         }
 
-        /* --- Header (Matched to Home) --- */
+        /* --- Updated Header with bg1.png branding --- */
         header {
-            background-color: var(--white);
-            padding: 10px 5%;
+            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
+            background-size: cover;
+            background-position: center;
+            padding: 20px 5%;
             display: flex;
             align-items: center;
             gap: 15px; 
             border-bottom: 4px solid var(--pgh-emerald);
         }
 
-        .logo-placeholder { width: 60px; height: 60px; background: #eee; border-radius: 50%; flex-shrink: 0; }
-        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--pgh-dark-green); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: #666; font-size: 0.8rem; }
+        .brand-text h2 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            color: var(--white); 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+        }
+        .brand-text small { 
+            color: rgba(255, 255, 255, 0.8); 
+            font-size: 0.8rem; 
+        }
 
-        /* --- Navigation (Matched to Home - Oblong Style) --- */
+        /* --- Navigation (Oblong Style) --- */
         nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
         nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
         nav ul li a { 
@@ -201,7 +211,6 @@
     <div class="workflow-section">
         <h2>How Telehealth Works</h2>
         
-        
         <div class="workflow-steps">
             <div class="step-item">
                 <div class="step-number">1</div>
@@ -243,7 +252,7 @@
         <div class="footer-col">
             <h4>Services</h4>
             <a href="#">Consultations & Check-ups</a>
-            <a href="#">E-Pescriptions</a>
+            <a href="#">E-Prescriptions</a>
             <a href="#">Urgent Care</a>
         </div>
         <div class="footer-col">
@@ -260,5 +269,4 @@
 </footer>
 
 </body>
-
 </html>
