@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Portal | General Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             --pgh-black: #020202;
@@ -25,6 +26,19 @@
             overflow-x: hidden;
         }
 
+        /* [2. COPY ALL CSS BELOW TO EVERY STYLE TAG FOR CONSISTENCY] */
+        
+        /* --- Universal Typography Fix --- */
+        h1, h2, h3, h4 { 
+            margin: 0 0 15px; 
+            text-transform: uppercase; 
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        h1 { font-size: 1.6rem; color: var(--pgh-dark-green); text-align: center; }
+        h2 { font-size: 1.2rem; color: var(--pgh-dark-green); border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 8px; margin-top: 25px; }
+        h3 { font-size: 1rem; color: var(--pgh-emerald); }
+
         /* --- Header --- */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
@@ -39,8 +53,10 @@
 
         .brand-container { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; }
+        
+        /* Specific Header Heading Fix (No Underline) */
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; border: none; padding: 0; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
         .header-feedback {
             text-decoration: none;
@@ -55,8 +71,11 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
+        
+        /* Style for the custom symbol */
+        .med-symbol { width: 14px; height: 14px; fill: currentColor; }
 
         /* --- Navigation --- */
         nav { 
@@ -90,6 +109,18 @@
             text-align: center;
         }
         nav ul li a.active-nav { background: var(--pgh-emerald); }
+
+        /* Desktop Scaling */
+        @media (min-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.4rem; }
+            .brand-text h2 { font-size: 1.2rem; }
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
+            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+        }
+
+        /* [END OF UNIVERSAL CSS SECTION] */
 
         /* --- Hero Section --- */
         .hero-section {
@@ -144,16 +175,11 @@
         .footer-col h4 { color: var(--pgh-dark-green); font-size: 0.9rem; margin-bottom: 10px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
         .footer-col a, .footer-col p { color: #555; text-decoration: none; font-size: 0.75rem; margin-bottom: 5px; display: block; }
 
-        /* --- Desktop --- */
         @media (min-width: 768px) {
-            .brand-text h2 { font-size: 1.2rem; }
-            nav ul { justify-content: flex-start; gap: 12px; }
-            nav ul li { flex: 0 1 auto; }
-            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
             .hero-section h1 { font-size: 2.8rem; }
             .hero-section p { font-size: 1.2rem; }
             .footer-grid { grid-template-columns: repeat(3, 1fr); }
-            .btn-next { border-radius: 10px; } /* Blockier on desktop if preferred */
+            .btn-next { border-radius: 10px; }
         }
     </style>
 </head>
@@ -168,7 +194,10 @@
         </div>
     </div>
     <a href="feedback.html" class="header-feedback">
-        <i class="fas fa-comment-dots"></i> Feedback
+        <svg class="med-symbol" viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
+        </svg>
+        Feedback
     </a>
 </header>
 
@@ -199,7 +228,7 @@
     <div class="card">
         <form id="appointmentForm">
             <div class="step-container active" id="step1">
-                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px; font-size: 1.1rem;">Patient Information</h3>
+                <h3>Patient Information</h3>
                 <label>Full Name</label>
                 <input type="text" id="patientName" placeholder="Juan Dela Cruz" class="required-field">
                 
@@ -223,7 +252,7 @@
             </div>
 
             <div class="step-container" id="step2">
-                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px; font-size: 1.1rem;">Select Specialist</h3>
+                <h3>Select Specialist</h3>
                 <label>Medical Department</label>
                 <select class="required-field" id="deptSelect" onchange="filterDoctors()">
                     <option value="">-- Select Specialty --</option>
@@ -240,7 +269,7 @@
             </div>
 
             <div class="step-container" id="step3">
-                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Schedule</h3>
+                <h3>Schedule</h3>
                 <label>Preferred Date</label>
                 <input type="date" id="appDate" class="required-field">
                 <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Symptoms</button>
@@ -248,7 +277,7 @@
             </div>
 
             <div class="step-container" id="step4">
-                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Assessment</h3>
+                <h3>Assessment</h3>
                 <label>Symptoms</label>
                 <textarea id="appSymptoms" rows="4" placeholder="Brief description..." class="required-field"></textarea>
                 <button type="button" class="btn-next" onclick="validateAndGo(5)">Next: Review</button>
@@ -256,7 +285,7 @@
             </div>
 
             <div class="step-container" id="step5">
-                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Confirm</h3>
+                <h3>Confirm</h3>
                 <p style="font-size: 0.85rem; background: #eee; padding: 15px; border-radius: 8px;">Please verify your details. Once submitted, a coordinator will contact you via your provided number.</p>
                 <button type="submit" class="btn-next" style="background: var(--pgh-dark-green);">Confirm Appointment</button>
                 <button type="button" class="btn-back" onclick="goToStep(4)">Back</button>
