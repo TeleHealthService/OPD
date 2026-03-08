@@ -37,7 +37,6 @@
         h2 { font-size: 1.2rem; color: var(--pgh-dark-green); border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 8px; margin-top: 25px; }
         h3 { font-size: 1rem; color: var(--pgh-emerald); }
 
-        /* --- Header & Feedback Button --- */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -70,7 +69,6 @@
             white-space: nowrap;
         }
 
-        /* --- Navigation Bar --- */
         nav { 
             background: var(--pgh-dark-green); 
             position: sticky; 
@@ -106,7 +104,6 @@
         }
         nav ul li a.active-nav { background: var(--pgh-emerald); border: 1px solid rgba(255,255,255,0.2); }
 
-        /* Desktop Scaling */
         @media (min-width: 768px) {
             h1 { font-size: 2.2rem; }
             h2 { font-size: 1.4rem; }
@@ -117,9 +114,6 @@
             nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
         }
 
-        /* [ END OF UNIVERSAL CSS ] */
-
-        /* --- Specialist Content --- */
         .container { padding: 25px 3%; max-width: 1200px; margin: 0 auto; }
 
         .doctor-grid {
@@ -159,7 +153,7 @@
             background: var(--pgh-emerald);
             color: white;
             text-decoration: none;
-            border-radius: 50px; /* Pill style for doctors too */
+            border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
             border: none;
@@ -167,7 +161,6 @@
             text-transform: uppercase;
         }
 
-        /* --- Modal --- */
         .modal {
             display: none;
             position: fixed;
@@ -187,7 +180,6 @@
         .btn-call { background: var(--pgh-emerald); color: white; }
         .btn-email { border: 2px solid var(--pgh-emerald); color: var(--pgh-emerald); }
 
-        /* --- Footer --- */
         footer { background: #f4f4f4; padding: 30px 5%; margin-top: 30px; border-top: 1px solid #ddd; }
         .footer-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .footer-col h4 { color: var(--pgh-dark-green); font-size: 0.9rem; margin-bottom: 10px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
@@ -230,56 +222,7 @@
 <div class="container">
     <h2 style="text-align:center; color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 25px; font-size: 1.2rem; border-bottom: none;">Our Specialist Team</h2>
     
-    <div class="doctor-grid">
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc1female.png" alt="Dr. Elena Rossi"></div>
-            <div class="doc-info">
-                <h3>Dr. Elena Rossi</h3>
-                <span class="specialty">Cardiology</span>
-                <button class="btn-view" onclick="openModal('Dr. Elena Rossi', 'Cardiology', 'Board-certified cardiologist specializing in cardiovascular health.', 'doc1female.png')">Profile</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc2female.png" alt="Dr. Sarah Lim"></div>
-            <div class="doc-info">
-                <h3>Dr. Sarah Lim</h3>
-                <span class="specialty">Pediatrics</span>
-                <button class="btn-view" onclick="openModal('Dr. Sarah Lim', 'Pediatrics', 'Expert in pediatric care and early childhood development.', 'doc2female.png')">Profile</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc3male.png" alt="Dr. Marcus Chen"></div>
-            <div class="doc-info">
-                <h3>Dr. Marcus Chen</h3>
-                <span class="specialty">Neurology</span>
-                <button class="btn-view" onclick="openModal('Dr. Marcus Chen', 'Neurology', 'Specialist in neurological disorders and research.', 'doc3male.png')">Profile</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc4female.png" alt="Dr. Maya Gupta"></div>
-            <div class="doc-info">
-                <h3>Dr. Maya Gupta</h3>
-                <span class="specialty">Dermatology</span>
-                <button class="btn-view" onclick="openModal('Dr. Maya Gupta', 'Dermatology', 'Focused on clinical dermatology and skin treatments.', 'doc4female.png')">Profile</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc5male.png" alt="Dr. David Park"></div>
-            <div class="doc-info">
-                <h3>Dr. David Park</h3>
-                <span class="specialty">Orthopedics</span>
-                <button class="btn-view" onclick="openModal('Dr. David Park', 'Orthopedics', 'Surgical expert in sports medicine.', 'doc5male.png')">Profile</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doc-image-container"><img src="doc6male.png" alt="Dr. Robert Vance"></div>
-            <div class="doc-info">
-                <h3>Dr. Robert Vance</h3>
-                <span class="specialty">General Surgery</span>
-                <button class="btn-view" onclick="openModal('Dr. Robert Vance', 'General Surgery', 'Experienced in minimally invasive procedures.', 'doc6male.png')">Profile</button>
-            </div>
-        </div>
-    </div>
+    <div class="doctor-grid" id="doctorGrid"></div>
 </div>
 
 <div id="profileModal" class="modal">
@@ -320,6 +263,34 @@
 </footer>
 
 <script>
+    // MASTER LIST: Add a new doctor here to update both Home and Team pages
+    const doctors = [
+        { name: "Dr. Elena Rossi", spec: "Cardiology", bio: "Board-certified cardiologist specializing in cardiovascular health.", img: "doc1female.png" },
+        { name: "Dr. Sarah Lim", spec: "Pediatrics", bio: "Expert in pediatric care and early childhood development.", img: "doc2female.png" },
+        { name: "Dr. Marcus Chen", spec: "Neurology", bio: "Specialist in neurological disorders and research.", img: "doc3male.png" },
+        { name: "Dr. Maya Gupta", spec: "Dermatology", bio: "Focused on clinical dermatology and skin treatments.", img: "doc4female.png" },
+        { name: "Dr. David Park", spec: "Orthopedics", bio: "Surgical expert in sports medicine.", img: "doc5male.png" },
+        { name: "Dr. Robert Vance", spec: "General Surgery", bio: "Experienced in minimally invasive procedures.", img: "doc6male.png" }
+    ];
+
+    // SAVE to browser memory so Home page can read it
+    localStorage.setItem('hospitalDoctors', JSON.stringify(doctors));
+
+    // GENERATE the cards automatically
+    function renderTeam() {
+        const grid = document.getElementById('doctorGrid');
+        grid.innerHTML = doctors.map(doc => `
+            <div class="doctor-card">
+                <div class="doc-image-container"><img src="${doc.img}" alt="${doc.name}"></div>
+                <div class="doc-info">
+                    <h3>${doc.name}</h3>
+                    <span class="specialty">${doc.spec}</span>
+                    <button class="btn-view" onclick="openModal('${doc.name}', '${doc.spec}', '${doc.bio.replace(/'/g, "\\'")}', '${doc.img}')">Profile</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
     function openModal(name, spec, bio, img) {
         document.getElementById('modalName').innerText = name;
         document.getElementById('modalSpec').innerText = spec;
@@ -327,8 +298,12 @@
         document.getElementById('modalProfileImg').src = img;
         document.getElementById('profileModal').style.display = 'flex';
     }
+
     function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
     window.onclick = function(event) { if (event.target == document.getElementById('profileModal')) { closeModal(); } }
+
+    // Run on load
+    window.onload = renderTeam;
 </script>
 
 </body>
