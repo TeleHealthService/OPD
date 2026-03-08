@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Records | General Hospital Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --border-color: #e0e0e0;
+            --urgent-red: #e74c3c;
+        }
+
+        * { box-sizing: border-box; transition: 0.3s ease; }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); }
+
+        /* --- Header & Nav --- */
+        header { background-color: var(--white); padding: 10px 5%; display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald); }
+        
+        /* Integrated Logo */
+        .hospital-logo { width: 50px; height: 50px; object-fit: contain; }
+        
+        .brand-text h2 { margin: 0; font-size: 1.2rem; color: var(--pgh-dark-green); text-transform: uppercase; }
+
+        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; }
+        .active-nav { background: var(--pgh-emerald); }
+
+        /* --- Content Layout --- */
+        .container { padding: 40px 5%; max-width: 1400px; margin: 0 auto; min-height: 80vh; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        .search-bar { display: flex; background: white; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--border-color); width: 400px; }
+        .search-bar input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 0.9rem; }
+
+        .tabs { display: flex; gap: 20px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 10px 20px; cursor: pointer; font-weight: 600; color: #888; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--pgh-emerald); border-bottom-color: var(--pgh-emerald); }
+
+        .records-card { background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f9f9f9; text-align: left; padding: 15px; font-size: 0.8rem; text-transform: uppercase; color: #666; border-bottom: 2px solid #eee; }
+        td { padding: 18px 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        
+        .patient-info { display: flex; align-items: center; gap: 12px; }
+        .patient-avatar { width: 35px; height: 35px; background: var(--light-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--pgh-emerald); }
+
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .status-discharged { background: #e8f5e9; color: #2e7d32; }
+        .status-active { background: #e3f2fd; color: #1565c0; }
+
+        .action-btn { background: none; border: 1px solid var(--pgh-emerald); color: var(--pgh-emerald); padding: 6px 15px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { background: var(--pgh-emerald); color: white; }
+        .btn-delete { border-color: var(--urgent-red); color: var(--urgent-red); margin-left: 5px; }
+        .btn-delete:hover { background: var(--urgent-red); color: white; }
+
+        /* --- Modal for Details --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 500px; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--pgh-emerald); padding-bottom: 10px; margin-bottom: 20px; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #eee; }
+        .detail-label { font-weight: bold; color: #666; font-size: 0.85rem; }
+
+        footer { text-align: center; padding: 30px; color: #888; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Electronic Medical Records (EMR)</small>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="admin_dashboard.html">ER Dashboard</a></li>
+        <li><a href="patient_records.html" class="active-nav">Patient Records</a></li>
+        <li><a href="admin_analytics.html">ER Analytics</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Medical Records Archival</h1>
+        <div class="search-bar">
+            <i class="fas fa-search" style="color:#aaa"></i>
+            <input type="text" id="searchInput" onkeyup="searchRecords()" placeholder="Search by Patient Name or Case ID...">
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('ALL')">All Records</div>
+        <div class="tab" onclick="switchTab('ACTIVE')">Active (In-ER)</div>
+        <div class="tab" onclick="switchTab('DISCHARGED')">Discharged</div>
+    </div>
+
+    <div class="records-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient Detail</th>
+                    <th>Contact Info</th>
+                    <th>Admission Time</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="detailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalName">Patient Name</h2>
+            <i class="fas fa-times" onclick="closeModal()" style="cursor:pointer"></i>
+        </div>
+        <div id="modalBody"></div>
+        <button class="action-btn" style="width:100%; margin-top:20px" onclick="closeModal()">Close Profile</button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 General Hospital Health Informatics.
+</footer>
+
+<script>
+    function loadRecords(filter = 'ALL') {
+        const patients = JSON.parse(localStorage.getItem('patients')) || [];
+        const tbody = document.getElementById('recordsTableBody');
+        tbody.innerHTML = '';
+
+        patients.forEach((p, index) => {
+            const isDischarged = p.isDischarged || false;
+            
+            if (filter === 'ACTIVE' && isDischarged) return;
+            if (filter === 'DISCHARGED' && !isDischarged) return;
+
+            const row = `
+                <tr>
+                    <td>
+                        <div class="patient-info">
+                            <div class="patient-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <strong>${p.name}</strong><br>
+                                <small>${p.age} Y.O. | ${p.sex}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${p.contact || 'Not Provided'}</td>
+                    <td>${p.arrived || 'N/A'}</td>
+                    <td>
+                        <span style="font-weight:bold; color:${p.level === 'CRITICAL' ? 'var(--urgent-red)' : '#555'}">
+                            ${p.level || 'STABLE'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
+                            ${isDischarged ? 'Discharged' : 'Active (ER)'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="viewDetails(${index})">View Info</button>
+                        <button class="action-btn btn-delete" onclick="deleteRecord(${index})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    function viewDetails(index) {
+        const patients = JSON.parse(localStorage.getItem('patients'));
+        const p = patients[index];
+        const modal = document.getElementById('detailsModal');
+        const body = document.getElementById('modalBody');
+        
+        document.getElementById('modalName').innerText = p.name;
+        
+        body.innerHTML = `
+            <div class="detail-row"><span class="detail-label">Age/Sex:</span> <span>${p.age} / ${p.sex}</span></div>
+            <div class="detail-row"><span class="detail-label">Contact:</span> <span>${p.contact || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Admission:</span> <span>${p.arrived}</span></div>
+            <div class="detail-row"><span class="detail-label">Severity:</span> <span style="font-weight:bold">${p.level}</span></div>
+            <div class="detail-row"><span class="detail-label">Complaint:</span> <span>${p.complaint}</span></div>
+            <div class="detail-row"><span class="detail-label">Bed Assignment:</span> <span>${p.bed || 'Unassigned'}</span></div>
+        `;
+        
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('detailsModal').style.display = 'none';
+    }
+
+    function switchTab(type) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if (event) event.target.classList.add('active');
+        loadRecords(type);
+    }
+
+    function searchRecords() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let rows = document.getElementById('recordsTableBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+        }
+    }
+
+    function deleteRecord(index) {
+        if(confirm("Permanently delete this medical record?")) {
+            let patients = JSON.parse(localStorage.getItem('patients'));
+            patients.splice(index, 1);
+            localStorage.setItem('patients', JSON.stringify(patients));
+            loadRecords();
+        }
+    }
+
+    window.onload = () => loadRecords();
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('detailsModal')) closeModal();
+    }
+</script>
+
+</body>
+</html>

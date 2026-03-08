@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Clinical Profile | General Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --urgent-red: #e74c3c;
+            --info-blue: #3498db;
+            --success-green: #27ae60;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 30px auto; position: relative; }
+        
+        .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-link { text-decoration: none; color: var(--pgh-dark-green); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        .profile-card { background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); overflow: hidden; }
+        
+        /* Header with Logo */
+        .profile-header { background: var(--pgh-dark-green); color: white; padding: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
+        .profile-header h1 { margin: 0; font-size: 2rem; }
+
+        .status-badges { display: flex; gap: 10px; margin-top: 10px; }
+        .badge { padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; color: white; }
+        .bg-critical { background: var(--urgent-red); }
+        .bg-stable { background: var(--success-green); }
+        .bg-status { background: var(--info-blue); }
+
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px; }
+        section h3 { border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; color: var(--pgh-dark-green); font-size: 1rem; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+
+        .info-row { margin-bottom: 18px; }
+        .info-row label { display: block; font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 3px; }
+        .info-row p { margin: 0; font-size: 1.05rem; font-weight: 500; }
+
+        .vitals-card { background: #f8faf9; border: 1px solid #e2e8e5; border-radius: 10px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .vital-item span { font-size: 1.2rem; font-weight: 700; color: var(--pgh-emerald); display: block; }
+
+        .action-bar { background: #f1f3f2; padding: 20px 40px; display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid #ddd; }
+        .btn { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.3s; }
+        .btn-bed { background: var(--pgh-emerald); color: white; }
+        .btn-lvl { background: #333; color: white; }
+        .btn-status { background: var(--info-blue); color: white; }
+
+        /* Choice Overlay */
+        #choiceOverlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; 
+        }
+        .choice-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .opt-btn { padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; background: #fff; transition: 0.2s; }
+        .opt-btn:hover { background: var(--pgh-dark-green); color: white; }
+    </style>
+</head>
+<body>
+
+<div id="choiceOverlay">
+    <div class="choice-card" id="choiceCard"></div>
+</div>
+
+<div class="container">
+    <div class="nav-header">
+        <a href="admin_dashboard.html" class="back-link"><i class="fas fa-chevron-left"></i> Back to Dashboard</a>
+        <button onclick="window.print()" class="btn" style="background:white; border:1px solid #ccc;"><i class="fas fa-print"></i> Print Chart</button>
+    </div>
+
+    <div class="profile-card" id="profileOutput"></div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const pIndex = params.get('id');
+    const overlay = document.getElementById('choiceOverlay');
+    const choiceCard = document.getElementById('choiceCard');
+
+    function renderProfile() {
+        const patients = JSON.parse(localStorage.getItem('patients')) || [];
+        const p = patients[pIndex];
+
+        if (!p) {
+            document.getElementById('profileOutput').innerHTML = `<div style="padding:50px; text-align:center;"><h3>Patient record not found.</h3></div>`;
+            return;
+        }
+
+        document.getElementById('profileOutput').innerHTML = `
+            <div class="profile-header">
+                <div class="header-left">
+                    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+                    <div>
+                        <h1>${p.name}</h1>
+                        <span style="opacity:0.8; font-size:0.9rem;">EMERGENCY DEPT | CASE #${1000 + parseInt(pIndex)}</span>
+                        <div class="status-badges">
+                            <span class="badge ${p.level === 'CRITICAL' ? 'bg-critical' : 'bg-stable'}">${p.level}</span>
+                            <span class="badge bg-status">${p.status}</span>
+                            <span class="badge" style="background:#444">${p.bed || 'NO BED'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <label style="font-size: 0.7rem; opacity: 0.8;">ARRIVAL TIMESTAMP</label>
+                    <div style="font-weight: bold; font-size: 1.1rem;">${p.arrived || '--:--'}</div>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <section>
+                    <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+                    <div class="info-row"><label>Age / Sex</label><p>${p.age} years / ${p.sex}</p></div>
+                    <div class="info-row"><label>Assigned Unit</label><p><strong>Bed ${p.bed || 'UNASSIGNED'}</strong></p></div>
+                    <div class="info-row"><label>Chief Concern</label><p>${p.complaint || 'No recorded concern'}</p></div>
+                </section>
+                <section>
+                    <h3><i class="fas fa-heartbeat"></i> Clinical Status</h3>
+                    <div class="vitals-card">
+                        <div class="vital-item"><label>BP</label><span>${p.vitals?.bp || '120/80'}</span></div>
+                        <div class="vital-item"><label>HR</label><span>${p.vitals?.hr || '72'}</span></div>
+                        <div class="vital-item"><label>Temp</label><span>${p.vitals?.temp || '36.5'}</span></div>
+                        <div class="vital-item"><label>O2</label><span>${p.vitals?.o2 || '98'}%</span></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-bed" onclick="openMenu('bed')"><i class="fas fa-bed"></i> Bed Unit</button>
+                <button class="btn btn-lvl" onclick="openMenu('level')"><i class="fas fa-triage"></i> Triage Level</button>
+                <button class="btn btn-status" onclick="openMenu('status')"><i class="fas fa-sync-alt"></i> Patient Status</button>
+            </div>
+        `;
+    }
+
+    function openMenu(type) {
+        let html = '';
+        if (type === 'bed') {
+            const beds = ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'];
+            html = `<h3>Assign Bed</h3><div class="choice-grid" style="grid-template-columns: repeat(3, 1fr);">`;
+            beds.forEach(b => html += `<div class="opt-btn" onclick="saveChange('bed', '${b}')">${b}</div>`);
+        } else if (type === 'level') {
+            html = `<h3>Set Triage</h3><div class="choice-grid">
+                <div class="opt-btn" onclick="saveChange('level', 'CRITICAL')">CRITICAL</div>
+                <div class="opt-btn" onclick="saveChange('level', 'STABLE')">STABLE</div>`;
+        } else {
+            html = `<h3>Update Status</h3><div class="choice-grid">
+                <div class="opt-btn" onclick="saveChange('status', 'WAITING')">WAITING</div>
+                <div class="opt-btn" onclick="saveChange('status', 'IN TREATMENT')">IN TREATMENT</div>
+                <div class="opt-btn" onclick="saveChange('status', 'DISCHARGED')">DISCHARGED</div>`;
+        }
+        html += `</div><button onclick="closeMenu()" style="margin-top:20px; border:none; background:none; cursor:pointer; color:#888;">Close</button>`;
+        choiceCard.innerHTML = html;
+        overlay.style.display = 'flex';
+    }
+
+    function saveChange(field, value) {
+        let patients = JSON.parse(localStorage.getItem('patients'));
+        patients[pIndex][field] = value;
+        localStorage.setItem('patients', JSON.stringify(patients));
+        closeMenu();
+        renderProfile();
+    }
+
+    function closeMenu() { overlay.style.display = 'none'; }
+    window.onload = renderProfile;
+</script>
+
+</body>
+</html>

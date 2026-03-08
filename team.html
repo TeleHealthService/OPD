@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Specialists | General Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; transition: 0.3s ease; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: var(--white);
+            color: var(--pgh-black);
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+            border-bottom: 4px solid var(--pgh-emerald);
+        }
+
+        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--pgh-dark-green); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: #666; font-size: 0.8rem; }
+
+        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        nav ul li a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 22px; 
+            display: block; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            font-weight: 600; 
+            border-radius: 50px; 
+        }
+        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+        nav ul li a.active-nav { background: var(--pgh-emerald); }
+
+        .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            padding-bottom: 25px;
+            border-top: 4px solid var(--pgh-emerald);
+        }
+
+        .doc-image-container {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .doc-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .doc-info h3 { margin: 20px 0 5px; color: var(--pgh-dark-green); }
+        .specialty { color: var(--pgh-emerald); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        .btn-view {
+            padding: 12px 25px;
+            background: var(--pgh-emerald);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-view:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #333; }
+        .modal-body { padding: 40px; text-align: center; }
+        .modal-profile-img { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px; object-fit: cover; border: 4px solid var(--pgh-emerald); }
+
+        .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .btn-contact { padding: 14px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; font-size: 0.9rem; }
+        .btn-call { background: var(--pgh-emerald); color: white; }
+        .btn-email { border: 2px solid var(--pgh-emerald); color: var(--pgh-emerald); }
+
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 60px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Telehealth Patient Portal</small>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="team.html" class="active-nav">Our Doctors</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <h2 style="text-align:center; color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 40px;">Our Specialist Team</h2>
+    
+    <div class="doctor-grid">
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc1female.png" alt="Dr. Elena Rossi"></div>
+            <div class="doc-info">
+                <h3>Dr. Elena Rossi</h3>
+                <span class="specialty">Cardiology</span>
+                <button class="btn-view" onclick="openModal('Dr. Elena Rossi', 'Cardiology', 'Board-certified cardiologist specializing in cardiovascular health and internal medicine.', 'doc1female.png')">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc2female.png" alt="Dr. Sarah Lim"></div>
+            <div class="doc-info">
+                <h3>Dr. Sarah Lim</h3>
+                <span class="specialty">Pediatrics</span>
+                <button class="btn-view" onclick="openModal('Dr. Sarah Lim', 'Pediatrics', 'Expert in pediatric care, focusing on early childhood development and nutrition.', 'doc2female.png')">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc3male.png" alt="Dr. Marcus Chen"></div>
+            <div class="doc-info">
+                <h3>Dr. Marcus Chen</h3>
+                <span class="specialty">Neurology</span>
+                <button class="btn-view" onclick="openModal('Dr. Marcus Chen', 'Neurology', 'Specialist in neurological disorders and cognitive health research.', 'doc3male.png')">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc4female.png" alt="Dr. Maya Gupta"></div>
+            <div class="doc-info">
+                <h3>Dr. Maya Gupta</h3>
+                <span class="specialty">Dermatology</span>
+                <button class="btn-view" onclick="openModal('Dr. Maya Gupta', 'Dermatology', 'Focused on clinical dermatology and advanced skin treatment therapies.', 'doc4female.png')">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc5male.png" alt="Dr. David Park"></div>
+            <div class="doc-info">
+                <h3>Dr. David Park</h3>
+                <span class="specialty">Orthopedics</span>
+                <button class="btn-view" onclick="openModal('Dr. David Park', 'Orthopedics', 'Surgical expert in sports medicine and bone health management.', 'doc5male.png')">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doctor-card">
+            <div class="doc-image-container"><img src="doc6male.png" alt="Dr. Robert Vance"></div>
+            <div class="doc-info">
+                <h3>Dr. Robert Vance</h3>
+                <span class="specialty">General Surgery</span>
+                <button class="btn-view" onclick="openModal('Dr. Robert Vance', 'General Surgery', 'Highly experienced in minimally invasive procedures and emergency care.', 'doc6male.png')">View Profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-body">
+            <img id="modalProfileImg" src="" alt="Profile" class="modal-profile-img">
+            <h2 id="modalName" style="color: var(--pgh-dark-green); margin-bottom: 5px;"></h2>
+            <span id="modalSpec" class="specialty"></span>
+            <p id="modalBio" style="color: #666; font-size: 0.95rem; line-height: 1.6; margin-top: 20px;"></p>
+            
+            <div class="contact-actions">
+                <a href="tel:+63287230101" class="btn-contact btn-call"><i class="fas fa-phone"></i> Call Doctor</a>
+                <a href="mailto:customer.care@hospital.com.ph" class="btn-contact btn-email"><i class="fas fa-envelope"></i> Email</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Services</h4>
+            <a href="services.html">Find a Doctor</a>
+            <a href="services.html">Urgent Care</a>
+        </div>
+        <div class="footer-col">
+            <h4>Location</h4>
+            <p>Main Campus: Lucban, Quezon</p>
+            <p>Direct: +63-2-8723-0101</p>
+        </div>
+        <div class="footer-col">
+            <h4>Patient Relations</h4>
+            <p>customer.care@hospital.com.ph</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function openModal(name, spec, bio, img) {
+        document.getElementById('modalName').innerText = name;
+        document.getElementById('modalSpec').innerText = spec;
+        document.getElementById('modalBio').innerText = bio;
+        document.getElementById('modalProfileImg').src = img;
+        document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('profileModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('profileModal')) {
+            closeModal();
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal | General Hospital OPD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202; /* Primary Black accent */
+            --pgh-dark-green: #0D2818; /* Deep Forest Green */
+            --pgh-emerald: #04471C; /* Emerald Green Action color */
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* --- Background / Hero Section --- */
+        .portal-wrapper {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column; /* Mobile First */
+        }
+
+        .hero-side {
+            background: linear-gradient(rgba(13, 40, 24, 0.7), rgba(2, 2, 2, 0.8)), 
+                        url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=2000'); /* Professional Hospital Image */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* --- Login Form Side --- */
+        .login-side {
+            background: var(--white);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            background: var(--white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--pgh-emerald);
+        }
+
+        /* --- Logo & Branding --- */
+        .brand-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--pgh-emerald);
+            overflow: hidden;
+        }
+
+        /* INSERT YOUR LOGO PATH IN THE SRC BELOW */
+        .actual-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 { color: var(--pgh-dark-green); font-size: 1.5rem; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        p.subtitle { color: #666; font-size: 0.85rem; margin-top: 5px; }
+
+        /* --- Input Fields --- */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            color: var(--pgh-emerald);
+        }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: var(--pgh-dark-green); }
+        
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fdfdfd;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--pgh-emerald);
+            box-shadow: 0 0 8px rgba(4, 71, 28, 0.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-login {
+            width: 100%;
+            background: var(--pgh-emerald);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(4, 71, 28, 0.3);
+        }
+
+        .btn-login:hover {
+            background: var(--pgh-dark-green);
+            transform: translateY(-2px);
+        }
+
+        .emergency-btn {
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        /* --- Desktop Layout Change --- */
+        @media (min-width: 992px) {
+            .portal-wrapper { flex-direction: row; }
+            .hero-side { flex: 1.2; padding: 60px; text-align: left; align-items: flex-start; }
+            .login-side { flex: 0.8; }
+            h1 { font-size: 2rem; }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="portal-wrapper">
+    <div class="hero-side">
+        <h2 style="font-size: 3rem; margin-bottom: 10px;">Service.</h2>
+        <h2 style="font-size: 3rem; margin-top: 0; color: #7bed9f;">Excellence.</h2>
+        <p style="max-width: 500px; font-size: 1.1rem; line-height: 1.8; opacity: 0.9;">
+            Welcome to the Integrated Outpatient Department Portal. 
+            Experience world-class healthcare management designed for your convenience.
+        </p>
+        <a href="tel:+63287230101" class="emergency-btn">
+            <i class="fas fa-phone-alt"></i> EMERGENCY HOTLINE
+        </a>
+    </div>
+
+    <div class="login-side">
+        <div class="login-card">
+            <div class="brand-container">
+                <div class="logo-placeholder">
+                    <img src="logo.png" alt="Hospital Logo" class="actual-logo">
+                </div>
+                <h1>General Hospital</h1>
+                <p class="subtitle">Patient Management System</p>
+            </div>
+
+            <form action="home.html">
+                <div class="input-group">
+                    <label for="uid">Patient ID / Email</label>
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="uid" placeholder="Enter your ID" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="pass">Secure Password</label>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="pass" placeholder="••••••••" required>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 20px;">
+                    <label style="font-weight: normal; cursor: pointer;">
+                        <input type="checkbox" style="width: auto; margin-right: 5px;"> Remember Me
+                    </label>
+                    <a href="#" style="color: var(--pgh-emerald); text-decoration: none;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-login">SIGN IN TO PORTAL</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666;">
+                Don't have a Patient Account? <br>
+                <a href="#" style="color: var(--pgh-emerald); font-weight: bold; text-decoration: none;">Register Now</a>
+            </div>
+        </div>
+        
+        <p style="margin-top: 30px; font-size: 0.7rem; color: #aaa; text-align: center; max-width: 300px;">
+            By signing in, you agree to our <strong>Data Privacy Notice</strong> and <strong>Terms of Service</strong>.
+        </p>
+    </div>
+</div>
+
+<footer class="desktop-footer">
+    &copy; 2026 General Hospital Outpatient Department. Empowering Health Through Innovation.
+</footer>
+
+</body>
+</html>

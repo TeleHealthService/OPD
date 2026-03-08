@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Discharge | General Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --border-color: #e0e0e0;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); margin: 0; padding: 40px 20px; color: #333; }
+        
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: var(--white); 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            border-top: 10px solid var(--pgh-emerald);
+        }
+
+        h2 { color: var(--pgh-dark-green); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        
+        .patient-context { 
+            background: #f8faf9; 
+            border: 1px solid #e0ece6; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .context-item label { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: bold; }
+        .context-item div { font-weight: 600; color: var(--pgh-dark-green); }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        textarea, input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            font-family: inherit; 
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus { outline: none; border-color: var(--pgh-emerald); }
+
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
+        
+        .btn { 
+            flex: 1; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-align: center; 
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .btn-submit { background: var(--pgh-emerald); color: white; }
+        .btn-submit:hover { background: var(--pgh-dark-green); }
+        .btn-cancel { background: #eee; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2><i class="fas fa-file-medical"></i> Discharge Clearance</h2>
+    
+    <div class="patient-context">
+        <div class="context-item">
+            <label>Patient Name</label>
+            <div id="disp-name">Loading...</div>
+        </div>
+        <div class="context-item">
+            <label>Case Reference</label>
+            <div id="disp-case">#ER-2026-XXXX</div>
+        </div>
+        <div class="context-item">
+            <label>Admission Date</label>
+            <div id="disp-admitted">---</div>
+        </div>
+        <div class="context-item">
+            <label>Bed No.</label>
+            <div id="disp-bed">---</div>
+        </div>
+    </div>
+
+    <form id="dischargeForm">
+        <div class="form-group">
+            <label>Final Diagnosis / Discharge Summary</label>
+            <textarea id="summary" rows="3" placeholder="Enter clinical findings..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Physician's Notes (Confidential)</label>
+            <textarea id="notes" rows="2" placeholder="Internal observations..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Patient Instructions (Home Care)</label>
+            <textarea id="instructions" rows="3" placeholder="E.g. Take meds twice a day, avoid heavy lifting..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Follow-up Schedule</label>
+            <input type="date" id="followUp">
+        </div>
+
+        <div class="btn-group">
+            <a href="admin_dashboard.html" class="btn btn-cancel">Go Back</a>
+            <button type="submit" class="btn btn-submit">Submit & Set Ready</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 1. Extract Patient ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const patientIdx = params.get('id');
+    let patients = JSON.parse(localStorage.getItem('patients')) || [];
+    const p = patients[patientIdx];
+
+    // 2. Load Patient Data into view
+    if (p) {
+        document.getElementById('disp-name').innerText = p.name;
+        document.getElementById('disp-case').innerText = `#ER-2026-${1000 + parseInt(patientIdx)}`;
+        document.getElementById('disp-admitted').innerText = p.arrived || 'N/A';
+        document.getElementById('disp-bed').innerText = p.bed || 'No Bed Assigned';
+    } else {
+        alert("Critical Error: Patient record not found.");
+        window.location.href = "admin_dashboard.html";
+    }
+
+    // 3. Handle Discharge Submission
+    document.getElementById('dischargeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Update the specific patient record
+        patients[patientIdx].status = 'READY FOR DISCHARGE';
+        patients[patientIdx].dischargeDetails = {
+            summary: document.getElementById('summary').value,
+            notes: document.getElementById('notes').value,
+            instructions: document.getElementById('instructions').value,
+            followUpDate: document.getElementById('followUp').value,
+            clearedTime: new Date().toLocaleString()
+        };
+
+        // Save back to LocalStorage
+        localStorage.setItem('patients', JSON.stringify(patients));
+
+        alert("Clinical summary saved. Patient is now listed as Ready for Discharge.");
+        window.location.href = "admin_dashboard.html";
+    });
+</script>
+
+</body>
+</html>

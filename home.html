@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal | General Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --error-red: #e74c3c;
+        }
+
+        * { box-sizing: border-box; transition: 0.3s; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: var(--white);
+            color: var(--pgh-black);
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+            border-bottom: 4px solid var(--pgh-emerald);
+        }
+
+        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--pgh-dark-green); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: #666; font-size: 0.8rem; }
+
+        /* --- Navigation --- */
+        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; }
+        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+        nav ul li a.active-nav { background: var(--pgh-emerald); }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            padding: 100px 5%;
+            text-align: center;
+            background: linear-gradient(rgba(13, 40, 24, 0.8), rgba(13, 40, 24, 0.8)), 
+                        url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .hero-section h1 { font-size: 2.8rem; margin-bottom: 15px; text-transform: uppercase; }
+        .hero-section p { font-size: 1.2rem; margin-bottom: 35px; opacity: 0.9; }
+
+        .btn-consult-main {
+            background: var(--pgh-emerald);
+            color: white;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: 2px solid var(--white);
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-consult-main:hover { background: var(--white); color: var(--pgh-emerald); transform: scale(1.05); }
+
+        /* --- Form Container --- */
+        .main-container { padding: 40px 20px; max-width: 800px; margin: 0 auto; display: none; }
+        .step-container { display: none; animation: slideIn 0.4s ease-out; }
+        .step-container.active { display: block; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--white); border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 8px solid var(--pgh-emerald); }
+
+        .progress-dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
+        .dot.active { background: var(--pgh-emerald); width: 35px; border-radius: 10px; }
+
+        label { display: block; margin: 25px 0 10px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.95rem; }
+        select, input, textarea { width: 100%; padding: 15px; border: 1.5px solid #eee; border-radius: 10px; font-size: 1rem; background: var(--light-gray); outline: none; }
+        select:focus, input:focus, textarea:focus { border-color: var(--pgh-emerald); background: white; }
+        
+        .input-error { border: 2px solid var(--error-red) !important; background: #fff5f5; }
+
+        .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 18px; border-radius: 10px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 1rem; }
+        .btn-back { background: none; border: none; color: #777; margin-top: 20px; width: 100%; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
+
+        /* --- Footer --- */
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 80px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+        .copy-text { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #999; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Telehealth Patient Portal</small>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="home.html" class="active-nav">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="team.html">Our Doctors</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+    </ul>
+</nav>
+
+<div class="hero-section" id="hero">
+    <h1>Quality Care, Anywhere</h1>
+    <p>Access specialized healthcare from the comfort of your home. Connect with our experts today.</p>
+    <button class="btn-consult-main" onclick="startAppointment()">Consult Now</button>
+</div>
+
+<div class="main-container" id="formContainer">
+    <div class="progress-dots">
+        <div class="dot active" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+        <div class="dot" id="dot3"></div>
+        <div class="dot" id="dot4"></div>
+        <div class="dot" id="dot5"></div>
+    </div>
+
+    <div class="card">
+        <form id="appointmentForm">
+            <div class="step-container active" id="step1">
+                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Patient Information</h3>
+                <label>Full Name</label>
+                <input type="text" id="patientName" placeholder="Enter full name" class="required-field">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label>Age</label>
+                        <input type="number" id="patientAge" placeholder="Years" class="required-field">
+                    </div>
+                    <div>
+                        <label>Gender</label>
+                        <select id="patientGender" class="required-field">
+                            <option value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                </div>
+                <label>Contact Number</label>
+                <input type="tel" id="patientContact" placeholder="09XXXXXXXXX" class="required-field">
+                <button type="button" class="btn-next" onclick="validateAndGo(2)">Next: Select Specialist</button>
+            </div>
+
+            <div class="step-container" id="step2">
+                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Select Specialist</h3>
+                <label>Medical Department</label>
+                <select class="required-field" id="deptSelect" onchange="filterDoctors()">
+                    <option value="">-- Select Specialty --</option>
+                </select>
+
+                <label>Available Doctors</label>
+                <select class="required-field" id="docSelect">
+                    <option value="">-- Choose a Physician --</option>
+                </select>
+                <button type="button" class="btn-next" onclick="validateAndGo(3)">Next: Schedule</button>
+                <button type="button" class="btn-back" onclick="goToStep(1)">Back</button>
+            </div>
+
+            <div class="step-container" id="step3">
+                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Schedule Appointment</h3>
+                <label>Preferred Date</label>
+                <input type="date" id="appDate" class="required-field">
+                <label>Preferred Time Slot</label>
+                <select id="appTime" class="required-field">
+                    <option value="">-- Select Time --</option>
+                    <option>08:00 AM - 10:00 AM</option>
+                    <option>10:00 AM - 12:00 PM</option>
+                    <option>01:00 PM - 03:00 PM</option>
+                    <option>03:00 PM - 05:00 PM</option>
+                </select>
+                <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Assessment</button>
+                <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
+            </div>
+
+            <div class="step-container" id="step4">
+                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Symptom Assessment</h3>
+                <label>Chief Complaint</label>
+                <textarea id="appSymptoms" rows="5" placeholder="Please describe your symptoms in detail..." class="required-field"></textarea>
+                <button type="button" class="btn-next" onclick="validateAndGo(5)">Next: Final Review</button>
+                <button type="button" class="btn-back" onclick="goToStep(3)">Back</button>
+            </div>
+
+            <div class="step-container" id="step5">
+                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Review & Submit</h3>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; border-left: 6px solid var(--pgh-emerald); font-size: 0.9rem;">
+                    <p><strong>Notice:</strong> This request will be sent to your Patient Records for processing. Ensure all details are correct before confirming.</p>
+                </div>
+                <button type="submit" class="btn-next" style="background: var(--pgh-dark-green);">Confirm Appointment</button>
+                <button type="button" class="btn-back" onclick="goToStep(4)">Back</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Services</h4>
+            <a href="services.html">Find a Doctor</a>
+            <a href="services.html">Urgent Care</a>
+        </div>
+        <div class="footer-col">
+            <h4>Location</h4>
+            <p>Main Campus: Lucban, Quezon</p>
+            <p>Direct: +63-2-8723-0101</p>
+        </div>
+        <div class="footer-col">
+            <h4>Patient Relations</h4>
+            <p>customer.care@hospital.com.ph</p>
+        </div>
+    </div>
+    <p class="copy-text">&copy; 2026 General Hospital OPD Portal</p>
+</footer>
+
+<script>
+    // --- 1. LIVE SYNC FROM team.html ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const deptSelect = document.getElementById('deptSelect');
+        const docSelect = document.getElementById('docSelect');
+
+        fetch('team.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const teamDoc = parser.parseFromString(html, 'text/html');
+                const doctorCards = teamDoc.querySelectorAll('.doctor-card');
+                
+                const uniqueDepartments = new Set();
+
+                // Clear existing static options
+                docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
+
+                doctorCards.forEach(card => {
+                    const name = card.querySelector('h3').innerText.trim();
+                    const specialty = card.querySelector('.specialty').innerText.trim();
+                    
+                    uniqueDepartments.add(specialty);
+                    
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    opt.setAttribute('data-dept', specialty);
+                    docSelect.appendChild(opt);
+                });
+
+                uniqueDepartments.forEach(dept => {
+                    const opt = document.createElement('option');
+                    opt.value = dept;
+                    opt.textContent = dept;
+                    deptSelect.appendChild(opt);
+                });
+            });
+    });
+
+    // --- 2. DYNAMIC UI CONTROLS ---
+    function startAppointment() {
+        document.getElementById('hero').style.display = 'none';
+        document.getElementById('formContainer').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    function filterDoctors() {
+        const selectedDept = document.getElementById('deptSelect').value;
+        const docSelect = document.getElementById('docSelect');
+        const options = docSelect.querySelectorAll('option');
+        
+        docSelect.value = "";
+        options.forEach(opt => {
+            const docDept = opt.getAttribute('data-dept');
+            if (opt.value === "" || docDept === selectedDept) {
+                opt.style.display = 'block';
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+    }
+
+    function validateAndGo(nextStep) {
+        const currentStepContainer = document.querySelector('.step-container.active');
+        const fields = currentStepContainer.querySelectorAll('.required-field');
+        let isValid = true;
+        fields.forEach(field => {
+            if (!field.value.trim()) { field.classList.add('input-error'); isValid = false; }
+            else { field.classList.remove('input-error'); }
+        });
+        if (isValid) goToStep(nextStep);
+        else alert("Please complete all fields in this step.");
+    }
+
+    function goToStep(step) {
+        document.querySelectorAll('.step-container').forEach(s => s.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+        document.querySelectorAll('.dot').forEach((d, index) => {
+            if (index + 1 === step) d.classList.add('active');
+            else d.classList.remove('active');
+        });
+        window.scrollTo(0, 0);
+    }
+
+    // --- 3. SUBMISSION & REDIRECT TO PATIENT RECORD ---
+    document.getElementById('appointmentForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        const appointmentData = {
+            name: document.getElementById('patientName').value,
+            doctor: document.getElementById('docSelect').value,
+            date: document.getElementById('appDate').value,
+            time: document.getElementById('appTime').value,
+            status: "Scheduled"
+        };
+
+        // Saving to localStorage so patient_record.html can read it
+        let records = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
+        records.push(appointmentData);
+        localStorage.setItem('hospitalAppointments', JSON.stringify(records));
+
+        alert("Success! Your appointment has been sent to your records.");
+        window.location.href = "patient_record.html";
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | General Hospital Telehealth</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; transition: 0.3s ease; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: var(--white);
+            color: var(--pgh-black);
+            line-height: 1.6;
+        }
+
+        /* --- Header (Matched to Home) --- */
+        header {
+            background-color: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+            border-bottom: 4px solid var(--pgh-emerald);
+        }
+
+        .logo-placeholder { width: 60px; height: 60px; background: #eee; border-radius: 50%; flex-shrink: 0; }
+        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--pgh-dark-green); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: #666; font-size: 0.8rem; }
+
+        /* --- Navigation (Matched Oblong Style) --- */
+        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
+        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        nav ul li a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 22px; 
+            display: block; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            font-weight: 600; 
+            border-radius: 50px; 
+        }
+        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+        nav ul li a.active-nav { background: var(--pgh-emerald); }
+
+        /* --- About Content --- */
+        .container { padding: 60px 5%; max-width: 1000px; margin: 0 auto; }
+        
+        .about-hero { text-align: center; margin-bottom: 50px; }
+        .about-hero h1 { color: var(--pgh-dark-green); font-size: 2.5rem; text-transform: uppercase; margin-bottom: 20px; }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .info-card {
+            background: var(--light-gray);
+            padding: 40px;
+            border-radius: 15px;
+            border-left: 5px solid var(--pgh-emerald);
+        }
+
+        .info-card h3 { color: var(--pgh-emerald); text-transform: uppercase; margin-top: 0; }
+
+        .content-section { margin-bottom: 40px; }
+        .content-section h2 { color: var(--pgh-dark-green); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .objectives-list li {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-list li i { color: var(--pgh-emerald); }
+
+        /* --- Footer (Matched) --- */
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 60px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+
+        @media (max-width: 768px) {
+            .mission-vision, .objectives-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+<img src="logo.png" alt="General Hospital Logo" style="width: 60px; height: 60px; object-fit: contain;">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Telehealth Patient Portal</small>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html" class="active-nav">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="team.html">Our Doctors</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="about-hero">
+        <h1>Innovation in Outpatient Care</h1>
+        <p>Providing quality healthcare and patient satisfaction through digital transformation.</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Our Purpose</h2>
+        <p>The Outpatient Department (OPD) serves as the primary entry point to hospital care, providing essential diagnostic and treatment services. To address the challenges of congestion and prolonged waiting lines, we have implemented telehealth services. This initiative ensures that healthcare is more accessible, secure, and cost-effective for all our patients.</p>
+    </div>
+
+    <div class="mission-vision">
+        <div class="info-card">
+            <h3>Our Mission</h3>
+            <p>To provide continuity of care through remote consultations, making healthcare services easily accessible even to patients in remote areas.</p>
+        </div>
+        <div class="info-card">
+            <h3>Our Vision</h3>
+            <p>To reduce overcrowding in hospital facilities while improving patient satisfaction and supporting health education through digital innovation.</p>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Core Objectives</h2>
+        <p>Our telehealth platform is designed with the following goals in mind:</p>
+        <ul class="objectives-list">
+            <li><i class="fas fa-check-circle"></i> Reduce overcrowding and wait times</li>
+            <li><i class="fas fa-check-circle"></i> Improve access to specialist care</li>
+            <li><i class="fas fa-check-circle"></i> Provide timely and remote consultations</li>
+            <li><i class="fas fa-check-circle"></i> Ensure safety and infection control</li>
+            <li><i class="fas fa-check-circle"></i> Maintain high data confidentiality</li>
+            <li><i class="fas fa-check-circle"></i> Optimize the healthcare workforce</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>Continuity of Care</h2>
+        <p>By integrating Electronic Medical Records (EMR) with advanced nursing informatics, we ensure that every virtual visit is documented with accuracy and care. We remain dedicated to monitoring your recovery and health compliance through proactive follow-up evaluations and remote support.</p>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Services</h4>
+            <a href="services.html">Find a Doctor</a>
+            <a href="services.html">Urgent Care</a>
+        </div>
+        <div class="footer-col">
+            <h4>Location</h4>
+            <p>Main Campus: Lucban, Quezon</p>
+            <p>Direct: +63-2-8723-0101</p>
+        </div>
+        <div class="footer-col">
+            <h4>Patient Relations</h4>
+            <p>customer.care@hospital.com.ph</p>
+        </div>
+    </div>
+    <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">&copy; 2026 General Hospital OPD Portal</p>
+</footer>
+
+</body>
+</html>
