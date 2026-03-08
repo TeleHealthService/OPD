@@ -24,7 +24,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Header --- */
+        /* [ UNIVERSAL HEADER & NAV STYLE ] */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -39,30 +39,30 @@
         .brand-container { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
         .header-feedback {
             text-decoration: none;
             color: white;
-            font-size: 0.6rem;
-            font-weight: bold;
+            font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 18px;
+            border-radius: 50px;
             background: var(--pgh-emerald);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             display: flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 8px;
+            white-space: nowrap;
         }
 
-        /* --- Navigation --- */
         nav { 
             background: var(--pgh-dark-green); 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            padding: 10px 5%;
+            padding: 12px 5%;
         }
 
         nav ul { 
@@ -71,92 +71,101 @@
             padding: 0; 
             display: flex; 
             justify-content: space-between; 
-            gap: 5px; 
+            gap: 8px; 
         }
 
         nav ul li { flex: 1; }
         nav ul li a { 
             color: white; 
             text-decoration: none; 
-            padding: 8px 2px; 
-            display: block; 
+            padding: 10px 5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.55rem; 
             text-transform: uppercase; 
-            font-weight: 600; 
+            font-weight: 700; 
             border-radius: 50px; 
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             text-align: center;
+            min-height: 35px;
         }
 
-        /* --- Feedback Content --- */
-        .container { padding: 30px 5%; max-width: 800px; margin: 0 auto; }
+        /* --- Feedback Specifics --- */
+        .container { padding: 40px 5%; max-width: 700px; margin: 0 auto; }
         
-        .feedback-header { text-align: center; margin-bottom: 25px; }
-        .feedback-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 8px; font-size: 1.3rem; }
-        .feedback-header p { color: #666; line-height: 1.4; font-size: 0.85rem; }
+        .feedback-header { text-align: center; margin-bottom: 30px; }
+        .feedback-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 10px; font-size: 1.6rem; }
+        .feedback-header p { color: #666; line-height: 1.5; font-size: 0.9rem; }
 
         .card {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--pgh-emerald);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--pgh-emerald);
         }
 
-        label { display: block; margin: 15px 0 5px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.85rem; }
+        label { display: block; margin: 20px 0 8px; font-weight: 700; color: var(--pgh-dark-green); font-size: 0.85rem; text-transform: uppercase; }
         input, select, textarea { 
             width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 0.9rem; 
-            background: var(--light-gray); 
+            padding: 14px; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            background: #fafafa; 
             outline: none; 
+            font-family: inherit;
         }
+        input:focus, select:focus, textarea:focus { border-color: var(--pgh-emerald); background: #fff; }
 
         .rating-group {
             display: flex;
-            gap: 8px;
-            margin: 10px 0;
+            gap: 12px;
+            margin: 15px 0;
             justify-content: center;
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 10px;
         }
         .rating-group i {
-            font-size: 1.8rem;
-            color: #ddd;
+            font-size: 2rem;
+            color: #ccc;
             cursor: pointer;
+            transition: transform 0.2s;
         }
+        .rating-group i:hover { transform: scale(1.2); }
         .rating-group i.active { color: #f1c40f; }
 
         .btn-submit {
             width: 100%;
             background: var(--pgh-emerald);
             color: white;
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            margin-top: 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-top: 30px;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(4, 71, 28, 0.3);
         }
+        .btn-submit:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
 
-        .btn-submit:hover { background: var(--pgh-dark-green); }
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 60px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; font-size: 0.9rem; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; }
 
-        /* --- Footer --- */
-        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 40px; border-top: 1px solid #ddd; }
-        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
-        .footer-col h4 { color: var(--pgh-dark-green); font-size: 0.9rem; margin-bottom: 10px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { color: #555; text-decoration: none; font-size: 0.8rem; margin-bottom: 6px; display: block; }
-
-        /* --- Desktop --- */
         @media (min-width: 768px) {
+            .brand-text h2 { font-size: 1.2rem; }
             nav ul { justify-content: flex-start; gap: 12px; }
             nav ul li { flex: 0 1 auto; }
-            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
-            .header-feedback { font-size: 0.8rem; padding: 10px 20px; }
-            .brand-text h2 { font-size: 1.2rem; }
-            .feedback-header h1 { font-size: 2rem; }
+            nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
+            .header-feedback { font-size: 0.75rem; padding: 12px 25px; }
+            .feedback-header h1 { font-size: 2.2rem; }
             .footer-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
@@ -171,7 +180,7 @@
             <small>Telehealth Patient Portal</small>
         </div>
     </div>
-    <a href="feedback.html" class="header-feedback">
+    <a href="feedback.html" class="header-feedback" style="background: var(--white); color: var(--pgh-dark-green);">
         <i class="fas fa-comment-dots"></i> Feedback
     </a>
 </header>
@@ -188,21 +197,23 @@
 <div class="container">
     <div class="feedback-header">
         <h1>Share Your Experience</h1>
-        <p>Your insights help us refine our platform and provide better care for all patients.</p>
+        <p>Help us improve our digital healthcare services by providing your honest feedback. We value your time and insights.</p>
     </div>
+
+    
 
     <div class="card">
         <form id="feedbackForm">
             <label>Full Name (Optional)</label>
-            <input type="text" placeholder="Enter your name">
+            <input type="text" id="patientName" placeholder="e.g. Juan Dela Cruz">
 
             <label>Service Received</label>
             <select required>
-                <option value="">-- Select Service --</option>
-                <option>Teleconsultation</option>
-                <option>Laboratory Results Review</option>
-                <option>E-Prescription Service</option>
-                <option>Appointment Scheduling</option>
+                <option value="">-- Choose a service --</option>
+                <option>Video Consultation</option>
+                <option>Lab Results Review</option>
+                <option>E-Prescription Access</option>
+                <option>Portal Navigation</option>
             </select>
 
             <label>Overall Satisfaction</label>
@@ -214,8 +225,8 @@
                 <i class="fas fa-star" data-value="5"></i>
             </div>
 
-            <label>How can we improve?</label>
-            <textarea rows="4" placeholder="Your suggestions..." required></textarea>
+            <label>What could we do better?</label>
+            <textarea rows="5" placeholder="Tell us about your experience..." required></textarea>
 
             <button type="submit" class="btn-submit">Submit Feedback</button>
         </form>
@@ -226,13 +237,13 @@
     <div class="footer-grid">
         <div class="footer-col">
             <h4>Services</h4>
-            <a href="#">Consultations</a>
-            <a href="#">E-Prescriptions</a>
+            <a href="#">Teleconsultation</a>
+            <a href="#">Health Monitoring</a>
             <a href="#">Urgent Care</a>
         </div>
         <div class="footer-col">
             <h4>Location</h4>
-            <p>Ibabang Dupay Lucena City</p>
+            <p>Ibabang Dupay, Lucena City</p>
             <p>WJVJ+M9 Lucena City, Quezon</p>
         </div>
         <div class="footer-col">
@@ -240,25 +251,46 @@
             <p>customer.care@opd.com.ph</p>
         </div>
     </div>
-    <p style="text-align: center; margin-top: 25px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal</p>
+    <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | All Rights Reserved</p>
 </footer>
 
 <script>
     const stars = document.querySelectorAll('#starRating i');
+    let currentRating = 0;
+
     stars.forEach(star => {
         star.addEventListener('click', function() {
-            const value = this.getAttribute('data-value');
+            currentRating = this.getAttribute('data-value');
             stars.forEach(s => {
-                s.classList.toggle('active', s.getAttribute('data-value') <= value);
+                s.classList.toggle('active', s.getAttribute('data-value') <= currentRating);
+            });
+        });
+
+        // Hover effect
+        star.addEventListener('mouseover', function() {
+            const hoverVal = this.getAttribute('data-value');
+            stars.forEach(s => {
+                if(s.getAttribute('data-value') <= hoverVal) s.style.color = '#f1c40f';
+            });
+        });
+
+        star.addEventListener('mouseout', function() {
+            stars.forEach(s => {
+                s.style.color = s.classList.contains('active') ? '#f1c40f' : '#ccc';
             });
         });
     });
 
     document.getElementById('feedbackForm').onsubmit = function(e) {
         e.preventDefault();
-        alert("Thank you! Your feedback has been submitted successfully.");
+        if(currentRating === 0) {
+            alert("Please provide a star rating.");
+            return;
+        }
+        alert("Thank you for your feedback! It has been successfully recorded.");
         this.reset();
         stars.forEach(s => s.classList.remove('active'));
+        currentRating = 0;
     };
 </script>
 
