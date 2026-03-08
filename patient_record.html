@@ -22,10 +22,7 @@
 
         /* --- Header & Nav --- */
         header { background-color: var(--white); padding: 10px 5%; display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald); }
-        
-        /* Integrated Logo */
         .hospital-logo { width: 50px; height: 50px; object-fit: contain; }
-        
         .brand-text h2 { margin: 0; font-size: 1.2rem; color: var(--pgh-dark-green); text-transform: uppercase; }
 
         nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
@@ -35,9 +32,7 @@
 
         /* --- Content Layout --- */
         .container { padding: 40px 5%; max-width: 1400px; margin: 0 auto; min-height: 80vh; }
-        
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
         .search-bar { display: flex; background: white; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--border-color); width: 400px; }
         .search-bar input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 0.9rem; }
 
@@ -96,13 +91,13 @@
         <h1>Medical Records Archival</h1>
         <div class="search-bar">
             <i class="fas fa-search" style="color:#aaa"></i>
-            <input type="text" id="searchInput" onkeyup="searchRecords()" placeholder="Search by Patient Name or Case ID...">
+            <input type="text" id="searchInput" onkeyup="searchRecords()" placeholder="Search by Patient Name...">
         </div>
     </div>
 
     <div class="tabs">
         <div class="tab active" onclick="switchTab('ALL')">All Records</div>
-        <div class="tab" onclick="switchTab('ACTIVE')">Active (In-ER)</div>
+        <div class="tab" onclick="switchTab('ACTIVE')">Active</div>
         <div class="tab" onclick="switchTab('DISCHARGED')">Discharged</div>
     </div>
 
@@ -112,8 +107,8 @@
                 <tr>
                     <th>Patient Detail</th>
                     <th>Contact Info</th>
-                    <th>Admission Time</th>
-                    <th>Severity</th>
+                    <th>Date/Time</th>
+                    <th>Assignment/Severity</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -139,68 +134,113 @@
 </footer>
 
 <script>
+    // --- 1. CONSOLIDATED LOAD FUNCTION ---
     function loadRecords(filter = 'ALL') {
-        const patients = JSON.parse(localStorage.getItem('patients')) || [];
+        // Fetch from both storage keys
+        const portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
+        const triageData = JSON.parse(localStorage.getItem('patients')) || [];
+
+        // Combine data with source tags
+        const allPatients = [
+            ...portalData.map(p => ({ ...p, source: 'PORTAL' })),
+            ...triageData.map(p => ({ ...p, source: 'TRIAGE' }))
+        ];
+
         const tbody = document.getElementById('recordsTableBody');
         tbody.innerHTML = '';
 
-        patients.forEach((p, index) => {
-            const isDischarged = p.isDischarged || false;
-            
+        allPatients.forEach((p, index) => {
+            // Unify Status
+            const isDischarged = p.status === 'Discharged' || p.isDischarged === true;
             if (filter === 'ACTIVE' && isDischarged) return;
             if (filter === 'DISCHARGED' && !isDischarged) return;
+
+            // Normalize fields across different schemas
+            const name = p.name || "Unknown";
+            const contact = p.contact || "N/A";
+            const time = p.timestamp || p.arrived || "N/A";
+            const detail = p.source === 'PORTAL' ? (p.doctor || "General") : (p.level || "Stable");
+            const subtext = p.source === 'PORTAL' ? "Online Portal" : (p.age + " Y.O. | " + p.sex);
 
             const row = `
                 <tr>
                     <td>
                         <div class="patient-info">
-                            <div class="patient-avatar"><i class="fas fa-user"></i></div>
+                            <div class="patient-avatar">
+                                <i class="fas ${p.source === 'PORTAL' ? 'fa-globe' : 'fa-user-nurse'}"></i>
+                            </div>
                             <div>
-                                <strong>${p.name}</strong><br>
-                                <small>${p.age} Y.O. | ${p.sex}</small>
+                                <strong>${name}</strong><br>
+                                <small style="color:#888">${subtext}</small>
                             </div>
                         </div>
                     </td>
-                    <td>${p.contact || 'Not Provided'}</td>
-                    <td>${p.arrived || 'N/A'}</td>
+                    <td>${contact}</td>
+                    <td>${time}</td>
                     <td>
-                        <span style="font-weight:bold; color:${p.level === 'CRITICAL' ? 'var(--urgent-red)' : '#555'}">
-                            ${p.level || 'STABLE'}
+                        <span style="font-weight:bold; color: ${p.level === 'CRITICAL' ? 'var(--urgent-red)' : 'var(--pgh-emerald)'}">
+                            ${detail}
                         </span>
                     </td>
                     <td>
                         <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
-                            ${isDischarged ? 'Discharged' : 'Active (ER)'}
+                            ${isDischarged ? 'Discharged' : 'Active'}
                         </span>
                     </td>
                     <td>
-                        <button class="action-btn" onclick="viewDetails(${index})">View Info</button>
-                        <button class="action-btn btn-delete" onclick="deleteRecord(${index})"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn" onclick="viewDetails('${p.source}', ${index})">View Info</button>
+                        <button class="action-btn btn-delete" onclick="deleteRecord('${p.source}', ${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `;
             tbody.insertAdjacentHTML('beforeend', row);
         });
+
+        if (allPatients.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:50px; color:#888">No records found.</td></tr>';
+        }
     }
 
-    function viewDetails(index) {
-        const patients = JSON.parse(localStorage.getItem('patients'));
-        const p = patients[index];
+    // --- 2. SOURCE-AWARE VIEW DETAILS ---
+    function viewDetails(source, index) {
+        const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
+        const data = JSON.parse(localStorage.getItem(key));
+        const p = data[index];
         const modal = document.getElementById('detailsModal');
         const body = document.getElementById('modalBody');
         
         document.getElementById('modalName').innerText = p.name;
         
-        body.innerHTML = `
-            <div class="detail-row"><span class="detail-label">Age/Sex:</span> <span>${p.age} / ${p.sex}</span></div>
-            <div class="detail-row"><span class="detail-label">Contact:</span> <span>${p.contact || 'N/A'}</span></div>
-            <div class="detail-row"><span class="detail-label">Admission:</span> <span>${p.arrived}</span></div>
-            <div class="detail-row"><span class="detail-label">Severity:</span> <span style="font-weight:bold">${p.level}</span></div>
-            <div class="detail-row"><span class="detail-label">Complaint:</span> <span>${p.complaint}</span></div>
-            <div class="detail-row"><span class="detail-label">Bed Assignment:</span> <span>${p.bed || 'Unassigned'}</span></div>
-        `;
-        
+        if (source === 'PORTAL') {
+            body.innerHTML = `
+                <div class="detail-row"><span class="detail-label">Origin:</span> <span>Patient Portal</span></div>
+                <div class="detail-row"><span class="detail-label">Doctor:</span> <span>${p.doctor}</span></div>
+                <div class="detail-row"><span class="detail-label">Scheduled:</span> <span>${p.date} @ ${p.time}</span></div>
+                <div class="detail-row"><span class="detail-label">Symptoms:</span> <br><span>${p.symptoms || 'None'}</span></div>
+            `;
+        } else {
+            body.innerHTML = `
+                <div class="detail-row"><span class="detail-label">Origin:</span> <span>Admin Triage</span></div>
+                <div class="detail-row"><span class="detail-label">Age/Sex:</span> <span>${p.age} / ${p.sex}</span></div>
+                <div class="detail-row"><span class="detail-label">Severity:</span> <span style="font-weight:bold">${p.level}</span></div>
+                <div class="detail-row"><span class="detail-label">Complaint:</span> <br><span>${p.complaint}</span></div>
+                <div class="detail-row"><span class="detail-label">Bed:</span> <span>${p.bed || 'Unassigned'}</span></div>
+            `;
+        }
         modal.style.display = 'flex';
+    }
+
+    // --- 3. SOURCE-AWARE DELETE ---
+    function deleteRecord(source, index) {
+        if(confirm("Permanently delete this medical record?")) {
+            const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
+            let data = JSON.parse(localStorage.getItem(key));
+            data.splice(index, 1);
+            localStorage.setItem(key, JSON.stringify(data));
+            loadRecords();
+        }
     }
 
     function closeModal() {
@@ -218,15 +258,6 @@
         let rows = document.getElementById('recordsTableBody').getElementsByTagName('tr');
         for (let row of rows) {
             row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
-        }
-    }
-
-    function deleteRecord(index) {
-        if(confirm("Permanently delete this medical record?")) {
-            let patients = JSON.parse(localStorage.getItem('patients'));
-            patients.splice(index, 1);
-            localStorage.setItem('patients', JSON.stringify(patients));
-            loadRecords();
         }
     }
 
