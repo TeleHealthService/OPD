@@ -26,9 +26,8 @@
             overflow-x: hidden;
         }
 
-        /* [2. COPY ALL CSS BELOW TO EVERY STYLE TAG FOR CONSISTENCY] */
+        /* [ START OF UNIVERSAL CSS - COPY THIS TO EVERY PAGE ] */
         
-        /* --- Universal Typography Fix --- */
         h1, h2, h3, h4 { 
             margin: 0 0 15px; 
             text-transform: uppercase; 
@@ -39,7 +38,7 @@
         h2 { font-size: 1.2rem; color: var(--pgh-dark-green); border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 8px; margin-top: 25px; }
         h3 { font-size: 1rem; color: var(--pgh-emerald); }
 
-        /* --- Header --- */
+        /* --- Header & Feedback Button --- */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -53,37 +52,34 @@
 
         .brand-container { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
-        
-        /* Specific Header Heading Fix (No Underline) */
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; border: none; padding: 0; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
         .header-feedback {
             text-decoration: none;
             color: white;
-            font-size: 0.6rem;
-            font-weight: bold;
+            font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 18px;
+            border-radius: 50px; /* pill shape */
+            background: var(--pgh-emerald);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            white-space: nowrap;
         }
         
-        /* Style for the custom symbol */
         .med-symbol { width: 14px; height: 14px; fill: currentColor; }
 
-        /* --- Navigation --- */
+        /* --- Navigation Bar --- */
         nav { 
             background: var(--pgh-dark-green); 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            padding: 10px 5%;
+            padding: 12px 5%;
         }
 
         nav ul { 
@@ -92,35 +88,39 @@
             padding: 0; 
             display: flex; 
             justify-content: space-between; 
-            gap: 5px; 
+            gap: 8px; 
         }
 
         nav ul li { flex: 1; }
         nav ul li a { 
             color: white; 
             text-decoration: none; 
-            padding: 8px 2px; 
-            display: block; 
+            padding: 10px 5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.55rem; 
             text-transform: uppercase; 
-            font-weight: 600; 
+            font-weight: 700; 
             border-radius: 50px; 
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             text-align: center;
+            min-height: 35px;
         }
-        nav ul li a.active-nav { background: var(--pgh-emerald); }
+        nav ul li a.active-nav { background: var(--pgh-emerald); border: 1px solid rgba(255,255,255,0.2); }
 
         /* Desktop Scaling */
         @media (min-width: 768px) {
             h1 { font-size: 2.2rem; }
             h2 { font-size: 1.4rem; }
             .brand-text h2 { font-size: 1.2rem; }
+            .header-feedback { font-size: 0.75rem; padding: 12px 25px; }
             nav ul { justify-content: flex-start; gap: 12px; }
             nav ul li { flex: 0 1 auto; }
-            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+            nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
         }
 
-        /* [END OF UNIVERSAL CSS SECTION] */
+        /* [ END OF UNIVERSAL CSS ] */
 
         /* --- Hero Section --- */
         .hero-section {
@@ -133,7 +133,7 @@
             color: white;
         }
 
-        .hero-section h1 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; }
+        .hero-section h1 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; color: white; }
         .hero-section p { font-size: 0.9rem; margin-bottom: 30px; opacity: 0.9; line-height: 1.4; }
 
         .btn-consult-main {
