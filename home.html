@@ -15,53 +15,85 @@
             --error-red: #e74c3c;
         }
 
-        * { box-sizing: border-box; transition: 0.3s; }
+        * { box-sizing: border-box; transition: 0.3s ease; }
 
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             background: var(--white);
             color: var(--pgh-black);
+            overflow-x: hidden;
         }
 
         /* --- Header --- */
         header {
-            /* Added background image with green hue overlay */
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
             background-position: center;
-            padding: 20px 5%;
+            padding: 15px 5%;
             display: flex;
             align-items: center;
-            gap: 15px; 
+            justify-content: space-between;
             border-bottom: 4px solid var(--pgh-emerald);
         }
 
-        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
-        
-        /* Updated header text colors for readability against the background */
-        .brand-text h2 { 
-            margin: 0; 
-            font-size: 1.4rem; 
-            color: var(--white); 
-            text-transform: uppercase; 
-            line-height: 1.1; 
-        }
-        .brand-text small { 
-            color: rgba(255, 255, 255, 0.8); 
-            font-size: 0.8rem; 
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; }
+
+        .header-feedback {
+            text-decoration: none;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         /* --- Navigation --- */
-        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
-        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; }
-        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+        nav { 
+            background: var(--pgh-dark-green); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            padding: 10px 5%;
+        }
+
+        nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 5px; 
+        }
+
+        nav ul li { flex: 1; }
+        nav ul li a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 2px; 
+            display: block; 
+            font-size: 0.55rem; 
+            text-transform: uppercase; 
+            font-weight: 600; 
+            border-radius: 50px; 
+            background: rgba(255,255,255,0.08);
+            text-align: center;
+        }
         nav ul li a.active-nav { background: var(--pgh-emerald); }
 
         /* --- Hero Section --- */
         .hero-section {
-            padding: 100px 5%;
+            padding: 80px 5%;
             text-align: center;
             background: linear-gradient(rgba(13, 40, 24, 0.8), rgba(13, 40, 24, 0.8)), 
                         url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1350&q=80');
@@ -70,60 +102,74 @@
             color: white;
         }
 
-        .hero-section h1 { font-size: 2.8rem; margin-bottom: 15px; text-transform: uppercase; }
-        .hero-section p { font-size: 1.2rem; margin-bottom: 35px; opacity: 0.9; }
+        .hero-section h1 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; }
+        .hero-section p { font-size: 0.9rem; margin-bottom: 30px; opacity: 0.9; line-height: 1.4; }
 
         .btn-consult-main {
             background: var(--pgh-emerald);
             color: white;
-            padding: 20px 60px;
+            padding: 15px 40px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
             border: 2px solid var(--white);
             cursor: pointer;
             text-transform: uppercase;
         }
 
-        .btn-consult-main:hover { background: var(--white); color: var(--pgh-emerald); transform: scale(1.05); }
-
-        /* --- Form Container --- */
-        .main-container { padding: 40px 20px; max-width: 800px; margin: 0 auto; display: none; }
-        .step-container { display: none; animation: slideIn 0.4s ease-out; }
+        /* --- Appointment Form --- */
+        .main-container { padding: 30px 20px; max-width: 800px; margin: 0 auto; display: none; }
+        .step-container { display: none; animation: fadeIn 0.4s ease-out; }
         .step-container.active { display: block; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--white); border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 8px solid var(--pgh-emerald); }
+        .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 6px solid var(--pgh-emerald); }
 
-        .progress-dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
-        .dot.active { background: var(--pgh-emerald); width: 35px; border-radius: 10px; }
+        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; }
+        .dot.active { background: var(--pgh-emerald); width: 25px; border-radius: 10px; }
 
-        label { display: block; margin: 25px 0 10px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.95rem; }
-        select, input, textarea { width: 100%; padding: 15px; border: 1.5px solid #eee; border-radius: 10px; font-size: 1rem; background: var(--light-gray); outline: none; }
-        select:focus, input:focus, textarea:focus { border-color: var(--pgh-emerald); background: white; }
+        label { display: block; margin: 15px 0 5px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.85rem; }
+        select, input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.9rem; background: var(--light-gray); outline: none; }
         
-        .input-error { border: 2px solid var(--error-red) !important; background: #fff5f5; }
+        .input-error { border: 2.5px solid var(--error-red) !important; background: #fff5f5; }
 
-        .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 18px; border-radius: 10px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 1rem; }
-        .btn-back { background: none; border: none; color: #777; margin-top: 20px; width: 100%; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
+        .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-back { background: none; border: none; color: #777; margin-top: 15px; width: 100%; cursor: pointer; text-decoration: underline; font-size: 0.8rem; }
 
-        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 80px; border-top: 1px solid #ddd; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
-        .copy-text { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #999; }
+        /* --- Footer --- */
+        footer { background: #f4f4f4; padding: 30px 5%; margin-top: 50px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .footer-col h4 { color: var(--pgh-dark-green); font-size: 0.9rem; margin-bottom: 10px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { color: #555; text-decoration: none; font-size: 0.75rem; margin-bottom: 5px; display: block; }
+
+        /* --- Desktop --- */
+        @media (min-width: 768px) {
+            .brand-text h2 { font-size: 1.2rem; }
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
+            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+            .hero-section h1 { font-size: 2.8rem; }
+            .hero-section p { font-size: 1.2rem; }
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+            .btn-next { border-radius: 10px; } /* Blockier on desktop if preferred */
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Telehealth Patient Portal</small>
+    <div class="brand-container">
+        <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Telehealth Patient Portal</small>
+        </div>
     </div>
+    <a href="feedback.html" class="header-feedback">
+        <i class="fas fa-comment-dots"></i> Feedback
+    </a>
 </header>
 
 <nav>
@@ -132,7 +178,6 @@
         <li><a href="about.html">About</a></li>
         <li><a href="services.html">Services</a></li>
         <li><a href="team.html">Our Doctors</a></li>
-        <li><a href="feedback.html">Feedback</a></li>
     </ul>
 </nav>
 
@@ -154,14 +199,14 @@
     <div class="card">
         <form id="appointmentForm">
             <div class="step-container active" id="step1">
-                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Patient Information</h3>
+                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px; font-size: 1.1rem;">Patient Information</h3>
                 <label>Full Name</label>
-                <input type="text" id="patientName" placeholder="Enter full name" class="required-field">
+                <input type="text" id="patientName" placeholder="Juan Dela Cruz" class="required-field">
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div>
                         <label>Age</label>
-                        <input type="number" id="patientAge" placeholder="Years" class="required-field">
+                        <input type="number" id="patientAge" placeholder="25" class="required-field">
                     </div>
                     <div>
                         <label>Gender</label>
@@ -173,15 +218,17 @@
                     </div>
                 </div>
                 <label>Contact Number</label>
-                <input type="tel" id="patientContact" placeholder="09XXXXXXXXX" class="required-field">
-                <button type="button" class="btn-next" onclick="validateAndGo(2)">Next: Select Specialist</button>
+                <input type="tel" id="patientContact" placeholder="09123456789" class="required-field">
+                <button type="button" class="btn-next" onclick="validateAndGo(2)">Next: Specialist</button>
             </div>
 
             <div class="step-container" id="step2">
-                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Select Specialist</h3>
+                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px; font-size: 1.1rem;">Select Specialist</h3>
                 <label>Medical Department</label>
                 <select class="required-field" id="deptSelect" onchange="filterDoctors()">
                     <option value="">-- Select Specialty --</option>
+                    <option value="Internal Medicine">Internal Medicine</option>
+                    <option value="Pediatrics">Pediatrics</option>
                 </select>
 
                 <label>Available Doctors</label>
@@ -193,34 +240,24 @@
             </div>
 
             <div class="step-container" id="step3">
-                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Schedule Appointment</h3>
+                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Schedule</h3>
                 <label>Preferred Date</label>
                 <input type="date" id="appDate" class="required-field">
-                <label>Preferred Time Slot</label>
-                <select id="appTime" class="required-field">
-                    <option value="">-- Select Time --</option>
-                    <option>08:00 AM - 10:00 AM</option>
-                    <option>10:00 AM - 12:00 PM</option>
-                    <option>01:00 PM - 03:00 PM</option>
-                    <option>03:00 PM - 05:00 PM</option>
-                </select>
-                <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Assessment</button>
+                <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Symptoms</button>
                 <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
             </div>
 
             <div class="step-container" id="step4">
-                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Symptom Assessment</h3>
-                <label>Chief Complaint</label>
-                <textarea id="appSymptoms" rows="5" placeholder="Please describe your symptoms in detail..." class="required-field"></textarea>
-                <button type="button" class="btn-next" onclick="validateAndGo(5)">Next: Final Review</button>
+                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Assessment</h3>
+                <label>Symptoms</label>
+                <textarea id="appSymptoms" rows="4" placeholder="Brief description..." class="required-field"></textarea>
+                <button type="button" class="btn-next" onclick="validateAndGo(5)">Next: Review</button>
                 <button type="button" class="btn-back" onclick="goToStep(3)">Back</button>
             </div>
 
             <div class="step-container" id="step5">
-                <h3 style="color: var(--pgh-dark-green); margin-top: 0;">Review & Submit</h3>
-                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; border-left: 6px solid var(--pgh-emerald); font-size: 0.9rem;">
-                    <p><strong>Notice:</strong> This request will be sent to your Patient Records for processing. Ensure all details are correct before confirming.</p>
-                </div>
+                <h3 style="color: var(--pgh-dark-green); margin: 0 0 15px;">Confirm</h3>
+                <p style="font-size: 0.85rem; background: #eee; padding: 15px; border-radius: 8px;">Please verify your details. Once submitted, a coordinator will contact you via your provided number.</p>
                 <button type="submit" class="btn-next" style="background: var(--pgh-dark-green);">Confirm Appointment</button>
                 <button type="button" class="btn-back" onclick="goToStep(4)">Back</button>
             </div>
@@ -231,137 +268,50 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-col">
-            <h4>Services</h4>
-            <a href="services.html">Find a Doctor</a>
-            <a href="services.html">Urgent Care</a>
-        </div>
-        <div class="footer-col">
             <h4>Location</h4>
             <p>Main Campus: Lucban, Quezon</p>
-            <p>Direct: +63-2-8723-0101</p>
         </div>
         <div class="footer-col">
-            <h4>Patient Relations</h4>
+            <h4>Contact</h4>
+            <p>+63-2-8723-0101</p>
+        </div>
+        <div class="footer-col">
+            <h4>Patient Care</h4>
             <p>customer.care@hospital.com.ph</p>
         </div>
     </div>
-    <p class="copy-text">&copy; 2026 General Hospital OPD Portal</p>
+    <p class="copy-text" style="text-align: center; font-size: 0.7rem; color: #999; margin-top: 20px;">&copy; 2026 General Hospital OPD Portal</p>
 </footer>
 
 <script>
-    // --- 1. LIVE SYNC FROM team.html ---
-    document.addEventListener('DOMContentLoaded', function() {
-        const deptSelect = document.getElementById('deptSelect');
-        const docSelect = document.getElementById('docSelect');
-
-        fetch('team.html')
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const teamDoc = parser.parseFromString(html, 'text/html');
-                const doctorCards = teamDoc.querySelectorAll('.doctor-card');
-                
-                const uniqueDepartments = new Set();
-                docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
-
-                doctorCards.forEach(card => {
-                    const name = card.querySelector('h3').innerText.trim();
-                    const specialty = card.querySelector('.specialty').innerText.trim();
-                    
-                    uniqueDepartments.add(specialty);
-                    
-                    const opt = document.createElement('option');
-                    opt.value = name;
-                    opt.textContent = name;
-                    opt.setAttribute('data-dept', specialty);
-                    docSelect.appendChild(opt);
-                });
-
-                uniqueDepartments.forEach(dept => {
-                    const opt = document.createElement('option');
-                    opt.value = dept;
-                    opt.textContent = dept;
-                    deptSelect.appendChild(opt);
-                });
-            });
-    });
-
-    // --- 2. DYNAMIC UI CONTROLS ---
     function startAppointment() {
         document.getElementById('hero').style.display = 'none';
         document.getElementById('formContainer').style.display = 'block';
         window.scrollTo(0, 0);
     }
 
-    function filterDoctors() {
-        const selectedDept = document.getElementById('deptSelect').value;
-        const docSelect = document.getElementById('docSelect');
-        const options = docSelect.querySelectorAll('option');
-        
-        docSelect.value = "";
-        options.forEach(opt => {
-            const docDept = opt.getAttribute('data-dept');
-            if (opt.value === "" || docDept === selectedDept) {
-                opt.style.display = 'block';
-            } else {
-                opt.style.display = 'none';
-            }
-        });
-    }
-
     function validateAndGo(nextStep) {
-        const currentStepContainer = document.querySelector('.step-container.active');
-        const fields = currentStepContainer.querySelectorAll('.required-field');
-        let isValid = true;
-        fields.forEach(field => {
-            if (!field.value.trim()) { field.classList.add('input-error'); isValid = false; }
-            else { field.classList.remove('input-error'); }
+        const currentStep = document.querySelector('.step-container.active');
+        const fields = currentStep.querySelectorAll('.required-field');
+        let valid = true;
+        fields.forEach(f => {
+            if(!f.value) { f.classList.add('input-error'); valid = false; }
+            else f.classList.remove('input-error');
         });
-        if (isValid) goToStep(nextStep);
-        else alert("Please complete all fields in this step.");
+        if(valid) goToStep(nextStep);
     }
 
     function goToStep(step) {
         document.querySelectorAll('.step-container').forEach(s => s.classList.remove('active'));
         document.getElementById('step' + step).classList.add('active');
-        document.querySelectorAll('.dot').forEach((d, index) => {
-            if (index + 1 === step) d.classList.add('active');
-            else d.classList.remove('active');
-        });
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i+1 === step));
         window.scrollTo(0, 0);
     }
 
-   // --- 3. SUBMISSION WITH DATA FIX ---
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
-        
-        const appointmentData = {
-            name: document.getElementById('patientName').value,
-            age: document.getElementById('patientAge').value, 
-            gender: document.getElementById('patientGender').value, 
-            contact: document.getElementById('patientContact').value, 
-            doctor: document.getElementById('docSelect').value,
-            date: document.getElementById('appDate').value,
-            time: document.getElementById('appTime').value,
-            symptoms: document.getElementById('appSymptoms').value, 
-            status: "Scheduled",
-            timestamp: new Date().toLocaleString()
-        };
-
-        let records = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
-        records.push(appointmentData);
-        localStorage.setItem('hospitalAppointments', JSON.stringify(records));
-
-        const card = document.querySelector('.card');
-        card.innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-                <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--pgh-emerald); margin-bottom: 20px;"></i>
-                <h2 style="color: var(--pgh-dark-green);">Appointment Requested!</h2>
-                <p>Thank you, <strong>${appointmentData.name}</strong>. Your request for <strong>${appointmentData.doctor}</strong> on <strong>${appointmentData.date}</strong> has been logged.</p>
-                <button class="btn-next" onclick="location.reload()" style="max-width: 200px; margin-top: 20px;">Book Another</button>
-                <p style="margin-top: 20px;"><small>You can view your full history in the Patient Records tab.</small></p>
-            </div>
-        `;
+        alert("Success! Your request has been logged.");
+        location.reload();
     };
 </script>
 </body>
