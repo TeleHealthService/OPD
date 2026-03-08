@@ -20,68 +20,75 @@
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
 
         /* --- Header & Nav --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
             background-position: center;
-            padding: 15px 5%; 
+            padding: 15px; 
             display: flex; 
             align-items: center; 
-            gap: 15px; 
+            gap: 12px; 
             border-bottom: 4px solid var(--pgh-emerald); 
         }
         
-        .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
-        
-        .brand-text h2 { margin: 0; font-size: 1.1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.7rem; display: block; }
+        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
-        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
-        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
+        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
         .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
 
         /* --- Content --- */
-        .container { padding: 40px 5%; max-width: 1400px; margin: 0 auto; }
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .container { padding: 20px 15px; max-width: 1400px; margin: 0 auto; }
         
-        /* Heading Styles with consistent bottom border */
-        h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.8rem; margin: 0; }
+        .page-header { margin-bottom: 25px; }
+        h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.4rem; margin: 0; }
+        #lastUpdated { font-size: 0.7rem; color: #666; margin-top: 5px; }
+        
         h3 { 
-            font-size: 1.1rem; 
+            font-size: 1rem; 
             color: var(--pgh-dark-green); 
             text-transform: uppercase;
             border-bottom: 3px solid var(--pgh-emerald); 
             padding-bottom: 8px; 
-            margin-top: 0;
             margin-bottom: 20px;
         }
 
-        .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .overview-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-top: 6px solid var(--pgh-emerald); }
-        .overview-card h4 { margin: 0 0 10px; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .overview-card .value { font-size: 2.2rem; font-weight: 800; color: var(--pgh-dark-green); }
+        /* Responsive Grid */
+        .overview-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px; }
+        @media (min-width: 600px) { .overview-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .overview-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .charts-section { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px; }
-        .chart-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .overview-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-top: 6px solid var(--pgh-emerald); }
+        .overview-card h4 { margin: 0 0 8px; font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .overview-card .value { font-size: 1.8rem; font-weight: 800; color: var(--pgh-dark-green); }
 
-        .viz-container { width: 100%; height: 300px; position: relative; }
+        /* Charts Stacked on Mobile */
+        .charts-section { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; }
+        @media (min-width: 1024px) { 
+            .charts-section { display: grid; grid-template-columns: 2fr 1fr; } 
+        }
 
-        .triage-stat-list { list-style: none; padding: 0; margin: 20px 0 0; }
-        .triage-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
-        .triage-label { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .chart-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; overflow: hidden; }
+        .viz-container { width: 100%; height: 250px; position: relative; }
+
+        .triage-stat-list { list-style: none; padding: 0; margin: 15px 0 0; }
+        .triage-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f1f1; font-size: 0.85rem; }
+        .triage-label { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
         
-        footer { background: var(--white); padding: 30px 5%; text-align: center; border-top: 1px solid #ddd; margin-top: 50px; color: #999; font-size: 0.7rem; }
+        footer { background: var(--white); padding: 25px 15px; text-align: center; border-top: 1px solid #ddd; margin-top: 30px; color: #999; font-size: 0.65rem; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+    <img src="logo.png" alt="Logo" class="hospital-logo">
     <div class="brand-text">
         <h2>General Hospital</h2>
         <small>Health Informatics Division</small>
@@ -98,44 +105,44 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>ER Analytics Dashboard</h1>
-        <div id="lastUpdated" style="font-size: 0.8rem; color: #666;">Live Data Syncing...</div>
+        <h1>ER Analytics</h1>
+        <div id="lastUpdated">Live Data Syncing...</div>
     </div>
 
     <div class="overview-grid">
         <div class="overview-card">
-            <h4>Active Patients</h4>
+            <h4>Active</h4>
             <div class="value" id="valActive">0</div>
-            <div style="color: #27ae60; font-size: 0.8rem;"><i class="fas fa-sync-alt"></i> Currently in ER</div>
+            <div style="color: #27ae60; font-size: 0.7rem;"><i class="fas fa-sync-alt"></i> In ER</div>
         </div>
         <div class="overview-card">
-            <h4>Total Records</h4>
+            <h4>Total</h4>
             <div class="value" id="valTotal">0</div>
-            <div style="color: #888; font-size: 0.8rem;">Historical Database Size</div>
+            <div style="color: #888; font-size: 0.7rem;">Records</div>
         </div>
         <div class="overview-card">
-            <h4>Treatment Occupancy</h4>
+            <h4>Occupancy</h4>
             <div class="value" id="valOccupancy">0%</div>
-            <div style="color: #f39c12; font-size: 0.8rem;">Bed Capacity Usage</div>
+            <div style="color: #f39c12; font-size: 0.7rem;">Capacity</div>
         </div>
         <div class="overview-card">
-            <h4>Emergency Level</h4>
+            <h4>Emergency</h4>
             <div class="value" id="valEmergency">Normal</div>
-            <div style="color: #e74c3c; font-size: 0.8rem;" id="emergencyTrend">Stable Flow</div>
+            <div style="color: #e74c3c; font-size: 0.7rem;" id="emergencyTrend">Stable</div>
         </div>
     </div>
 
     <div class="charts-section">
         <div class="chart-box">
-            <h3>System Activity (Live Monitor)</h3>
+            <h3>Live Activity</h3>
             <div class="viz-container">
                 <canvas id="influxChart"></canvas>
             </div>
         </div>
 
         <div class="chart-box">
-            <h3>Severity Breakdown</h3>
-            <div class="viz-container" style="height: 200px;">
+            <h3>Severity</h3>
+            <div class="viz-container" style="height: 180px;">
                 <canvas id="triageChart"></canvas>
             </div>
             <ul class="triage-stat-list">
@@ -144,23 +151,23 @@
                     <strong id="countCritical">0</strong>
                 </li>
                 <li class="triage-item">
-                    <div class="triage-label"><span class="dot" style="background: var(--chart-blue);"></span> Other Cases</div>
+                    <div class="triage-label"><span class="dot" style="background: var(--chart-blue);"></span> Others</div>
                     <strong id="countStable">0</strong>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div class="chart-box">
-        <h3>Patient Flow Distribution</h3>
-        <div class="viz-container" style="height: 200px;">
+    <div class="chart-box" style="margin-top: 20px;">
+        <h3>Flow Distribution</h3>
+        <div class="viz-container" style="height: 180px;">
             <canvas id="flowChart"></canvas>
         </div>
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2026 General Hospital Health Informatics. Data reflects real-time LocalStorage state.</p>
+    <p>&copy; 2026 General Hospital Health Informatics</p>
 </footer>
 
 <script>
@@ -168,7 +175,6 @@
 
     function updateAnalytics() {
         const patients = JSON.parse(localStorage.getItem('patients')) || [];
-        
         const total = patients.length;
         const active = patients.filter(p => !p.isDischarged).length;
         const critical = patients.filter(p => !p.isDischarged && p.level === 'CRITICAL').length;
@@ -190,37 +196,17 @@
             document.getElementById('valEmergency').style.color = "var(--pgh-dark-green)";
         }
 
-        renderTriageChart(critical, stable);
-        renderInfluxChart(active, total);
-        renderFlowChart(active, total - active);
+        renderCharts(critical, stable, active, total);
     }
 
-    function renderTriageChart(critical, stable) {
-        const ctx = document.getElementById('triageChart').getContext('2d');
-        if (triageChart) triageChart.destroy();
-        triageChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Critical', 'Stable/Others'],
-                datasets: [{
-                    data: [critical, stable],
-                    backgroundColor: ['#e74c3c', '#3498db'],
-                    borderWidth: 0
-                }]
-            },
-            options: { cutout: '70%', plugins: { legend: { display: false } } }
-        });
-    }
-
-    function renderInfluxChart(active, total) {
-        const ctx = document.getElementById('influxChart').getContext('2d');
+    function renderCharts(critical, stable, active, total) {
+        const influxCtx = document.getElementById('influxChart').getContext('2d');
         if (influxChart) influxChart.destroy();
-        influxChart = new Chart(ctx, {
+        influxChart = new Chart(influxCtx, {
             type: 'line',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
                 datasets: [{
-                    label: 'Patient Volume',
                     data: [total-2, total-5, total-1, total, total+2, total+1, active],
                     borderColor: '#04471C',
                     tension: 0.4,
@@ -230,17 +216,30 @@
             },
             options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
-    }
 
-    function renderFlowChart(active, discharged) {
-        const ctx = document.getElementById('flowChart').getContext('2d');
+        const triageCtx = document.getElementById('triageChart').getContext('2d');
+        if (triageChart) triageChart.destroy();
+        triageChart = new Chart(triageCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'Stable'],
+                datasets: [{
+                    data: [critical, stable],
+                    backgroundColor: ['#e74c3c', '#3498db'],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '75%', maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        const flowCtx = document.getElementById('flowChart').getContext('2d');
         if (flowChart) flowChart.destroy();
-        flowChart = new Chart(ctx, {
+        flowChart = new Chart(flowCtx, {
             type: 'bar',
             data: {
-                labels: ['Current Active', 'Total Discharged'],
+                labels: ['Active', 'Disch.'],
                 datasets: [{
-                    data: [active, discharged],
+                    data: [active, total - active],
                     backgroundColor: ['#0D2818', '#2ecc71']
                 }]
             },
@@ -252,6 +251,5 @@
     window.addEventListener('storage', updateAnalytics);
     setInterval(updateAnalytics, 5000);
 </script>
-
 </body>
 </html>
