@@ -26,8 +26,11 @@
 
         /* --- Header --- */
         header {
-            background-color: var(--white);
-            padding: 10px 5%;
+            /* Added background image with green hue overlay */
+            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
+            background-size: cover;
+            background-position: center;
+            padding: 20px 5%;
             display: flex;
             align-items: center;
             gap: 15px; 
@@ -35,8 +38,19 @@
         }
 
         .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1.4rem; color: var(--pgh-dark-green); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: #666; font-size: 0.8rem; }
+        
+        /* Updated header text colors for readability against the background */
+        .brand-text h2 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            color: var(--white); 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+        }
+        .brand-text small { 
+            color: rgba(255, 255, 255, 0.8); 
+            font-size: 0.8rem; 
+        }
 
         /* --- Navigation --- */
         nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
@@ -323,13 +337,13 @@
         
         const appointmentData = {
             name: document.getElementById('patientName').value,
-            age: document.getElementById('patientAge').value, // Added age
-            gender: document.getElementById('patientGender').value, // Added gender
-            contact: document.getElementById('patientContact').value, // Added contact
+            age: document.getElementById('patientAge').value, 
+            gender: document.getElementById('patientGender').value, 
+            contact: document.getElementById('patientContact').value, 
             doctor: document.getElementById('docSelect').value,
             date: document.getElementById('appDate').value,
             time: document.getElementById('appTime').value,
-            symptoms: document.getElementById('appSymptoms').value, // Added symptoms
+            symptoms: document.getElementById('appSymptoms').value, 
             status: "Scheduled",
             timestamp: new Date().toLocaleString()
         };
