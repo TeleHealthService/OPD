@@ -1,248 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ER Dashboard | General Hospital</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --pgh-black: #020202;
-            --pgh-dark-green: #0D2818;
-            --pgh-emerald: #04471C;
-            --white: #ffffff;
-            --light-gray: #f4f7f6;
-            --urgent-red: #e74c3c;
-            --info-blue: #3498db;
-            --success-green: #27ae60;
-            --warning-orange: #f39c12;
-            --btn-blue: #2563eb;
-        }
-* { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Unit Monitoring | General Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --urgent-red: #e74c3c;
+            --info-blue: #3498db;
+            --success-green: #27ae60;
+            --warning-orange: #f39c12;
+            --btn-blue: #2563eb;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); }
 
         /* --- Header & Nav --- */
-        header { 
-            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover;
-            background-position: center;
-            padding: 15px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            border-bottom: 4px solid var(--pgh-emerald); 
-        }
-        
-        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
+        header { background-color: var(--white); padding: 10px 5%; display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald); }
+        .hospital-logo { width: 50px; height: 50px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1.2rem; color: var(--pgh-dark-green); text-transform: uppercase; }
 
-        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
-        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
-        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
-        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
+        nav { background: var(--pgh-dark-green); padding: 12px 5%; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 12px; }
+        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; }
+        .active-nav { background: var(--pgh-emerald); }
 
-        /* --- Dashboard Layout --- */
-        .dashboard-container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
-        .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
-        .header-title h1 { margin: 0; font-size: 1.8rem; }
-        .header-title p { margin: 5px 0 0; color: #666; font-size: 0.9rem; }
+        .nav-filters { display: flex; gap: 8px; }
+        .filter-chip { padding: 6px 15px; border-radius: 20px; font-size: 0.7rem; color: white; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .filter-chip.active { background: white; color: var(--pgh-dark-green); border-color: white; }
 
-        .action-bar { display: flex; gap: 12px; }
-        .btn-action { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; border: none; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn-call-code { background-color: var(--urgent-red); }
-        .btn-new-patient { background-color: var(--btn-blue); }
+        /* --- Dashboard Layout --- */
+        .dashboard-container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+        .header-title h1 { margin: 0; font-size: 1.8rem; }
+        .header-title p { margin: 5px 0 0; color: #666; font-size: 0.9rem; }
 
-        .urgent-notif { background: #fceae8; border-left: 5px solid var(--urgent-red); padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; color: var(--urgent-red); }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; }
-        .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--pgh-dark-green); }
+        .action-bar { display: flex; gap: 12px; }
+        .btn-action { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; border: none; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-call-code { background-color: var(--urgent-red); }
+        .btn-new-patient { background-color: var(--btn-blue); }
 
-        .main-dash-content { display: grid; grid-template-columns: 2.5fr 1fr; gap: 25px; }
-        .data-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .urgent-notif { background: #fceae8; border-left: 5px solid var(--urgent-red); padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; color: var(--urgent-red); }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; }
+        .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--pgh-dark-green); }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: #777; padding: 12px; border-bottom: 2px solid #eee; }
-        td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; cursor: pointer; }
-        tr:hover { background: #f0f7f3; }
+        .main-dash-content { display: grid; grid-template-columns: 2.5fr 1fr; gap: 25px; }
+        .data-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        .badge { padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.7rem; color: white; border: none; text-transform: uppercase; }
-        .bg-critical { background: var(--urgent-red); }
-        .bg-waiting { background: var(--warning-orange); }
-        .bg-treatment { background: var(--info-blue); }
-        .bg-discharge { background: var(--success-green); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: #777; padding: 12px; border-bottom: 2px solid #eee; }
+        td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; cursor: pointer; }
+        tr:hover { background: #f0f7f3; }
 
-        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .bed-unit { padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid var(--pgh-emerald); color: var(--pgh-emerald); background: #eef7f2; }
-        .bed-unit.occupied { background: #eee; border-color: #ccc; color: #888; }
-    </style>
+        .badge { padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.7rem; color: white; border: none; text-transform: uppercase; }
+        .bg-critical { background: var(--urgent-red); }
+        .bg-waiting { background: var(--warning-orange); }
+        .bg-treatment { background: var(--info-blue); }
+        .bg-discharge { background: var(--success-green); }
+
+        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .bed-unit { padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid var(--pgh-emerald); color: var(--pgh-emerald); background: #eef7f2; }
+        .bed-unit.occupied { background: #eee; border-color: #ccc; color: #888; }
+    </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Telehealth Patient Portal</small>
-    </div>
+    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Telehealth Operations Center</small>
+    </div>
 </header>
 
 <nav>
-    <ul>
-        <li><a href="admin_dashboard.html" class="active-nav">ER Dashboard</a></li>
-        <li><a href="patient_record.html">Patient Records</a></li>
-        <li><a href="admin_analytics.html">ER Analytics</a></li>
-    </ul>
-    <div class="nav-filters" id="statusFilters">
-        <div class="filter-chip active" onclick="filterByStatus('ALL')">All</div>
-        <div class="filter-chip" onclick="filterByStatus('WAITING')">Waiting</div>
-        <div class="filter-chip" onclick="filterByStatus('IN TREATMENT')">In Treatment</div>
-        <div class="filter-chip" onclick="filterByStatus('READY FOR DISCHARGE')">Discharge</div>
-    </div>
+    <ul>
+        <li><a href="admin_dashboard.html" class="active-nav">Main Dashboard</a></li>
+        <li><a href="patient_record.html">Registry Records</a></li>
+        <li><a href="admin_analytics.html">Unit Analytics</a></li>
+    </ul>
+    <div class="nav-filters" id="statusFilters">
+        <div class="filter-chip active" onclick="filterByStatus('ALL')">Total View</div>
+        <div class="filter-chip" onclick="filterByStatus('WAITING')">Waitlist</div>
+        <div class="filter-chip" onclick="filterByStatus('IN TREATMENT')">Clinical Care</div>
+        <div class="filter-chip" onclick="filterByStatus('READY FOR DISCHARGE')">Discharged</div>
+    </div>
 </nav>
 
 <div class="dashboard-container">
-    <div class="dash-header">
-        <div class="header-title">
-            <h1>ER Dashboard</h1>
-            <p id="currentDate"></p>
-        </div>
-        <div class="action-bar">
-            <button class="btn-action btn-call-code" onclick="alert('Emergency Code Initiated!')"><i class="fas fa-triangle-exclamation"></i> Call Code</button>
-            <a href="admin_triage.html" class="btn-action btn-new-patient"><i class="fas fa-user-plus"></i> New Patient</a>
-        </div>
-    </div>
+    <div class="dash-header">
+        <div class="header-title">
+            <h1>ER Operational Status</h1>
+            <p id="currentDate"></p>
+        </div>
+        <div class="action-bar">
+            <button class="btn-action btn-call-code" onclick="alert('Emergency Code Initiated!')"><i class="fas fa-triangle-exclamation"></i> Activate Code</button>
+            <a href="admin_triage.html" class="btn-action btn-new-patient"><i class="fas fa-user-plus"></i> Patient Admission</a>
+        </div>
+    </div>
 
-    <div class="urgent-notif" id="criticalAlert">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
-        <div>
-            <div id="criticalCountText">0 Critical Patient(s)</div>
-            <small>Require immediate attention</small>
-        </div>
-    </div>
+    <div class="urgent-notif" id="criticalAlert">
+        <i class="fas fa-exclamation-triangle fa-2x"></i>
+        <div>
+            <div id="criticalCountText">0 High Priority Case(s)</div>
+            <small>Requires immediate clinical response</small>
+        </div>
+    </div>
 
-    <div class="stats-grid">
-        <div class="stat-card"><i class="fas fa-user-plus"></i><div><div class="stat-val" id="statToday">0</div><div class="stat-label">Total Active</div></div></div>
-        <div class="stat-card"><i class="fas fa-clock"></i><div><div class="stat-val" id="statWaiting">0</div><div class="stat-label">Waiting</div></div></div>
-        <div class="stat-card"><i class="fas fa-procedures"></i><div><div class="stat-val" id="statTreatment">0</div><div class="stat-label">In Treatment</div></div></div>
-        <div class="stat-card"><i class="fas fa-check-circle"></i><div><div class="stat-val" id="statDischarge">0</div><div class="stat-label">For Discharge</div></div></div>
-    </div>
+    <div class="stats-grid">
+        <div class="stat-card"><i class="fas fa-user-plus"></i><div><div class="stat-val" id="statToday">0</div><div class="stat-label">Active Census</div></div></div>
+        <div class="stat-card"><i class="fas fa-clock"></i><div><div class="stat-val" id="statWaiting">0</div><div class="stat-label">Pending Triage</div></div></div>
+        <div class="stat-card"><i class="fas fa-procedures"></i><div><div class="stat-val" id="statTreatment">0</div><div class="stat-label">Under Medical Care</div></div></div>
+        <div class="stat-card"><i class="fas fa-check-circle"></i><div><div class="stat-val" id="statDischarge">0</div><div class="stat-label">Cleared for Exit</div></div></div>
+    </div>
 
-    <div class="main-dash-content">
-        <div class="data-panel">
-            <h2>Active Patients (<span id="activeCount">0</span>)</h2>
-            <table>
-                <thead>
-                    <tr><th>Name</th><th>Age/Sex</th><th>Complaint</th><th>Level</th><th>Arrived</th><th>Status</th></tr>
-                </thead>
-                <tbody id="patientTableBody"></tbody>
-            </table>
-        </div>
+    <div class="main-dash-content">
+        <div class="data-panel">
+            <h2>Patient Registry (<span id="activeCount">0</span>)</h2>
+            <table>
+                <thead>
+                    <tr><th>Patient Name</th><th>Age/Sex</th><th>Chief Complaint</th><th>Triage Level</th><th>Admission Time</th><th>Current Status</th></tr>
+                </thead>
+                <tbody id="patientTableBody"></tbody>
+            </table>
+        </div>
 
-        <div class="data-panel">
-            <h2>Bed Status (<span id="occupiedCount">0</span>/12 Occupied)</h2>
-            <div class="bed-grid" id="bedGrid"></div>
-        </div>
-    </div>
+        <div class="data-panel">
+            <h2>ER Bed Allocation (<span id="occupiedCount">0</span>/12 Utilized)</h2>
+            <div class="bed-grid" id="bedGrid"></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    let activeFilter = 'ALL';
+    let activeFilter = 'ALL';
 
-    function renderDashboard(filter = activeFilter) {
-        activeFilter = filter;
-        
-        // FIX: Combine both storage keys to ensure portal appointments show up
-        const manualPatients = JSON.parse(localStorage.getItem('patients')) || [];
-        const portalPatients = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
-        
-        // Normalize portal data to match dashboard format
-        const normalizedPortal = portalPatients.map(p => ({
-            name: p.name,
-            age: p.age || 'N/A',
-            sex: p.gender || 'N/A',
-            complaint: p.symptoms || 'Appointment Request',
-            level: p.level || 'NORMAL',
-            arrived: p.date + ' ' + p.time,
-            status: p.status === 'Scheduled' ? 'WAITING' : p.status,
-            isDischarged: false
-        }));
+    function renderDashboard(filter = activeFilter) {
+        activeFilter = filter;
+        
+        const manualPatients = JSON.parse(localStorage.getItem('patients')) || [];
+        const portalPatients = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
+        
+        const normalizedPortal = portalPatients.map(p => ({
+            name: p.name,
+            age: p.age || 'N/A',
+            sex: p.gender || 'N/A',
+            complaint: p.symptoms || 'Appointment Request',
+            level: p.level || 'NORMAL',
+            arrived: p.date + ' ' + p.time,
+            status: p.status === 'Scheduled' ? 'WAITING' : p.status,
+            isDischarged: false
+        }));
 
-        const patients = [...manualPatients, ...normalizedPortal];
-        
-        const tableBody = document.getElementById('patientTableBody');
-        tableBody.innerHTML = '';
+        const patients = [...manualPatients, ...normalizedPortal];
+        
+        const tableBody = document.getElementById('patientTableBody');
+        tableBody.innerHTML = '';
 
-        let counts = { today: 0, waiting: 0, treatment: 0, discharge: 0, critical: 0 };
+        let counts = { today: 0, waiting: 0, treatment: 0, discharge: 0, critical: 0 };
 
-        patients.forEach((p, index) => {
-            if (p.isDischarged) return;
+        patients.forEach((p, index) => {
+            if (p.isDischarged) return;
 
-            counts.today++;
-            if (p.level === 'CRITICAL') counts.critical++;
-            
-            // Map status for counting
-            const currentStatus = (p.status === 'Scheduled' || p.status === 'WAITING') ? 'WAITING' : p.status;
-            
-            if (currentStatus === 'WAITING') counts.waiting++;
-            if (currentStatus === 'IN TREATMENT') counts.treatment++;
-            if (currentStatus === 'READY FOR DISCHARGE') counts.discharge++;
+            counts.today++;
+            if (p.level === 'CRITICAL') counts.critical++;
+            
+            const currentStatus = (p.status === 'Scheduled' || p.status === 'WAITING') ? 'WAITING' : p.status;
+            
+            if (currentStatus === 'WAITING') counts.waiting++;
+            if (currentStatus === 'IN TREATMENT') counts.treatment++;
+            if (currentStatus === 'READY FOR DISCHARGE') counts.discharge++;
 
-            // Apply filter logic
-            if (filter !== 'ALL' && currentStatus !== filter && p.level !== filter) return;
+            if (filter !== 'ALL' && currentStatus !== filter && p.level !== filter) return;
 
-            let statusClass = 'bg-treatment';
-            if (currentStatus === 'WAITING') statusClass = 'bg-waiting';
-            if (currentStatus === 'READY FOR DISCHARGE') statusClass = 'bg-discharge';
+            let statusClass = 'bg-treatment';
+            if (currentStatus === 'WAITING') statusClass = 'bg-waiting';
+            if (currentStatus === 'READY FOR DISCHARGE') statusClass = 'bg-discharge';
 
-            const row = `
-                <tr onclick="window.location.href='patient_status.html?id=${index}'">
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.age} / ${p.sex}</td>
-                    <td>${p.complaint}</td>
-                    <td><span class="badge ${p.level === 'CRITICAL' ? 'bg-critical' : 'bg-treatment'}">${p.level}</span></td>
-                    <td>${p.arrived || '---'}</td>
-                    <td>
-                        <span class="badge ${statusClass}">
-                            ${currentStatus === 'WAITING' ? 'QUEUED' : currentStatus}
-                        </span>
-                    </td>
-                </tr>
-            `;
-            tableBody.insertAdjacentHTML('beforeend', row);
-        });
+            const row = `
+                <tr onclick="window.location.href='patient_status.html?id=${index}'">
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.age} / ${p.sex}</td>
+                    <td>${p.complaint}</td>
+                    <td><span class="badge ${p.level === 'CRITICAL' ? 'bg-critical' : 'bg-treatment'}">${p.level}</span></td>
+                    <td>${p.arrived || '---'}</td>
+                    <td>
+                        <span class="badge ${statusClass}">
+                            ${currentStatus === 'WAITING' ? 'QUEUED' : currentStatus}
+                        </span>
+                    </td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
 
-        document.getElementById('statToday').innerText = counts.today;
-        document.getElementById('statWaiting').innerText = counts.waiting;
-        document.getElementById('statTreatment').innerText = counts.treatment;
-        document.getElementById('statDischarge').innerText = counts.discharge;
-        document.getElementById('criticalCountText').innerText = `${counts.critical} Critical Patient(s)`;
-        document.getElementById('activeCount').innerText = counts.today;
-        generateBeds(patients);
-    }
+        document.getElementById('statToday').innerText = counts.today;
+        document.getElementById('statWaiting').innerText = counts.waiting;
+        document.getElementById('statTreatment').innerText = counts.treatment;
+        document.getElementById('statDischarge').innerText = counts.discharge;
+        document.getElementById('criticalCountText').innerText = `${counts.critical} High Priority Case(s)`;
+        document.getElementById('activeCount').innerText = counts.today;
+        generateBeds(patients);
+    }
 
-    function generateBeds(patients) {
-        const bedGrid = document.getElementById('bedGrid');
-        const occupied = patients.filter(p => p.bed && !p.isDischarged).map(p => p.bed);
-        bedGrid.innerHTML = '';
-        ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'].forEach(id => {
-            const isOcc = occupied.includes(id);
-            bedGrid.innerHTML += `<div class="bed-unit ${isOcc ? 'occupied' : ''}">${id}</div>`;
-        });
-        document.getElementById('occupiedCount').innerText = occupied.length;
-    }
+    function generateBeds(patients) {
+        const bedGrid = document.getElementById('bedGrid');
+        const occupied = patients.filter(p => p.bed && !p.isDischarged).map(p => p.bed);
+        bedGrid.innerHTML = '';
+        ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'].forEach(id => {
+            const isOcc = occupied.includes(id);
+            bedGrid.innerHTML += `<div class="bed-unit ${isOcc ? 'occupied' : ''}">${id}</div>`;
+        });
+        document.getElementById('occupiedCount').innerText = occupied.length;
+    }
 
-    function filterByStatus(status) {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        if(event) event.target.classList.add('active');
-        renderDashboard(status);
-    }
+    function filterByStatus(status) {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        if(event) event.target.classList.add('active');
+        renderDashboard(status);
+    }
 
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    window.onload = function() { renderDashboard(); };
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    window.onload = function() { renderDashboard(); };
 </script>
 
 </body>
 </html>
-
-
