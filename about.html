@@ -25,7 +25,19 @@
             overflow-x: hidden;
         }
 
-        /* [ START OF UNIVERSAL CSS ] */
+        
+        /* [ START OF UNIVERSAL CSS - MATCHES HOME PAGE ] */
+        
+        h1, h2, h3, h4 { 
+            margin: 0 0 15px; 
+            text-transform: uppercase; 
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        h1 { font-size: 1.6rem; color: var(--pgh-dark-green); text-align: center; }
+        h2 { font-size: 1.2rem; color: var(--pgh-dark-green); border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 8px; margin-top: 25px; }
+        h3 { font-size: 1rem; color: var(--pgh-emerald); }
+
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -39,7 +51,7 @@
 
         .brand-container { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; border: none; padding: 0; font-weight: 700; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; border: none; padding: 0; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
         .header-feedback {
@@ -94,15 +106,17 @@
         nav ul li a.active-nav { background: var(--pgh-emerald); border: 1px solid rgba(255,255,255,0.2); }
 
         @media (min-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.4rem; }
             .brand-text h2 { font-size: 1.2rem; }
             .header-feedback { font-size: 0.75rem; padding: 12px 25px; }
             nav ul { justify-content: flex-start; gap: 12px; }
             nav ul li { flex: 0 1 auto; }
             nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
         }
-        /* [ END OF UNIVERSAL CSS ] */
 
-        .container { padding: 40px 5%; max-width: 1000px; margin: 0 auto; }
+        .container { padding: 25px 3%; max-width: 1200px; margin: 0 auto; }
+
         
         .about-hero { text-align: center; margin-bottom: 40px; }
         .about-hero h1 { color: var(--pgh-dark-green); font-size: 1.8rem; text-transform: uppercase; margin-bottom: 12px; font-weight: 800; }
@@ -263,3 +277,4 @@
 
 </body>
 </html>
+
