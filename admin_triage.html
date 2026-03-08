@@ -23,91 +23,99 @@
             margin: 0;
             background: var(--light-gray);
             color: var(--pgh-black);
+            overflow-x: hidden;
         }
 
         /* --- Header & Nav --- */
-        header {
-            background-color: var(--white);
-            padding: 10px 5%;
-            display: flex;
-            align-items: center;
-            gap: 15px; 
-            border-bottom: 4px solid var(--pgh-emerald);
+        header { 
+            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
+            background-size: cover;
+            background-position: center;
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            border-bottom: 4px solid var(--pgh-emerald); 
         }
-        .logo-placeholder { width: 50px; height: 50px; background: #eee; border-radius: 50%; }
-        .brand-text h2 { margin: 0; font-size: 1.2rem; color: var(--pgh-dark-green); text-transform: uppercase; }
+        
+        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
-        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
-        nav ul li a { color: white; text-decoration: none; padding: 8px 22px; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; }
-        .active-nav { background: var(--pgh-emerald); }
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
+        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
+        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
 
         /* --- Triage Layout --- */
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         
-        .action-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .btn-small { padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .action-bar { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .btn-small { padding: 10px 15px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .btn-back { background: #ddd; color: #333; }
         .btn-code { background: var(--urgent-red); color: white; }
 
         .triage-card { 
             background: white; 
-            padding: 40px; 
+            padding: 25px; 
             border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-            border-top: 8px solid var(--pgh-emerald); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            border-top: 6px solid var(--pgh-emerald); 
         }
         
-        .triage-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin: 0; font-size: 1.6rem; }
-        .triage-header p { color: #666; font-size: 0.9rem; margin: 5px 0 30px; }
+        .triage-header h1 { color: var(--pgh-dark-green); text-transform: uppercase; margin: 0; font-size: 1.4rem; }
+        .triage-header p { color: #666; font-size: 0.8rem; margin: 5px 0 20px; }
 
-        h3 { font-size: 1rem; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 30px; text-transform: uppercase; }
+        h3 { font-size: 0.85rem; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; margin-top: 25px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        label { display: block; margin: 20px 0 8px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.85rem; }
-        select, input, textarea { width: 100%; padding: 12px 15px; border: 1.5px solid #eee; border-radius: 8px; font-size: 1rem; background: #fafafa; outline: none; }
+        label { display: block; margin: 15px 0 6px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.8rem; }
+        select, input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.95rem; background: #fafafa; outline: none; -webkit-appearance: none; }
         select:focus, input:focus, textarea:focus { border-color: var(--pgh-emerald); background: white; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         .btn-submit { 
             width: 100%; 
             background: var(--pgh-emerald); 
             color: white; 
             border: none; 
-            padding: 18px; 
+            padding: 16px; 
             border-radius: 8px; 
             font-weight: 800; 
-            font-size: 1rem; 
-            margin-top: 40px; 
+            font-size: 0.95rem; 
+            margin-top: 30px; 
             cursor: pointer; 
             text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(4, 71, 28, 0.2);
+            box-shadow: 0 4px 12px rgba(4, 71, 28, 0.15);
         }
-        .btn-submit:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
+        .btn-submit:active { transform: scale(0.98); }
+
+        footer { text-align: center; padding: 30px 15px; color: #999; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-<header><img src="logo.png" alt="General Hospital Logo" style="width: 50px; height: 50px; object-fit: contain;">
+<header>
+    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
     <div class="brand-text">
         <h2>General Hospital</h2>
-        <small>Admissions & Triage Department</small>
+        <small>Emergency Admissions</small>
     </div>
 </header>
 
 <nav>
     <ul>
         <li><a href="admin_dashboard.html">ER Dashboard</a></li>
-        <li><a href="patient_record.html">Patient Records</a></li>
-        <li><a href="admin_triage.html" class="active-nav">Waitlist Triage</a></li>
+        <li><a href="patient_records.html">Patient Records</a></li>
+        <li><a href="admin_triage.html" class="active-nav">Admit Patient</a></li>
         <li><a href="admin_analytics.html">ER Analytics</a></li>
     </ul>
 </nav>
 
 <div class="container">
     <div class="action-bar">
-        <a href="admin_dashboard.html" class="btn-small btn-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
-        <button class="btn-small btn-code" onclick="alert('Code Blue Initiated!')"><i class="fas fa-bolt"></i> Emergency Code</button>
+        <a href="admin_dashboard.html" class="btn-small btn-back"><i class="fas fa-arrow-left"></i> Back</a>
+        <button class="btn-small btn-code" onclick="alert('Code Blue Initiated!')"><i class="fas fa-bolt"></i> Code Blue</button>
     </div>
 
     <div class="triage-card">
@@ -117,9 +125,9 @@
         </div>
 
         <form id="triageForm">
-            <h3>1. Personal Information</h3>
+            <h3>1. Personal Details</h3>
             <label>Full Name *</label>
-            <input type="text" id="name" placeholder="Surname, First Name Middle Name" required>
+            <input type="text" id="name" placeholder="Last Name, First Name" required>
 
             <div class="grid-2">
                 <div>
@@ -140,7 +148,7 @@
             <input type="tel" id="contact" placeholder="09XX-XXX-XXXX">
 
             <h3>2. Clinical Assessment</h3>
-            <label>Initial Severity Level (Triage)</label>
+            <label>Severity Level</label>
             <select id="level" required>
                 <option value="STABLE">STABLE (Standard)</option>
                 <option value="URGENT">URGENT (Intermediate)</option>
@@ -148,18 +156,21 @@
             </select>
 
             <label>Chief Complaint *</label>
-            <textarea id="complaint" rows="4" placeholder="Briefly describe the symptoms or reason for admission..." required></textarea>
+            <textarea id="complaint" rows="4" placeholder="Briefly describe symptoms..." required></textarea>
 
-            <button type="submit" class="btn-submit">Register Patient to ER Queue</button>
+            <button type="submit" class="btn-submit">Add to ER Queue</button>
         </form>
     </div>
 </div>
+
+<footer>
+    &copy; 2026 General Hospital Health Informatics.
+</footer>
 
 <script>
     document.getElementById('triageForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. Collect Data
         const newPatient = {
             name: document.getElementById('name').value,
             age: document.getElementById('age').value,
@@ -169,16 +180,15 @@
             complaint: document.getElementById('complaint').value,
             arrived: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: 'WAITING',
-            isDischarged: false
+            isDischarged: false,
+            timestamp: new Date().toISOString()
         };
 
-        // 2. Save to LocalStorage
         let patients = JSON.parse(localStorage.getItem('patients')) || [];
         patients.push(newPatient);
         localStorage.setItem('patients', JSON.stringify(patients));
 
-        // 3. Success Feedback & Redirect
-        alert("Patient " + newPatient.name + " has been added to the queue.");
+        alert("Patient " + newPatient.name + " added successfully.");
         window.location.href = "admin_dashboard.html";
     });
 </script>
