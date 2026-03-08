@@ -32,7 +32,7 @@
             padding: 15px 5%;
             display: flex;
             align-items: center;
-            gap: 15px; 
+            justify-content: space-between; /* Pushes brand left and button right */
             border-bottom: 4px solid var(--pgh-emerald);
         }
 
@@ -40,13 +40,31 @@
         .brand-text h2 { margin: 0; font-size: 1.1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.7rem; }
 
-        /* --- Unified Navigation (No Scroll, Fits Screen) --- */
+        /* --- Feedback Button in Header --- */
+        .header-feedback {
+            text-decoration: none;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .header-feedback:hover { background: var(--pgh-emerald); }
+
+        /* --- Navigation (4 Main Items) --- */
         nav { 
             background: var(--pgh-dark-green); 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            padding: 12px 5%;
+            padding: 10px 5%;
         }
 
         nav ul { 
@@ -54,19 +72,18 @@
             margin: 0; 
             padding: 0; 
             display: flex; 
-            flex-wrap: wrap; /* Key: Wraps items to fit screen */
-            justify-content: center; /* Centers items on mobile */
-            gap: 8px; 
+            justify-content: space-between; /* Spaced evenly on mobile */
+            gap: 5px; 
         }
 
-        nav ul li { margin: 0; }
+        nav ul li { flex: 1; } /* Makes each button take equal width */
 
         nav ul li a { 
             color: white; 
             text-decoration: none; 
-            padding: 6px 14px; 
+            padding: 8px 5px; 
             display: block; 
-            font-size: 0.65rem; /* Slightly smaller for mobile fit */
+            font-size: 0.6rem; 
             text-transform: uppercase; 
             font-weight: 600; 
             border-radius: 50px; 
@@ -75,20 +92,17 @@
             white-space: nowrap;
         }
 
-        nav ul li a:hover { background: rgba(255,255,255,0.15); }
         nav ul li a.active-nav { background: var(--pgh-emerald); }
 
-        /* --- Content --- */
+        /* --- Content Sections --- */
         .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
-        
         .section-title { text-align: center; margin-bottom: 25px; }
         .section-title h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.6rem; margin-bottom: 8px; }
         .section-title p { color: #666; font-size: 0.9rem; line-height: 1.5; }
 
-        /* --- Services Grid --- */
         .services-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Stacks on small mobile */
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-bottom: 30px;
         }
@@ -111,39 +125,33 @@
         .workflow-section h2 { text-align: center; color: var(--pgh-dark-green); margin-bottom: 20px; font-size: 1.3rem; text-transform: uppercase; }
 
         .workflow-steps { display: flex; flex-direction: column; gap: 12px; }
-        
-        .step-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
+        .step-item { display: flex; align-items: center; gap: 15px; background: white; padding: 15px; border-radius: 10px; }
         .step-number {
             background: var(--pgh-emerald);
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 30px; height: 30px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; flex-shrink: 0; font-size: 0.9rem;
         }
-
         .step-text h4 { margin: 0 0 3px; color: var(--pgh-dark-green); font-size: 0.95rem; }
         .step-text p { margin: 0; color: #666; font-size: 0.8rem; }
 
-        /* --- Desktop Adjustments --- */
+        /* --- Footer --- */
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 40px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; }
+
+        /* --- Responsive Tweaks --- */
         @media (min-width: 768px) {
             nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
             nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+            .header-feedback { font-size: 0.8rem; padding: 10px 20px; }
             .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .section-title h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+            .section-title h1 { font-size: 2.2rem; }
         }
 
         @media (min-width: 1024px) {
@@ -161,6 +169,9 @@
             <small>Telehealth Patient Portal</small>
         </div>
     </div>
+    <a href="feedback.html" class="header-feedback">
+        <i class="fas fa-comment-dots"></i> Feedback
+    </a>
 </header>
 
 <nav>
@@ -169,71 +180,51 @@
         <li><a href="about.html">About</a></li>
         <li><a href="services.html" class="active-nav">Services</a></li>
         <li><a href="team.html">Our Doctors</a></li>
-        <li><a href="feedback.html">Feedback</a></li>
     </ul>
 </nav>
 
 <div class="container">
     <div class="section-title">
         <h1>Our Services</h1>
-        <p>Providing seamless, high-quality medical care through our digital outpatient services.</p>
+        <p>Comprehensive digital healthcare tailored for Outpatient Department needs.</p>
     </div>
 
     <div class="services-grid">
-        <div class="service-card">
-            <i class="fas fa-video"></i>
-            <h3>Consultations</h3>
-            <p>Remote medical appointments via secure video call.</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-file-medical-alt"></i>
-            <h3>Results Review</h3>
-            <p>Review and discuss lab results with your doctor online.</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-pills"></i>
-            <h3>E-Prescriptions</h3>
-            <p>Digital prescriptions sent directly to help you get meds faster.</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-heartbeat"></i>
-            <h3>Monitoring</h3>
-            <p>Regular check-ins and vital sign tracking for your care.</p>
-        </div>
+        <div class="service-card"><i class="fas fa-video"></i><h3>Consultations</h3><p>Remote medical appointments via secure video.</p></div>
+        <div class="service-card"><i class="fas fa-file-medical-alt"></i><h3>Results Review</h3><p>Secure online review of your laboratory findings.</p></div>
+        <div class="service-card"><i class="fas fa-pills"></i><h3>E-Prescriptions</h3><p>Digital medication orders sent to your provider.</p></div>
+        <div class="service-card"><i class="fas fa-heartbeat"></i><h3>Monitoring</h3><p>Track your recovery and vitals from home.</p></div>
     </div>
 
     <div class="workflow-section">
         <h2>Process Overview</h2>
         <div class="workflow-steps">
-            <div class="step-item">
-                <div class="step-number">1</div>
-                <div class="step-text">
-                    <h4>Registration</h4>
-                    <p>Enter your patient details securely in our portal.</p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">2</div>
-                <div class="step-text">
-                    <h4>Triage</h4>
-                    <p>Medical review to ensure virtual care is right for you.</p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">3</div>
-                <div class="step-text">
-                    <h4>Consultation</h4>
-                    <p>Speak with your doctor in real-time from anywhere.</p>
-                </div>
-            </div>
+            <div class="step-item"><div class="step-number">1</div><div class="step-text"><h4>Registration</h4><p>Securely submit your info via the portal.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-text"><h4>Triage</h4><p>Case review by our medical staff.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-text"><h4>Consultation</h4><p>Live session with your attending doctor.</p></div></div>
         </div>
     </div>
 </div>
 
 <footer>
-    <div style="text-align: center; color: #666; font-size: 0.8rem; padding: 20px 5%; background: #f4f4f4; border-top: 1px solid #ddd;">
-        <p>&copy; 2026 General Hospital OPD Portal</p>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Services</h4>
+            <a href="#">Consultations & Check-ups</a>
+            <a href="#">E-Prescriptions</a>
+            <a href="#">Urgent Care</a>
+        </div>
+        <div class="footer-col">
+            <h4>Location</h4>
+            <p>Ibabang Dupay Lucena City, Philippines</p>
+            <p>Direct: WJVJ+M9 Lucena City, Quezon</p>
+        </div>
+        <div class="footer-col">
+            <h4>Patient Relations</h4>
+            <p>customer.care@opd.com.ph</p>
+        </div>
     </div>
+    <p style="text-align: center; margin-top: 30px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal</p>
 </footer>
 
 </body>
