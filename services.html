@@ -21,148 +21,145 @@
             margin: 0;
             background: var(--white);
             color: var(--pgh-black);
+            overflow-x: hidden;
         }
 
-        /* --- Updated Header with bg1.png branding --- */
+        /* --- Header --- */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
             background-position: center;
-            padding: 20px 5%;
+            padding: 15px 5%;
             display: flex;
             align-items: center;
             gap: 15px; 
             border-bottom: 4px solid var(--pgh-emerald);
         }
 
-        .brand-text h2 { 
-            margin: 0; 
-            font-size: 1.4rem; 
-            color: var(--white); 
-            text-transform: uppercase; 
-            line-height: 1.1; 
-        }
-        .brand-text small { 
-            color: rgba(255, 255, 255, 0.8); 
-            font-size: 0.8rem; 
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .brand-text h2 { margin: 0; font-size: 1.1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.7rem; }
+
+        /* --- Unified Navigation (No Scroll, Fits Screen) --- */
+        nav { 
+            background: var(--pgh-dark-green); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            padding: 12px 5%;
         }
 
-        /* --- Navigation (Oblong Style) --- */
-        nav { background: var(--pgh-dark-green); padding: 12px 0; position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 0 5%; display: flex; gap: 12px; }
+        nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-wrap: wrap; /* Key: Wraps items to fit screen */
+            justify-content: center; /* Centers items on mobile */
+            gap: 8px; 
+        }
+
+        nav ul li { margin: 0; }
+
         nav ul li a { 
             color: white; 
             text-decoration: none; 
-            padding: 8px 22px; 
+            padding: 6px 14px; 
             display: block; 
-            font-size: 0.75rem; 
+            font-size: 0.65rem; /* Slightly smaller for mobile fit */
             text-transform: uppercase; 
             font-weight: 600; 
             border-radius: 50px; 
+            background: rgba(255,255,255,0.08);
+            text-align: center;
+            white-space: nowrap;
         }
-        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+
+        nav ul li a:hover { background: rgba(255,255,255,0.15); }
         nav ul li a.active-nav { background: var(--pgh-emerald); }
 
-        /* --- Services Content --- */
-        .container { padding: 60px 5%; max-width: 1200px; margin: 0 auto; }
+        /* --- Content --- */
+        .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
         
-        .section-title { text-align: center; margin-bottom: 50px; }
-        .section-title h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px; }
-        .section-title p { color: #666; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        .section-title { text-align: center; margin-bottom: 25px; }
+        .section-title h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.6rem; margin-bottom: 8px; }
+        .section-title p { color: #666; font-size: 0.9rem; line-height: 1.5; }
 
         /* --- Services Grid --- */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
+            grid-template-columns: 1fr; /* Stacks on small mobile */
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .service-card {
             background: #fff;
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             text-align: center;
-            border-bottom: 5px solid transparent;
+            border-bottom: 4px solid var(--pgh-emerald);
         }
 
-        .service-card:hover {
-            transform: translateY(-10px);
-            border-bottom-color: var(--pgh-emerald);
-        }
+        .service-card i { font-size: 2.2rem; color: var(--pgh-emerald); margin-bottom: 12px; }
+        .service-card h3 { color: var(--pgh-dark-green); margin-bottom: 8px; font-size: 1.1rem; }
+        .service-card p { color: #666; font-size: 0.85rem; margin: 0; }
 
-        .service-card i {
-            font-size: 3rem;
-            color: var(--pgh-emerald);
-            margin-bottom: 20px;
-        }
+        /* --- Workflow --- */
+        .workflow-section { background: var(--light-gray); padding: 30px 5%; border-radius: 15px; }
+        .workflow-section h2 { text-align: center; color: var(--pgh-dark-green); margin-bottom: 20px; font-size: 1.3rem; text-transform: uppercase; }
 
-        .service-card h3 { color: var(--pgh-dark-green); margin-bottom: 15px; font-size: 1.3rem; }
-        .service-card p { color: #666; font-size: 0.95rem; line-height: 1.6; }
-
-        /* --- Workflow Section --- */
-        .workflow-section {
-            background: var(--light-gray);
-            padding: 60px 5%;
-            border-radius: 20px;
-            margin-top: 40px;
-        }
-
-        .workflow-section h2 { text-align: center; color: var(--pgh-dark-green); margin-bottom: 40px; text-transform: uppercase; }
-
-        .workflow-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
+        .workflow-steps { display: flex; flex-direction: column; gap: 12px; }
+        
         .step-item {
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: 15px;
             background: white;
-            padding: 20px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            padding: 15px;
+            border-radius: 10px;
         }
 
         .step-number {
             background: var(--pgh-emerald);
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             flex-shrink: 0;
+            font-size: 0.9rem;
         }
 
-        .step-text h4 { margin: 0 0 5px; color: var(--pgh-dark-green); }
-        .step-text p { margin: 0; color: #666; font-size: 0.9rem; }
+        .step-text h4 { margin: 0 0 3px; color: var(--pgh-dark-green); font-size: 0.95rem; }
+        .step-text p { margin: 0; color: #666; font-size: 0.8rem; }
 
-        /* --- Footer (Matched) --- */
-        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 60px; border-top: 1px solid #ddd; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+        /* --- Desktop Adjustments --- */
+        @media (min-width: 768px) {
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li a { font-size: 0.75rem; padding: 8px 22px; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .section-title h1 { font-size: 2rem; }
+        }
 
-        @media (max-width: 768px) {
-            .step-item { flex-direction: column; text-align: center; padding: 30px; }
+        @media (min-width: 1024px) {
+            .services-grid { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="General Hospital Logo" style="width: 60px; height: 60px; object-fit: contain;">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Telehealth Patient Portal</small>
+    <div class="brand-container">
+        <img src="logo.png" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Telehealth Patient Portal</small>
+        </div>
     </div>
 </header>
 
@@ -178,69 +175,55 @@
 
 <div class="container">
     <div class="section-title">
-        <h1>Our Telehealth Services</h1>
-        <p>Accessible, safe, and cost-effective healthcare for Outpatient Department (OPD) patients, ensuring continuity of care from the safety of your home.</p>
+        <h1>Our Services</h1>
+        <p>Providing seamless, high-quality medical care through our digital outpatient services.</p>
     </div>
 
     <div class="services-grid">
         <div class="service-card">
             <i class="fas fa-video"></i>
-            <h3>Consultations & Follow-ups</h3>
-            <p>Schedule remote appointments for initial consultations and regular follow-up checkups with our specialists.</p>
+            <h3>Consultations</h3>
+            <p>Remote medical appointments via secure video call.</p>
         </div>
-
         <div class="service-card">
             <i class="fas fa-file-medical-alt"></i>
             <h3>Results Review</h3>
-            <p>Seamless review of laboratory and diagnostic results with your healthcare provider through our secure platform.</p>
+            <p>Review and discuss lab results with your doctor online.</p>
         </div>
-
         <div class="service-card">
             <i class="fas fa-pills"></i>
             <h3>E-Prescriptions</h3>
-            <p>Receive digital medication prescriptions sent directly to our pharmacy for faster processing and remote counseling.</p>
+            <p>Digital prescriptions sent directly to help you get meds faster.</p>
         </div>
-
         <div class="service-card">
             <i class="fas fa-heartbeat"></i>
-            <h3>Remote Monitoring</h3>
-            <p>Ongoing monitoring of symptoms and vital signs checklists to ensure your path to recovery is on track.</p>
+            <h3>Monitoring</h3>
+            <p>Regular check-ins and vital sign tracking for your care.</p>
         </div>
     </div>
 
     <div class="workflow-section">
-        <h2>How Telehealth Works</h2>
-        
+        <h2>Process Overview</h2>
         <div class="workflow-steps">
             <div class="step-item">
                 <div class="step-number">1</div>
                 <div class="step-text">
-                    <h4>Patient Registration</h4>
-                    <p>Register on our portal with your basic information and preferred consultation type (Zoom, Messenger, or Face-to-Face).</p>
+                    <h4>Registration</h4>
+                    <p>Enter your patient details securely in our portal.</p>
                 </div>
             </div>
-
             <div class="step-item">
                 <div class="step-number">2</div>
                 <div class="step-text">
-                    <h4>Nurse Triage</h4>
-                    <p>A nurse reviews your symptoms and history to determine if your case is suitable for a virtual or in-person visit.</p>
+                    <h4>Triage</h4>
+                    <p>Medical review to ensure virtual care is right for you.</p>
                 </div>
             </div>
-
             <div class="step-item">
                 <div class="step-number">3</div>
                 <div class="step-text">
-                    <h4>Virtual Consultation</h4>
-                    <p>Connect with your doctor via secure audio-video for a clinical evaluation and personalized care plan.</p>
-                </div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-number">4</div>
-                <div class="step-text">
-                    <h4>Clinical Decision</h4>
-                    <p>Your doctor provides a diagnosis, treatment plan, and real-time documentation in your Electronic Medical Record (EMR).</p>
+                    <h4>Consultation</h4>
+                    <p>Speak with your doctor in real-time from anywhere.</p>
                 </div>
             </div>
         </div>
@@ -248,24 +231,9 @@
 </div>
 
 <footer>
-    <div class="footer-grid">
-        <div class="footer-col">
-            <h4>Services</h4>
-            <a href="#">Consultations & Check-ups</a>
-            <a href="#">E-Prescriptions</a>
-            <a href="#">Urgent Care</a>
-        </div>
-        <div class="footer-col">
-            <h4>Location</h4>
-            <p>Ibabang Dupay Lucena, City, Philippines</p>
-            <p>Direct: WJVJ+M9 Lucena City, Quezon</p>
-        </div>
-        <div class="footer-col">
-            <h4>Patient Relations</h4>
-            <p>customer.care@opd.com.ph</p>
-        </div>
+    <div style="text-align: center; color: #666; font-size: 0.8rem; padding: 20px 5%; background: #f4f4f4; border-top: 1px solid #ddd;">
+        <p>&copy; 2026 General Hospital OPD Portal</p>
     </div>
-    <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">&copy; 2026 General Hospital OPD Portal</p>
 </footer>
 
 </body>
