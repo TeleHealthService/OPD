@@ -243,14 +243,12 @@
                 <label>Medical Department</label>
                 <select class="required-field" id="deptSelect" onchange="filterDoctors()">
                     <option value="">-- Select Specialty --</option>
-                    <option value="Internal Medicine">Internal Medicine</option>
-                    <option value="Pediatrics">Pediatrics</option>
-                </select>
+                    </select>
 
                 <label>Available Doctors</label>
                 <select class="required-field" id="docSelect">
                     <option value="">-- Choose a Physician --</option>
-                </select>
+                    </select>
                 <button type="button" class="btn-next" onclick="validateAndGo(3)">Next: Schedule</button>
                 <button type="button" class="btn-back" onclick="goToStep(1)">Back</button>
             </div>
@@ -303,6 +301,38 @@
 </footer>
 
 <script>
+    // CONNECTION LOGIC: Load the list from Team Page
+    const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
+
+    // Automatically fill the Departments dropdown based on our doctor list
+    function initDropdowns() {
+        const deptSelect = document.getElementById('deptSelect');
+        const uniqueSpecs = [...new Set(doctors.map(d => d.spec))];
+        
+        uniqueSpecs.forEach(spec => {
+            const opt = document.createElement('option');
+            opt.value = spec;
+            opt.textContent = spec;
+            deptSelect.appendChild(opt);
+        });
+    }
+
+    function filterDoctors() {
+        const dept = document.getElementById('deptSelect').value;
+        const docSelect = document.getElementById('docSelect');
+        docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
+
+        // Filter from the central memory list
+        const filtered = doctors.filter(d => d.spec === dept);
+        
+        filtered.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.name;
+            opt.textContent = d.name;
+            docSelect.appendChild(opt);
+        });
+    }
+
     function startAppointment() {
         document.getElementById('hero').style.display = 'none';
         document.getElementById('formContainer').style.display = 'block';
@@ -327,31 +357,14 @@
         window.scrollTo(0, 0);
     }
 
-    function filterDoctors() {
-        const dept = document.getElementById('deptSelect').value;
-        const docSelect = document.getElementById('docSelect');
-        docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
-        
-        const docs = {
-            "Internal Medicine": ["Dr. Jose Rizal", "Dr. Maria Clara"],
-            "Pediatrics": ["Dr. Antonio Luna", "Dr. Melchora Aquino"]
-        };
-
-        if(docs[dept]) {
-            docs[dept].forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                docSelect.appendChild(opt);
-            });
-        }
-    }
-
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
         alert("Success! Your request has been logged.");
         location.reload();
     };
+
+    // Run when page loads
+    window.onload = initDropdowns;
 </script>
 </body>
 </html>
