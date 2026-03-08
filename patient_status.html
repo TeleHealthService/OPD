@@ -14,53 +14,81 @@
             --urgent-red: #e74c3c;
             --info-blue: #3498db;
             --success-green: #27ae60;
+            --text-main: #2c3e50;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light-gray); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 30px auto; position: relative; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light-gray); margin: 0; padding: 0; color: var(--text-main); }
         
-        .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .back-link { text-decoration: none; color: var(--pgh-dark-green); font-weight: 600; display: flex; align-items: center; gap: 8px; }
-
-        .profile-card { background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); overflow: hidden; }
+        /* Layout */
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         
-        /* Header with Logo */
-        .profile-header { background: var(--pgh-dark-green); color: white; padding: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .hospital-logo { width: 60px; height: 60px; object-fit: contain; }
-        .profile-header h1 { margin: 0; font-size: 2rem; }
+        .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .back-link { text-decoration: none; color: var(--pgh-dark-green); font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .back-link:hover { color: var(--pgh-emerald); transform: translateX(-3px); }
 
-        .status-badges { display: flex; gap: 10px; margin-top: 10px; }
-        .badge { padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; color: white; }
+        /* Profile Card Styling */
+        .profile-card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        
+        .profile-header { 
+            background: linear-gradient(135deg, var(--pgh-dark-green) 0%, var(--pgh-emerald) 100%); 
+            color: white; padding: 40px; display: flex; justify-content: space-between; align-items: center; 
+        }
+        .header-left { display: flex; align-items: center; gap: 25px; }
+        .hospital-logo { width: 70px; height: 70px; object-fit: contain; filter: brightness(0) invert(1); }
+        .profile-header h1 { margin: 0; font-size: 2.2rem; letter-spacing: -0.5px; }
+
+        .status-badges { display: flex; gap: 10px; margin-top: 15px; }
+        .badge { padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; color: white; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .bg-critical { background: var(--urgent-red); }
         .bg-stable { background: var(--success-green); }
         .bg-status { background: var(--info-blue); }
+        .bg-bed { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
 
-        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px; }
-        section h3 { border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; color: var(--pgh-dark-green); font-size: 1rem; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        /* Grid Content */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; padding: 45px; }
+        section h3 { border-bottom: 2px solid #eee; padding-bottom: 12px; color: var(--pgh-dark-green); font-size: 1.1rem; margin-top: 0; display: flex; align-items: center; gap: 12px; }
 
-        .info-row { margin-bottom: 18px; }
-        .info-row label { display: block; font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 3px; }
-        .info-row p { margin: 0; font-size: 1.05rem; font-weight: 500; }
+        .info-row { margin-bottom: 22px; }
+        .info-row label { display: block; font-size: 0.75rem; color: #95a5a6; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
+        .info-row p { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
 
-        .vitals-card { background: #f8faf9; border: 1px solid #e2e8e5; border-radius: 10px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .vital-item span { font-size: 1.2rem; font-weight: 700; color: var(--pgh-emerald); display: block; }
+        /* Vital Signs Display */
+        .vitals-card { 
+            background: #f9fdfb; border: 1px dashed #ceddd4; border-radius: 14px; padding: 25px; 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
+        }
+        .vital-item { text-align: center; padding: 10px; }
+        .vital-item label { color: #7f8c8d; font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 5px; }
+        .vital-item span { font-size: 1.5rem; font-weight: 800; color: var(--pgh-emerald); display: block; }
 
-        .action-bar { background: #f1f3f2; padding: 20px 40px; display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid #ddd; }
-        .btn { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.3s; }
+        /* Action Buttons */
+        .action-bar { background: #f8f9fa; padding: 25px 45px; display: flex; flex-wrap: wrap; gap: 15px; border-top: 1px solid #edf2f4; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; transition: all 0.2s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
         .btn-bed { background: var(--pgh-emerald); color: white; }
-        .btn-lvl { background: #333; color: white; }
+        .btn-lvl { background: #34495e; color: white; }
         .btn-status { background: var(--info-blue); color: white; }
+        .btn-print { background: white; border: 1.5px solid #dcdde1; color: #2f3640; }
 
         /* Choice Overlay */
         #choiceOverlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; 
+            background: rgba(13, 40, 24, 0.85); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; 
         }
-        .choice-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
-        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .opt-btn { padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; background: #fff; transition: 0.2s; }
-        .opt-btn:hover { background: var(--pgh-dark-green); color: white; }
+        .choice-card { background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .choice-card h3 { color: var(--pgh-dark-green); margin-bottom: 25px; }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .opt-btn { padding: 16px; border: 1.5px solid #eee; border-radius: 10px; cursor: pointer; font-weight: 700; background: #fff; transition: 0.2s; font-size: 0.9rem; }
+        .opt-btn:hover { border-color: var(--pgh-emerald); background: #f0f7f3; color: var(--pgh-emerald); }
+        
+        .close-btn { margin-top: 25px; border: none; background: #f1f2f6; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; color: #718093; width: 100%; }
+
+        @media print {
+            .nav-header, .action-bar, #choiceOverlay { display: none; }
+            body { padding: 0; background: white; }
+            .profile-card { box-shadow: none; border: 1px solid #ccc; }
+        }
     </style>
 </head>
 <body>
@@ -71,8 +99,8 @@
 
 <div class="container">
     <div class="nav-header">
-        <a href="admin_dashboard.html" class="back-link"><i class="fas fa-chevron-left"></i> Back to Dashboard</a>
-        <button onclick="window.print()" class="btn" style="background:white; border:1px solid #ccc;"><i class="fas fa-print"></i> Print Chart</button>
+        <a href="admin_dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> RETURN TO DASHBOARD</a>
+        <button onclick="window.print()" class="btn btn-print"><i class="fas fa-print"></i> EXPORT MEDICAL CHART</button>
     </div>
 
     <div class="profile-card" id="profileOutput"></div>
@@ -89,7 +117,7 @@
         const p = patients[pIndex];
 
         if (!p) {
-            document.getElementById('profileOutput').innerHTML = `<div style="padding:50px; text-align:center;"><h3>Patient record not found.</h3></div>`;
+            document.getElementById('profileOutput').innerHTML = `<div style="padding:80px; text-align:center;"><i class="fas fa-folder-open fa-3x" style="color:#ccc; margin-bottom:20px;"></i><h3>Patient record not found in database.</h3></div>`;
             return;
         }
 
@@ -99,42 +127,43 @@
                     <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
                     <div>
                         <h1>${p.name}</h1>
-                        <span style="opacity:0.8; font-size:0.9rem;">EMERGENCY DEPT | CASE #${1000 + parseInt(pIndex)}</span>
+                        <span style="opacity:0.9; font-size:0.85rem; font-weight:600;">EMERGENCY CARE UNIT • CASE REF: #${1000 + parseInt(pIndex)}</span>
                         <div class="status-badges">
                             <span class="badge ${p.level === 'CRITICAL' ? 'bg-critical' : 'bg-stable'}">${p.level}</span>
                             <span class="badge bg-status">${p.status}</span>
-                            <span class="badge" style="background:#444">${p.bed || 'NO BED'}</span>
+                            <span class="badge bg-bed"><i class="fas fa-bed"></i> ${p.bed || 'UNASSIGNED'}</span>
                         </div>
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <label style="font-size: 0.7rem; opacity: 0.8;">ARRIVAL TIMESTAMP</label>
-                    <div style="font-weight: bold; font-size: 1.1rem;">${p.arrived || '--:--'}</div>
+                    <label style="font-size: 0.65rem; font-weight:800; opacity: 0.8; text-transform:uppercase;">Admission Timestamp</label>
+                    <div style="font-weight: 700; font-size: 1.2rem;">${p.arrived || '--:--'}</div>
                 </div>
             </div>
 
             <div class="profile-grid">
                 <section>
-                    <h3><i class="fas fa-id-card"></i> Personal Information</h3>
-                    <div class="info-row"><label>Age / Sex</label><p>${p.age} years / ${p.sex}</p></div>
-                    <div class="info-row"><label>Assigned Unit</label><p><strong>Bed ${p.bed || 'UNASSIGNED'}</strong></p></div>
-                    <div class="info-row"><label>Chief Concern</label><p>${p.complaint || 'No recorded concern'}</p></div>
+                    <h3><i class="fas fa-user-md"></i> Patient Demographics</h3>
+                    <div class="info-row"><label>Age / Sex</label><p>${p.age} Years • ${p.sex}</p></div>
+                    <div class="info-row"><label>Assigned Unit</label><p>ER Bed: <strong>${p.bed || 'Pending Assignment'}</strong></p></div>
+                    <div class="info-row"><label>Clinical Presentation</label><p>${p.complaint || 'No documented chief complaint'}</p></div>
                 </section>
                 <section>
-                    <h3><i class="fas fa-heartbeat"></i> Clinical Status</h3>
+                    <h3><i class="fas fa-heartbeat"></i> Latest Vital Signs</h3>
                     <div class="vitals-card">
-                        <div class="vital-item"><label>BP</label><span>${p.vitals?.bp || '120/80'}</span></div>
-                        <div class="vital-item"><label>HR</label><span>${p.vitals?.hr || '72'}</span></div>
-                        <div class="vital-item"><label>Temp</label><span>${p.vitals?.temp || '36.5'}</span></div>
-                        <div class="vital-item"><label>O2</label><span>${p.vitals?.o2 || '98'}%</span></div>
+                        <div class="vital-item"><label>BLOOD PRESSURE</label><span>${p.vitals?.bp || '120/80'}</span></div>
+                        <div class="vital-item"><label>HEART RATE</label><span>${p.vitals?.hr || '72'} <small style="font-size:0.6rem">BPM</small></span></div>
+                        <div class="vital-item"><label>TEMPERATURE</label><span>${p.vitals?.temp || '36.5'}°C</span></div>
+                        <div class="vital-item"><label>SPO2</label><span>${p.vitals?.o2 || '98'}%</span></div>
                     </div>
                 </section>
             </div>
 
             <div class="action-bar">
-                <button class="btn btn-bed" onclick="openMenu('bed')"><i class="fas fa-bed"></i> Bed Unit</button>
-                <button class="btn btn-lvl" onclick="openMenu('level')"><i class="fas fa-triage"></i> Triage Level</button>
-                <button class="btn btn-status" onclick="openMenu('status')"><i class="fas fa-sync-alt"></i> Patient Status</button>
+                <button class="btn btn-bed" onclick="openMenu('bed')"><i class="fas fa-bed"></i> ALLOCATE BED</button>
+                <button class="btn btn-lvl" onclick="openMenu('level')"><i class="fas fa-stethoscope"></i> ADJUST TRIAGE</button>
+                <button class="btn btn-status" onclick="openMenu('status')"><i class="fas fa-user-edit"></i> UPDATE STATUS</button>
+                <a href="patient_record.html" class="btn" style="background:#eee; text-decoration:none; color:#555;"><i class="fas fa-file-medical"></i> CLINICAL HISTORY</a>
             </div>
         `;
     }
@@ -143,19 +172,19 @@
         let html = '';
         if (type === 'bed') {
             const beds = ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'];
-            html = `<h3>Assign Bed</h3><div class="choice-grid" style="grid-template-columns: repeat(3, 1fr);">`;
+            html = `<h3><i class="fas fa-bed"></i> Assign ER Bed</h3><div class="choice-grid" style="grid-template-columns: repeat(3, 1fr);">`;
             beds.forEach(b => html += `<div class="opt-btn" onclick="saveChange('bed', '${b}')">${b}</div>`);
         } else if (type === 'level') {
-            html = `<h3>Set Triage</h3><div class="choice-grid">
+            html = `<h3><i class="fas fa-stethoscope"></i> Set Triage Priority</h3><div class="choice-grid">
                 <div class="opt-btn" onclick="saveChange('level', 'CRITICAL')">CRITICAL</div>
                 <div class="opt-btn" onclick="saveChange('level', 'STABLE')">STABLE</div>`;
         } else {
-            html = `<h3>Update Status</h3><div class="choice-grid">
+            html = `<h3><i class="fas fa-sync-alt"></i> Update Patient Status</h3><div class="choice-grid">
                 <div class="opt-btn" onclick="saveChange('status', 'WAITING')">WAITING</div>
                 <div class="opt-btn" onclick="saveChange('status', 'IN TREATMENT')">IN TREATMENT</div>
-                <div class="opt-btn" onclick="saveChange('status', 'DISCHARGED')">DISCHARGED</div>`;
+                <div class="opt-btn" onclick="saveChange('status', 'READY FOR DISCHARGE')">DISCHARGE</div>`;
         }
-        html += `</div><button onclick="closeMenu()" style="margin-top:20px; border:none; background:none; cursor:pointer; color:#888;">Close</button>`;
+        html += `</div><button class="close-btn" onclick="closeMenu()">CANCEL</button>`;
         choiceCard.innerHTML = html;
         overlay.style.display = 'flex';
     }
