@@ -110,96 +110,113 @@
 
     const params = new URLSearchParams(window.location.search);
     const pId = params.get('id');
+    let currentPath = 'patients'; // Default path
 
     function loadProfile() {
         if (!pId) return;
 
+        // Try looking in 'patients' first
         db.ref('patients/' + pId).on('value', (snapshot) => {
-            const p = snapshot.val();
-            if (!p) return;
-
-            const container = document.getElementById('profileContainer');
+            let p = snapshot.val();
             
-            let managementLabel = "Patient Management";
-            let statusButton = '';
-
-            // Queue -> Treatment -> Discharge Logic
-            if (!p.status || p.status === 'WAITING') {
-                managementLabel = "Patient Management (QUEUE)";
-                statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT</button>`;
-            } else if (p.status === 'IN TREATMENT' || p.status === 'IN CARE') {
-                managementLabel = "Patient Management (IN TREATMENT)";
-                statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck('${p.level}')">PROCEED TO DISCHARGE</button>`;
-            } else if (p.status === 'READY FOR DISCHARGE') {
-                managementLabel = "Patient Management (FOR DISCHARGE)";
-                statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
+            // If not found in 'patients', try 'appointments'
+            if (!p) {
+                db.ref('appointments/' + pId).once('value', (snap) => {
+                    if (snap.val()) {
+                        currentPath = 'appointments';
+                        renderProfile(snap.val());
+                    } else {
+                        document.getElementById('profileContainer').innerHTML = "<h3>Patient Record Not Found</h3>";
+                    }
+                });
+            } else {
+                currentPath = 'patients';
+                renderProfile(p);
             }
-
-            container.innerHTML = `
-                <div class="patient-header">
-                    <div class="patient-identity">
-                        <h1>${p.name} <span class="status-badge bg-${p.level}" onclick="openModal('level')">${p.level}</span></h1>
-                        <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.sex || p.gender} • ARRIVED: ${p.arrived || '---'}</small>
-                    </div>
-                    <div style="text-align:right; cursor:pointer;" onclick="openModal('bed')">
-                        <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
-                        <div style="font-size:1.5rem; font-weight:900; color:var(--pgh-emerald);">${p.bed || 'NONE'}</div>
-                    </div>
-                </div>
-
-                <div class="profile-layout">
-                    <div>
-                        <div class="card">
-                            <h3><i class="fas fa-notes-medical"></i> Chief Complaint</h3>
-                            <p style="font-size: 1.2rem; font-weight: 600; color: var(--pgh-dark-green); margin: 10px 0;">${p.complaint || p.symptoms || 'No complaint noted'}</p>
-                        </div>
-
-                        <div class="card">
-                            <h3><i class="fas fa-heartbeat"></i> Vital Signs (via Nurse)</h3>
-                            <div class="vitals-grid">
-                                <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><span>${p.vitals?.bp || '---'}</span><label>BP</label></div>
-                                <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><span>${p.vitals?.hr || '---'}</span><label>HR</label></div>
-                                <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><span>${p.vitals?.temp || '---'}</span><label>TEMP</label></div>
-                                <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><span>${p.vitals?.o2 || '---'}</span><label>SPO2</label></div>
-                            </div>
-                            <div class="doc-charge-area">
-                                <i class="fas fa-user-md" style="color:#888"></i>
-                                <span style="font-size:0.7rem; color:#888; font-weight:bold;">MD IN CHARGE:</span>
-                                <span class="doc-tag" onclick="openModal('doctor')">${p.doctorInCharge || 'ASSIGN DOCTOR +'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="card">
-                            <h3><i class="fas fa-toolbox"></i> Clinical Tools</h3>
-                            <div class="tool-tabs">
-                                <button class="tool-btn active" onclick="switchTool(event, 'gcs')">GCS</button>
-                                <button class="tool-btn" onclick="switchTool(event, 'pain')">PAIN SCALE</button>
-                            </div>
-                            <div id="gcs" class="tool-content active">
-                                <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '0'}</span></div>
-                                <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.verbal || '0'}</span></div>
-                                <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.motor || '0'}</span></div>
-                            </div>
-                            <div id="pain" class="tool-content">
-                                <div style="text-align:center; padding: 20px 0;">
-                                    <label style="display:block; font-size:0.7rem; color:#888;">PAIN RATING</label>
-                                    <strong style="font-size:3rem; color:var(--urgent-red);">${p.painScale || '0'}/10</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
-                            <h3>${managementLabel}</h3>
-                            <div class="action-footer">
-                                ${statusButton}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
         });
+    }
+
+    function renderProfile(p) {
+        const container = document.getElementById('profileContainer');
+        
+        let managementLabel = "Patient Management";
+        let statusButton = '';
+
+        if (!p.status || p.status === 'WAITING') {
+            managementLabel = "Patient Management (QUEUE)";
+            statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT</button>`;
+        } else if (p.status === 'IN TREATMENT' || p.status === 'IN CARE') {
+            managementLabel = "Patient Management (IN TREATMENT)";
+            statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck('${p.level || 'NORMAL'}')">PROCEED TO DISCHARGE</button>`;
+        } else if (p.status === 'READY FOR DISCHARGE') {
+            managementLabel = "Patient Management (FOR DISCHARGE)";
+            statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
+        }
+
+        container.innerHTML = `
+            <div class="patient-header">
+                <div class="patient-identity">
+                    <h1>${p.name || 'Unknown'} <span class="status-badge bg-${p.level || 'NORMAL'}" onclick="openModal('level')">${p.level || 'NORMAL'}</span></h1>
+                    <small style="color:#888; font-weight:bold;">${p.age || '??'} Yrs • ${p.sex || p.gender || 'N/A'} • ARRIVED: ${p.arrived || p.timestamp || '---'}</small>
+                </div>
+                <div style="text-align:right; cursor:pointer;" onclick="openModal('bed')">
+                    <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--pgh-emerald);">${p.bed || 'NONE'}</div>
+                </div>
+            </div>
+
+            <div class="profile-layout">
+                <div>
+                    <div class="card">
+                        <h3><i class="fas fa-notes-medical"></i> Chief Complaint</h3>
+                        <p style="font-size: 1.2rem; font-weight: 600; color: var(--pgh-dark-green); margin: 10px 0;">${p.complaint || p.symptoms || 'No complaint noted'}</p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-heartbeat"></i> Vital Signs (via Nurse)</h3>
+                        <div class="vitals-grid">
+                            <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><span>${p.vitals?.bp || '---'}</span><label>BP</label></div>
+                            <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><span>${p.vitals?.hr || '---'}</span><label>HR</label></div>
+                            <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><span>${p.vitals?.temp || '---'}</span><label>TEMP</label></div>
+                            <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><span>${p.vitals?.o2 || '---'}</span><label>SPO2</label></div>
+                        </div>
+                        <div class="doc-charge-area">
+                            <i class="fas fa-user-md" style="color:#888"></i>
+                            <span style="font-size:0.7rem; color:#888; font-weight:bold;">MD IN CHARGE:</span>
+                            <span class="doc-tag" onclick="openModal('doctor')">${p.doctorInCharge || 'ASSIGN DOCTOR +'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h3><i class="fas fa-toolbox"></i> Clinical Tools</h3>
+                        <div class="tool-tabs">
+                            <button class="tool-btn active" onclick="switchTool(event, 'gcs')">GCS</button>
+                            <button class="tool-btn" onclick="switchTool(event, 'pain')">PAIN SCALE</button>
+                        </div>
+                        <div id="gcs" class="tool-content active">
+                            <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '0'}</span></div>
+                            <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.verbal || '0'}</span></div>
+                            <div class="score-row"><span>Motor</span><span class="score-val">${p.gcs?.motor || '0'}</span></div>
+                        </div>
+                        <div id="pain" class="tool-content">
+                            <div style="text-align:center; padding: 20px 0;">
+                                <label style="display:block; font-size:0.7rem; color:#888;">PAIN RATING</label>
+                                <strong style="font-size:3rem; color:var(--urgent-red);">${p.painScale || '0'}/10</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
+                        <h3>${managementLabel}</h3>
+                        <div class="action-footer">
+                            ${statusButton}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     function openModal(type) {
@@ -239,10 +256,9 @@
     function updateField(field, value, isBed = false) {
         let updates = {};
         updates[field] = value;
-        // Auto-switch to Treatment if bed is assigned from Queue
         if (isBed) updates['status'] = 'IN TREATMENT';
 
-        db.ref('patients/' + pId).update(updates).then(() => {
+        db.ref(currentPath + '/' + pId).update(updates).then(() => {
             closeModal();
         });
     }
@@ -256,7 +272,7 @@
     }
 
     function finalizeDischarge() {
-        db.ref('patients/' + pId).update({ status: 'DISCHARGED' }).then(() => {
+        db.ref(currentPath + '/' + pId).update({ status: 'DISCHARGED', isDischarged: true }).then(() => {
             window.location.href = 'admin_dashboard.html';
         });
     }
@@ -271,6 +287,5 @@
     function closeModal() { document.getElementById('selectorModal').style.display = 'none'; }
     window.onload = loadProfile;
 </script>
-
 </body>
 </html>
