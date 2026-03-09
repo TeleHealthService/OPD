@@ -20,7 +20,6 @@
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
 
-        /* --- Header & Nav --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
@@ -31,7 +30,6 @@
         .btn-action { padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
         .btn-alert { background: var(--urgent-red); box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
         .btn-add { background: var(--info-blue); }
-        .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
 
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
@@ -44,46 +42,31 @@
 
         .container { padding: 20px 15px; max-width: 1400px; margin: 0 auto; }
 
-        /* --- Stats --- */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-        .stat-card.active-filter { border-bottom: 4px solid var(--pgh-emerald); background: #f0f7f3; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .stat-card.active-filter { background: #f0f7f3; border-bottom: 4px solid var(--pgh-emerald); }
         .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--pgh-dark-green); display: block; }
         .stat-label { font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase; }
 
-        /* --- Layout & Scrolling --- */
-        .dash-layout { display: grid; grid-template-columns: 2.5fr 1fr; gap: 20px; align-items: start; }
-        
+        .dash-layout { display: grid; grid-template-columns: 2.8fr 1fr; gap: 20px; align-items: start; }
         .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .scrollable-list { max-height: 500px; overflow-y: auto; padding-right: 5px; }
-        
-        /* Custom Scrollbar */
-        .scrollable-list::-webkit-scrollbar { width: 6px; }
-        .scrollable-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        .scrollable-list { max-height: 600px; overflow-y: auto; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         th { text-align: left; padding: 12px; font-size: 0.65rem; color: #888; text-transform: uppercase; border-bottom: 2px solid #eee; position: sticky; top: 0; background: white; }
-        td { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
-        tr:hover td { background-color: #f9fdfb; }
-
-        .patient-cell { display: flex; align-items: center; gap: 10px; }
-        .patient-cell i { color: var(--pgh-emerald); font-size: 1.1rem; }
-
-        /* --- Sidebar & Logout --- */
-        .side-panel { display: flex; flex-direction: column; gap: 20px; height: 100%; }
-        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .bed-unit { padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #eee; font-size: 0.75rem; font-weight: bold; color: #ccc; }
-        .bed-occupied { border-color: var(--pgh-emerald); color: var(--pgh-emerald); background: #f0f7f3; }
-
-        .logout-container { margin-top: auto; padding-top: 20px; }
-        .btn-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #fff; color: #888; text-decoration: none; border-radius: 8px; font-size: 0.75rem; font-weight: bold; border: 1px solid #eee; }
-        .btn-logout:hover { background: var(--urgent-red); color: white; border-color: var(--urgent-red); }
-
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        
+        .vitals-pill { font-size: 0.65rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-right: 4px; font-weight: bold; }
         .level-pill { padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: white; }
         .bg-crit { background: var(--urgent-red); }
         .bg-normal { background: var(--pgh-emerald); }
         .bg-urgent { background: #f39c12; }
+
+        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .bed-unit { padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #eee; font-size: 0.75rem; font-weight: bold; color: #ccc; }
+        .bed-occupied { border-color: var(--pgh-emerald); color: var(--pgh-emerald); background: #f0f7f3; }
+
+        .btn-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #fff; color: #888; text-decoration: none; border-radius: 8px; font-size: 0.75rem; font-weight: bold; border: 1px solid #eee; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -97,7 +80,7 @@
         </div>
     </div>
     <div class="header-actions">
-        <button class="btn-action btn-alert" onclick="alert('Emergency Alert Triggered!')"><i class="fas fa-exclamation-triangle"></i> Call Code</button>
+        <button class="btn-action btn-alert" onclick="alert('Code Blue Broadcasted!')"><i class="fas fa-exclamation-triangle"></i> Call Code</button>
         <a href="admin_triage.html" class="btn-action btn-add"><i class="fas fa-plus"></i> New Patient</a>
     </div>
 </header>
@@ -113,21 +96,21 @@
 
 <div class="container">
     <div class="stats-grid">
-        <div class="stat-card" id="cardTotal" onclick="filterList('ALL')">
-            <div><span class="stat-label">Total Patients</span><span class="stat-val" id="countToday">0</span></div>
-            <i class="fas fa-users" style="color:var(--pgh-emerald); opacity:0.5"></i>
+        <div class="stat-card active-filter" id="cardALL" onclick="setFilter('ALL')">
+            <div><span class="stat-label">Total Patients</span><span class="stat-val" id="countTotal">0</span></div>
+            <i class="fas fa-users" style="color:var(--pgh-emerald); opacity:0.3"></i>
         </div>
-        <div class="stat-card" id="cardWait" onclick="filterList('WAITING')">
+        <div class="stat-card" id="cardWAITING" onclick="setFilter('WAITING')">
             <div><span class="stat-label">In Waiting</span><span class="stat-val" id="countWait">0</span></div>
-            <i class="fas fa-clock" style="color:#f39c12; opacity:0.5"></i>
+            <i class="fas fa-clock" style="color:#f39c12; opacity:0.3"></i>
         </div>
-        <div class="stat-card" id="cardTreat" onclick="filterList('IN TREATMENT')">
+        <div class="stat-card" id="cardIN TREATMENT" onclick="setFilter('IN TREATMENT')">
             <div><span class="stat-label">In Treatment</span><span class="stat-val" id="countTreat">0</span></div>
-            <i class="fas fa-procedures" style="color:#3498db; opacity:0.5"></i>
+            <i class="fas fa-procedures" style="color:#3498db; opacity:0.3"></i>
         </div>
-        <div class="stat-card" id="cardReady" onclick="filterList('READY FOR DISCHARGE')">
+        <div class="stat-card" id="cardREADY" onclick="setFilter('READY FOR DISCHARGE')">
             <div><span class="stat-label">For Discharge</span><span class="stat-val" id="countReady">0</span></div>
-            <i class="fas fa-check-circle" style="color:#27ae60; opacity:0.5"></i>
+            <i class="fas fa-check-circle" style="color:#27ae60; opacity:0.3"></i>
         </div>
     </div>
 
@@ -141,6 +124,7 @@
                             <th>Patient Name</th>
                             <th>Arrived</th>
                             <th>Level</th>
+                            <th>Clinical Summary (Latest)</th>
                             <th>Bed</th>
                             <th>Status</th>
                         </tr>
@@ -152,94 +136,101 @@
 
         <div class="side-panel">
             <div class="panel">
-                <h3 style="margin-top:0; font-size:0.8rem; color:#888;">BED STATUS</h3>
+                <h3 style="margin-top:0; font-size:0.8rem; color:#888;">BED UTILIZATION</h3>
                 <div class="bed-grid" id="bedGrid"></div>
             </div>
-
-            <div class="logout-container">
-                <a href="portal.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> LOG OUT SYSTEM</a>
-            </div>
+            <a href="portal.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> LOG OUT SYSTEM</a>
         </div>
     </div>
 </div>
 
-<script>
-    let currentFilter = 'ALL';
-    const patients = JSON.parse(localStorage.getItem('patients')) || [];
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-    function filterList(status) {
+<script>
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let allPatients = [];
+    let currentFilter = 'ALL';
+
+    function setFilter(status) {
         currentFilter = status;
-        // Visual feedback for active filter
-        document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active-filter'));
-        if(status === 'ALL') document.getElementById('cardTotal').classList.add('active-filter');
-        if(status === 'WAITING') document.getElementById('cardWait').classList.add('active-filter');
-        if(status === 'IN TREATMENT') document.getElementById('cardTreat').classList.add('active-filter');
-        if(status === 'READY FOR DISCHARGE') document.getElementById('cardReady').classList.add('active-filter');
-        
-        const titleText = status === 'ALL' ? 'ACTIVE ER PATIENTS' : `${status} PATIENTS`;
-        document.getElementById('tableTitle').innerText = titleText;
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+        document.getElementById('card' + status.split(' ')[0]).classList.add('active-filter');
         render();
     }
+
+    // Real-time listener for the 'patients' node
+    db.ref('patients').on('value', (snapshot) => {
+        allPatients = [];
+        const data = snapshot.val();
+        if (data) {
+            Object.keys(data).forEach(id => {
+                allPatients.push({ ...data[id], firebaseId: id });
+            });
+        }
+        render();
+    });
 
     function render() {
         const tbody = document.getElementById('patientTableBody');
         tbody.innerHTML = '';
+        
         let stats = { total: 0, wait: 0, treat: 0, ready: 0 };
         let occupiedBeds = [];
 
-        patients.forEach((p, i) => {
-            if(p.status === 'ARCHIVED' || p.status === 'DISCHARGED') return;
+        allPatients.forEach(p => {
+            if (p.isDischarged) return;
 
-            // Update stats
             stats.total++;
-            if(p.status === 'WAITING') stats.wait++;
-            if(p.status === 'IN TREATMENT') stats.treat++;
-            if(p.status === 'READY FOR DISCHARGE') stats.ready++;
-            if(p.bed) occupiedBeds.push(p.bed);
+            if (p.status === 'WAITING') stats.wait++;
+            if (p.status === 'IN TREATMENT') stats.treat++;
+            if (p.status === 'READY FOR DISCHARGE') stats.ready++;
+            if (p.bed) occupiedBeds.push(p.bed);
 
-            // Filter logic
-            if(currentFilter !== 'ALL' && p.status !== currentFilter) return;
+            if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
+            
+            // Build Clinical Summary string
+            const vitalsText = p.vitals ? `<span class="vitals-pill">BP: ${p.vitals.bp}</span><span class="vitals-pill">O2: ${p.vitals.o2}%</span>` : '<span style="color:#ccc">No vitals yet</span>';
 
             tbody.innerHTML += `
-                <tr onclick="location.href='patient_status.html?id=${i}'">
-                    <td>
-                        <div class="patient-cell">
-                            <i class="fas fa-user-circle"></i>
-                            <strong>${p.name}</strong>
-                        </div>
-                    </td>
+                <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
+                    <td><strong>${p.name}</strong></td>
                     <td>${p.arrived || '--:--'}</td>
                     <td><span class="level-pill ${levelClass}">${p.level}</span></td>
+                    <td>${vitalsText}</td>
                     <td style="font-weight:bold; color:var(--pgh-emerald)">${p.bed || '---'}</td>
-                    <td><span style="font-size:0.65rem; font-weight:bold; text-transform:uppercase;">${p.status}</span></td>
+                    <td style="font-size:0.7rem; font-weight:bold">${p.status}</td>
                 </tr>
             `;
         });
 
-        document.getElementById('countToday').innerText = stats.total;
+        document.getElementById('countTotal').innerText = stats.total;
         document.getElementById('countWait').innerText = stats.wait;
         document.getElementById('countTreat').innerText = stats.treat;
         document.getElementById('countReady').innerText = stats.ready;
+        
         renderBeds(occupiedBeds);
     }
 
     function renderBeds(used) {
         const grid = document.getElementById('bedGrid');
         grid.innerHTML = '';
-        ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'].forEach(b => {
+        const layout = ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'];
+        layout.forEach(b => {
             const isOcc = used.includes(b);
             grid.innerHTML += `<div class="bed-unit ${isOcc ? 'bed-occupied' : ''}">${b}</div>`;
         });
     }
-
-    window.onload = () => {
-        document.getElementById('cardTotal').classList.add('active-filter');
-        render();
-    };
 </script>
-
 </body>
 </html>
 
