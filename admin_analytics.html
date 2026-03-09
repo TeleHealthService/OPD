@@ -30,7 +30,6 @@
             background-size: cover; background-position: center; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
@@ -42,7 +41,6 @@
         .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.3) !important; }
 
         .container { max-width: 1400px; margin: 25px auto; padding: 0 15px; flex: 1; }
-        
         .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
         .page-header h1 { color: var(--pgh-dark-green); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
         #lastUpdated { font-size: 0.65rem; color: #888; font-weight: 700; text-transform: uppercase; background: white; padding: 5px 12px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
@@ -150,6 +148,7 @@
 </footer>
 
 <script>
+    // Firebase Configuration
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
@@ -208,6 +207,7 @@
         });
     }
 
+    // Real-time Cloud Listener
     db.ref('patients').on('value', (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
@@ -215,21 +215,23 @@
         const patients = Object.values(data);
         
         // Accurate filtering for Active vs Discharged
+        // This ensures that when an admin changes status to 'DISCHARGED', the census drops instantly.
         const active = patients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
         const dischargedTodayCount = patients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
         
         // Accurate Severity Mix
+        // Filters by 'CRITICAL' triage level; all others are grouped as Standard/Stable.
         const criticalCount = active.filter(p => p.level === 'CRITICAL').length;
         const standardCount = active.length - criticalCount;
 
-        // Update UI Cards
+        // UI Updates - Cards
         document.getElementById('valActive').innerText = active.length;
         document.getElementById('valDischarged').innerText = dischargedTodayCount;
         
         const occupancy = Math.round((active.length / 12) * 100);
         document.getElementById('valOccupancy').innerText = occupancy + "%";
         
-        // Unit Status Logic
+        // Unit Status Alert Logic
         const statusVal = document.getElementById('valEmergency');
         const statusCard = document.getElementById('statusCard');
         if (criticalCount >= 3 || occupancy >= 85) {
@@ -250,7 +252,7 @@
         document.getElementById('countStable').innerText = standardCount;
         document.getElementById('lastUpdated').innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
 
-        // Update Doughnut Chart
+        // Update Charts instantly without page reload
         triageChart.data.datasets[0].data = [criticalCount, standardCount];
         triageChart.update();
 
@@ -261,7 +263,6 @@
         const hourlyCounts = {};
         patients.forEach(p => {
             if(p.arrived || p.timestamp) {
-                // Ensure we get the hour from whatever time format is used
                 const timeStr = p.arrived || p.timestamp;
                 const hour = timeStr.split(':')[0] + ":00 " + (timeStr.includes('PM') && !timeStr.startsWith('12') ? 'PM' : 'AM');
                 hourlyCounts[hour] = (hourlyCounts[hour] || 0) + 1;
