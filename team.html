@@ -264,13 +264,29 @@
 <script>
     // MASTER LIST: Add a new doctor here to update both Home and Team pages
     const doctors = [
-        { name: "Dr. Elena Rossi", spec: "Cardiology", bio: "Board-certified cardiologist specializing in cardiovascular health.", img: "doc1female.png" },
-        { name: "Dr. Sarah Lim", spec: "Pediatrics", bio: "Expert in pediatric care and early childhood development.", img: "doc2female.png" },
-        { name: "Dr. Marcus Chen", spec: "Neurology", bio: "Specialist in neurological disorders and research.", img: "doc3male.png" },
-        { name: "Dr. Maya Gupta", spec: "Dermatology", bio: "Focused on clinical dermatology and skin treatments.", img: "doc4female.png" },
-        { name: "Dr. David Park", spec: "Orthopedics", bio: "Surgical expert in sports medicine.", img: "doc5male.png" },
-        { name: "Dr. Robert Vance", spec: "General Surgery", bio: "Experienced in minimally invasive procedures.", img: "doc6male.png" }
-    ];
+    { name: "Dr. Maria Santos-Dizon", spec: "Internal Medicine", bio: "Primary care and diagnostic specialist with 15 years of clinical experience.", img: "doc9f.png" },
+    { name: "Dr. Sarah Catherine Lim", spec: "Pediatrics", bio: "Expert in pediatric care and child development studies.", img: "doc1female.png" },
+    { name: "Dr. Anna Victoria Reyes", spec: "Obstetrics and Gynecology (OB GYN)", bio: "Women's reproductive health expert and wellness advocate.", img: "doc5f.png" },
+    { name: "Dr. Elena Rossi-Panganiban", spec: "Cardiology", bio: "Board-certified heart specialist focusing on preventive cardiology.", img: "doc2female.png" },
+    { name: "Dr. Jaime 'James' Yap", spec: "Gastroenterology", bio: "Specialist in digestive system health and endoscopy.", img: "doc2m.png" },
+    { name: "Dr. Marcus Paolo Chen", spec: "Neurology", bio: "Brain and nervous system researcher specializing in stroke recovery.", img: "doc7m.png" },
+    { name: "Dr. Roberto 'Robert' Evangelista", spec: "General Surgery", bio: "Expert in minimally invasive and laparoscopic surgical procedures.", img: "doc4m.png" },
+    { name: "Dr. David Emmanuel Pascual", spec: "Orthopedics", bio: "Surgical expert in sports medicine and bone health.", img: "doc1m.png" },
+    { name: "Dr. Maya Angela Gupta-Cruz", spec: "Dermatology", bio: "Focused on clinical dermatology and advanced skin treatments.", img: "doc3f.png" },
+    { name: "Dr. Liza Mae Mercado", spec: "Psychiatry", bio: "Mental health and behavioral wellness specialist.", img: "doc1f.png" },
+
+    // --- Staff Physicians (Filling all required Filipino departments) ---
+    { name: "Dr. Samuel Leandro Tolentino", spec: "Pulmonology", bio: "Respiratory and lung health specialist.", img: "doc3male.png" },
+    { name: "Dr. Victorino Cruz", spec: "Nephrology", bio: "Kidney function and renal replacement therapy.", img: "doc5male.png" },
+    { name: "Dr. Irene Katrina De Castro", spec: "Endocrinology", bio: "Hormonal and metabolic disorder expert.", img: "doc4female.png" },
+    { name: "Dr. Tomas Teodoro", spec: "Urology", bio: "Urinary tract and male reproductive health.", img: "doc6male.png" },
+    { name: "Dr. Grace Sy-Quia", spec: "Ophthalmology", bio: "Eye surgery and vision correction specialist.", img: "doc_f_placeholder.png" },
+    { name: "Dr. Benjamin 'Benj' Ramos", spec: "Otolaryngology (ENT)", bio: "Ear, nose, and throat medical and surgical specialist.", img: "doc_m_placeholder.png" },
+    { name: "Dr. Alice Dimaguila", spec: "Oncology", bio: "Cancer treatment and chemotherapy management.", img: "doc_f_placeholder.png" },
+    { name: "Dr. Kevin Villafuerte", spec: "Radiology", bio: "Imaging and diagnostic radiology expert.", img: "doc_m_placeholder.png" },
+    { name: "Dr. Felicia Magbanua", spec: "Laboratory / Pathology", bio: "Diagnostic testing and clinical laboratory analysis.", img: "doc_f_placeholder.png" },
+    { name: "Dr. Oscar Dizon", spec: "Physical Therapy / Rehabilitation", bio: "Mobility and physical recovery expert.", img: "doc_m_placeholder.png" }
+];
 
     // SAVE to browser memory so Home page can read it
     localStorage.setItem('hospitalDoctors', JSON.stringify(doctors));
@@ -307,5 +323,6 @@
 
 </body>
 </html>
+
 
 
