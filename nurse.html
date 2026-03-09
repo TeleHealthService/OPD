@@ -18,17 +18,17 @@
         .pain-display { text-align: center; font-size: 2.5rem; font-weight: 900; color: #e74c3c; }
         .btn-save { width: 100%; padding: 15px; background: var(--pgh-emerald); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
         .btn-clear { width: 100%; padding: 12px; background: #eee; color: #666; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .success-msg { display: none; background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; }
+        .success-msg { display: none; background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; border: 1px solid #2e7d32; }
         .back-nav { color: white; text-decoration: none; font-size: 0.8rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 4px; }
     </style>
 </head>
 <body>
 <header>
     <div><i class="fas fa-user-nurse"></i> NURSE STATION</div>
-    <div class="back-nav" onclick="location.reload()"><i class="fas fa-sync"></i> CHECK ANOTHER PATIENT</div>
+    <div class="back-nav" onclick="location.reload()"><i class="fas fa-sync"></i> REFRESH LIST</div>
 </header>
 <div class="container">
-    <div id="successNote" class="success-msg">Saving and Redirecting to Status...</div>
+    <div id="successNote" class="success-msg">Data Updated Successfully! Ready for next patient.</div>
     
     <div class="card">
         <h3><i class="fas fa-user-injured"></i> Select Patient</h3>
@@ -58,8 +58,8 @@
             <div class="pain-display" id="painDisplay">0</div>
         </div>
         
-        <button class="btn-save" onclick="saveData()">UPDATE & VIEW STATUS</button>
-        <button class="btn-clear" onclick="location.reload()">CANCEL & SELECT ANOTHER</button>
+        <button class="btn-save" onclick="saveData()">SUBMIT UPDATE</button>
+        <button class="btn-clear" onclick="location.reload()">CANCEL & CLEAR</button>
     </div>
 </div>
 
@@ -70,7 +70,6 @@
     const urlId = params.get('id');
 
     function init() {
-        // Only show patients that are not discharged
         patients.forEach((p, i) => {
             if (p.status !== 'DISCHARGED') {
                 let opt = new Option(p.name + (p.bed ? ` (Bed ${p.bed})` : ""), i);
@@ -89,8 +88,8 @@
         }
         const p = patients[val];
         document.getElementById('inputForm').style.display = 'block';
+        document.getElementById('successNote').style.display = 'none';
         
-        // Populate existing data
         document.getElementById('v_bp').value = p.vitals?.bp || '';
         document.getElementById('v_hr').value = p.vitals?.hr || '';
         document.getElementById('v_temp').value = p.vitals?.temp || '';
@@ -121,12 +120,13 @@
         
         localStorage.setItem('patients', JSON.stringify(patients));
         
+        // UI Feedback
+        document.getElementById('inputForm').style.display = 'none';
+        select.value = "";
         document.getElementById('successNote').style.display = 'block';
         
-        // Redirect to status page, nurse cannot go back to record list
-        setTimeout(() => { 
-            window.location.href = `patient_status.html?id=${i}`; 
-        }, 1200);
+        // Form stays on Nurse page for the next entry
+        window.scrollTo(0,0);
     }
     window.onload = init;
 </script>
