@@ -13,97 +13,141 @@
             --pgh-emerald: #04471C;
             --white: #ffffff;
             --light-gray: #f4f7f6;
+            --border-color: #e0e0e0;
+            --urgent-red: #e74c3c;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
 
+        /* Synchronized Header */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover;
-            padding: 15px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            border-bottom: 4px solid var(--pgh-emerald); 
+            background-size: cover; background-position: center; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
         }
+        .header-left { display: flex; align-items: center; gap: 12px; }
         
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
-        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
-        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
-        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
-        .active-nav { background: var(--pgh-emerald) !important; }
+        /* Oblong Navigation Consistency */
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; }
+        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; overflow-x: auto; }
+        nav ul li a { color: white; text-decoration: none; padding: 8px 18px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; border-radius: 50px; background: rgba(255,255,255,0.1); border: 1px solid transparent; white-space: nowrap; }
+        nav ul li a:hover { background: rgba(255,255,255,0.2); }
+        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.3) !important; }
 
-        .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
-        .referral-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-top: 6px solid var(--pgh-emerald);
+        .container { padding: 25px 15px; max-width: 800px; margin: 0 auto; flex: 1; width: 100%; }
+        
+        h1 { 
+            color: var(--pgh-dark-green); 
+            text-transform: uppercase; 
+            font-size: 1.4rem; 
+            margin: 0 0 20px 0; 
+            padding-bottom: 8px;
+            display: inline-block;
+            border-bottom: 3px solid var(--pgh-emerald);
         }
 
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .referral-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 8px solid var(--pgh-emerald);
+        }
+
+        .referral-card h3 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--pgh-dark-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.65rem; font-weight: 800; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
         
         input, select, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1.5px solid #eee;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
             outline: none;
-            background: #fafafa;
+            background: #fcfcfc;
+            color: var(--pgh-black);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--pgh-emerald);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(4, 71, 28, 0.05);
         }
 
         .btn-submit {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: var(--pgh-emerald);
             color: white;
             border: none;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(4, 71, 28, 0.2);
+            letter-spacing: 1px;
         }
 
-        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-submit:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
 
         .success-toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--pgh-dark-green);
             color: white;
-            padding: 12px 25px;
+            padding: 15px 35px;
             border-radius: 50px;
             display: none;
             z-index: 2000;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-transform: uppercase;
         }
+
+        footer { background: var(--pgh-dark-green); color: rgba(255,255,255,0.6); text-align: center; padding: 25px; font-size: 0.7rem; border-top: 4px solid var(--pgh-emerald); margin-top: auto; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Health Informatics Division</small>
+    <div class="header-left">
+        <img src="logo.png" alt="Logo" class="hospital-logo">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Health Informatics Division</small>
+        </div>
     </div>
 </header>
 
 <nav>
     <ul>
         <li><a href="admin_dashboard.html">ER Dashboard</a></li>
-        <li><a href="patient_record.html">Records</a></li>
+        <li><a href="patient_record.html">Registry Records</a></li>
         <li><a href="referral.html" class="active-nav">Referral</a></li>
-        <li><a href="admin_analytics.html">Analytics</a></li>
+        <li><a href="admin_analytics.html">ER Analytics</a></li>
     </ul>
 </nav>
 
@@ -112,49 +156,55 @@
 
     <div class="referral-card">
         <form id="referralForm">
-            <h3><i class="fas fa-user-injured"></i> Patient Information</h3>
+            <h3><i class="fas fa-file-export"></i> Referral Details</h3>
+            
             <div class="form-group">
-                <label>Select Active Patient (From Cloud)</label>
+                <label>Active Patient Selection</label>
                 <select id="patientSelect" required onchange="updatePatientDetails()">
-                    <option value="">-- Loading Patients... --</option>
+                    <option value="">-- Fetching from Cloud... --</option>
                 </select>
                 <input type="hidden" id="patientEmail">
                 <input type="hidden" id="patientNameDisplay">
             </div>
 
             <div class="form-group">
-                <label>Referring To (Department)</label>
+                <label>Recipient Specialization / Department</label>
                 <select id="targetDept" required>
-                    <option value="">-- Select Specialty --</option>
+                    <option value="">-- Choose Target Specialty --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Priority Level</label>
+                <label>Triage Priority</label>
                 <select id="priority" required>
-                    <option value="Routine">Routine</option>
-                    <option value="Urgent">Urgent</option>
-                    <option value="Emergency">Emergency</option>
+                    <option value="Routine">Routine (Stable)</option>
+                    <option value="Urgent">Urgent (Semi-Stable)</option>
+                    <option value="Emergency">Emergency (Immediate Care)</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Clinical Notes</label>
-                <textarea id="notes" rows="4" required placeholder="Reason for transfer..."></textarea>
+                <label>Clinical Notes & Transfer Reason</label>
+                <textarea id="notes" rows="5" required placeholder="Describe current status, vitals, and reasons for referral..."></textarea>
             </div>
 
-            <button type="submit" class="btn-submit" id="submitBtn">Generate & Email Referral</button>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> &nbsp;Dispatch Digital Referral
+            </button>
         </form>
     </div>
 </div>
 
-<div id="successToast" class="success-toast">Referral Sent Successfully!</div>
+<div id="successToast" class="success-toast">Referral Dispatched via Secure Mail!</div>
+
+<footer>
+    &copy; 2026 General Hospital | Secure Referral Portal | informatics-pgh.edu
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
 <script>
-    // 1. Firebase Initialization
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
@@ -162,10 +212,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. EmailJS Initialization
     emailjs.init("6vxfanTnFPba4cmq7"); 
 
-    // 3. Load Data
     window.onload = function() {
         loadPatientsFromCloud();
         loadDepartmentsFromTeam();
@@ -173,16 +221,14 @@
 
     function loadPatientsFromCloud() {
         const patientSelect = document.getElementById('patientSelect');
-        // Listens to the 'appointments' node
         db.ref('appointments').on('value', (snapshot) => {
-            patientSelect.innerHTML = '<option value="">-- Choose Patient --</option>';
+            patientSelect.innerHTML = '<option value="">-- SELECT PATIENT --</option>';
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
-                // Broadened filter to include "Pending" or "Active"
-                if (data.status === "Active" || data.status === "Pending" || !data.status) {
+                if (data.status !== "Discharged") {
                     const opt = document.createElement('option');
                     opt.value = childSnapshot.key;
-                    opt.textContent = `${data.name} (ID: ${childSnapshot.key.substring(1, 6)})`;
+                    opt.textContent = `${data.name} [ID: ${childSnapshot.key.substring(1, 7).toUpperCase()}]`;
                     opt.dataset.email = data.email;
                     opt.dataset.name = data.name;
                     patientSelect.appendChild(opt);
@@ -199,7 +245,7 @@
         uniqueSpecs.forEach(spec => {
             deptSelect.add(new Option(spec, spec));
         });
-        deptSelect.add(new Option("External Facility", "External"));
+        deptSelect.add(new Option("External Facility / Tertiary Care", "External"));
     }
 
     function updatePatientDetails() {
@@ -209,11 +255,10 @@
         document.getElementById('patientNameDisplay').value = selectedOption.dataset.name || "";
     }
 
-    // 4. Form Submission
     document.getElementById('referralForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "Sending...";
+        btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Processing...';
         btn.disabled = true;
 
         const referralData = {
@@ -222,7 +267,7 @@
             department: document.getElementById('targetDept').value,
             priority: document.getElementById('priority').value,
             message: document.getElementById('notes').value,
-            referral_date: new Date().toLocaleDateString()
+            referral_date: new Date().toLocaleString()
         };
 
         emailjs.send("service_z8p5csl", "template_rox5fkc", referralData)
@@ -231,13 +276,14 @@
                 setTimeout(() => {
                     document.getElementById('successToast').style.display = 'none';
                     document.getElementById('referralForm').reset();
-                    btn.innerText = "Generate & Email Referral";
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> &nbsp;Dispatch Digital Referral';
                     btn.disabled = false;
                 }, 3000);
             })
             .catch((err) => {
-                alert("Error: " + JSON.stringify(err));
+                alert("Cloud Dispatch Failed: " + JSON.stringify(err));
                 btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> &nbsp;Dispatch Digital Referral';
             });
     };
 </script>
