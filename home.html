@@ -282,7 +282,21 @@
  <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | Providing Care Beyond Boundaries</p>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
 <script>
+    // 1. Firebase Configuration
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 2. Load Doctors (Still from localStorage for now, as requested)
     const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
 
     function initDropdowns() {
@@ -290,10 +304,8 @@
         const uniqueSpecs = [...new Set(doctors.map(d => d.spec))];
         
         uniqueSpecs.forEach(spec => {
-            const opt = document.createElement('option');
-            opt.value = spec;
-            opt.textContent = spec;
-            deptSelect.appendChild(opt);
+            const opt = new Option(spec, spec);
+            deptSelect.add(opt);
         });
     }
 
@@ -303,12 +315,8 @@
         docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
 
         const filtered = doctors.filter(d => d.spec === dept);
-        
         filtered.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d.name;
-            opt.textContent = d.name;
-            docSelect.appendChild(opt);
+            docSelect.add(new Option(d.name, d.name));
         });
     }
 
@@ -336,14 +344,10 @@
         window.scrollTo(0, 0);
     }
 
-    // --- DATA SENDING LOGIC ---
+    // --- UPDATED DATA STORAGE: FIREBASE PUSH ---
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
 
-        // 1. Get existing data
-        const appointments = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
-
-        // 2. Create the new patient object
         const newRecord = {
             name: document.getElementById('patientName').value,
             age: document.getElementById('patientAge').value,
@@ -354,18 +358,24 @@
             timestamp: document.getElementById('appDate').value,
             symptoms: document.getElementById('appSymptoms').value,
             status: 'Active',
-            isDischarged: false
+            isDischarged: false,
+            submittedAt: Date.now() // Added for better sorting
         };
 
-        // 3. Save to LocalStorage
-        appointments.push(newRecord);
-        localStorage.setItem('hospitalAppointments', JSON.stringify(appointments));
-
-        alert("Success! Your request has been logged.");
-        location.reload();
+        // Push to Firebase 'appointments' node
+        db.ref('appointments').push(newRecord)
+            .then(() => {
+                alert("Success! Your appointment request has been sent to the hospital.");
+                location.reload();
+            })
+            .catch((error) => {
+                console.error("Firebase Error:", error);
+                alert("Storage Error: Check your internet connection or Firebase rules.");
+            });
     };
 
     window.onload = initDropdowns;
 </script>
 </body>
 </html>
+
