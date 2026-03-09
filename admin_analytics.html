@@ -210,60 +210,77 @@
         });
     }
 
-    // MAIN CLOUD LISTENER - TRIGGERS ON ANY CHANGE
-    db.ref('patients').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
+    // UPDATED CLOUD ANALYTICS LOGIC
+    function updateAnalytics() {
+        const patientsRef = db.ref('patients');
+        const appointmentsRef = db.ref('appointments');
 
-        const patients = Object.values(data);
-        
-        // Filtering for Active vs Discharged
-        const active = patients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
-        const dischargedTodayCount = patients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
-        
-        // Recalculating Severity Mix for Pie Chart
-        const criticalCount = active.filter(p => p.level === 'CRITICAL' || p.triage === 'CRITICAL').length;
-        const standardCount = active.length - criticalCount;
+        Promise.all([
+            patientsRef.once('value'),
+            appointmentsRef.once('value')
+        ]).then((snapshots) => {
+            const patientsData = snapshots[0].val() || {};
+            const appointmentsData = snapshots[1].val() || {};
 
-        // UI Updates
-        document.getElementById('valActive').innerText = active.length;
-        document.getElementById('valDischarged').innerText = dischargedTodayCount;
-        
-        const occupancy = Math.round((active.length / 12) * 100);
-        document.getElementById('valOccupancy').innerText = occupancy + "%";
-        
-        // Unit Status Alert Logic
-        const statusVal = document.getElementById('valEmergency');
-        const statusCard = document.getElementById('statusCard');
-        if (criticalCount >= 3 || occupancy >= 85) {
-            statusVal.innerText = "CRITICAL";
-            statusVal.style.color = "var(--urgent-red)";
-            statusCard.style.borderLeftColor = "var(--urgent-red)";
-        } else if (occupancy >= 60) {
-            statusVal.innerText = "BUSY";
-            statusVal.style.color = "var(--chart-orange)";
-            statusCard.style.borderLeftColor = "var(--chart-orange)";
-        } else {
-            statusVal.innerText = "NORMAL";
-            statusVal.style.color = "var(--pgh-emerald)";
-            statusCard.style.borderLeftColor = "var(--pgh-emerald)";
-        }
+            // Merge all data for complete view
+            const allPatients = [
+                ...Object.values(patientsData),
+                ...Object.values(appointmentsData)
+            ];
 
-        document.getElementById('countCritical').innerText = criticalCount;
-        document.getElementById('countStable').innerText = standardCount;
-        
-        // Visual Sync Feedback
-        const lastUp = document.getElementById('lastUpdated');
-        lastUp.innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
-        lastUp.classList.add('sync-pulse');
-        setTimeout(() => lastUp.classList.remove('sync-pulse'), 2000);
+            if (allPatients.length === 0) {
+                document.getElementById('lastUpdated').innerText = "NO DATA FOUND";
+                return;
+            }
 
-        // LIVE PIE CHART UPDATE
-        triageChart.data.datasets[0].data = [criticalCount, standardCount];
-        triageChart.update();
+            // 1. Filter for Active vs Discharged
+            const active = allPatients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
+            const dischargedTodayCount = allPatients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
+            
+            // 2. Triage Severity Mix
+            const criticalCount = active.filter(p => p.level === 'CRITICAL').length;
+            const standardCount = active.length - criticalCount;
 
-        updateInfluxData(patients);
-    });
+            // 3. UI Updates
+            document.getElementById('valActive').innerText = active.length;
+            document.getElementById('valDischarged').innerText = dischargedTodayCount;
+            
+            const occupancy = Math.round((active.length / 12) * 100);
+            document.getElementById('valOccupancy').innerText = occupancy + "%";
+            
+            // 4. Unit Status Alert Logic
+            const statusVal = document.getElementById('valEmergency');
+            const statusCard = document.getElementById('statusCard');
+            if (criticalCount >= 3 || occupancy >= 85) {
+                statusVal.innerText = "CRITICAL";
+                statusVal.style.color = "var(--urgent-red)";
+                statusCard.style.borderLeftColor = "var(--urgent-red)";
+            } else if (occupancy >= 60) {
+                statusVal.innerText = "BUSY";
+                statusVal.style.color = "var(--chart-orange)";
+                statusCard.style.borderLeftColor = "var(--chart-orange)";
+            } else {
+                statusVal.innerText = "NORMAL";
+                statusVal.style.color = "var(--pgh-emerald)";
+                statusCard.style.borderLeftColor = "var(--pgh-emerald)";
+            }
+
+            document.getElementById('countCritical').innerText = criticalCount;
+            document.getElementById('countStable').innerText = standardCount;
+            
+            // 5. Visual Sync Feedback
+            const lastUp = document.getElementById('lastUpdated');
+            lastUp.innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
+            lastUp.classList.add('sync-pulse');
+            setTimeout(() => lastUp.classList.remove('sync-pulse'), 2000);
+
+            // 6. Chart Updates
+            triageChart.data.datasets[0].data = [criticalCount, standardCount];
+            triageChart.update();
+
+            updateInfluxData(allPatients);
+        });
+    }
 
     function updateInfluxData(patients) {
         const hourlyCounts = {};
@@ -283,6 +300,10 @@
         influxChart.data.datasets[0].data = sortedHours.map(h => hourlyCounts[h]);
         influxChart.update();
     }
+
+    // Listen to changes on both nodes
+    db.ref('patients').on('value', updateAnalytics);
+    db.ref('appointments').on('value', updateAnalytics);
 
     window.onload = initCharts;
 </script>
