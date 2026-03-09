@@ -100,13 +100,6 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     const pIndex = params.get('id');
-    
-    const medicalTeam = [
-        { name: "Dr. Aris Rodriguez", role: "ER Consultant" },
-        { name: "Dr. Elena Cruz", role: "Resident Physician" },
-        { name: "Dr. Marcus Lim", role: "Trauma Surgeon" },
-        { name: "Dr. Sarah Johnson", role: "Triage Officer" }
-    ];
 
     function loadProfile() {
         let patients = JSON.parse(localStorage.getItem('patients')) || [];
@@ -115,23 +108,20 @@
 
         const container = document.getElementById('profileContainer');
         
-        // --- QUEUE LOGIC START ---
-        let currentLabel = "";
-        let actionButton = "";
+        // Define dynamic Management UI based on current status
+        let managementLabel = "Patient Management";
+        let statusButton = '';
 
-        if (!p.status || p.status === 'WAITING' || p.status === 'QUEUE') {
-            currentLabel = "QUEUE";
-            actionButton = `<button class="btn-status btn-queue" onclick="updateStatus('IN TREATMENT')">IN TREATMENT</button>`;
-        } 
-        else if (p.status === 'IN TREATMENT') {
-            currentLabel = "IN TREATMENT";
-            actionButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck()">DISCHARGE</button>`;
-        } 
-        else if (p.status === 'READY FOR DISCHARGE') {
-            currentLabel = "READY FOR DISCHARGE";
-            actionButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
+        if (!p.status || p.status === 'WAITING') {
+            managementLabel = "Patient Management (QUEUE)";
+            statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT</button>`;
+        } else if (p.status === 'IN TREATMENT' || p.status === 'IN CARE') {
+            managementLabel = "Patient Management (IN TREATMENT)";
+            statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck()">PROCEED TO DISCHARGE</button>`;
+        } else if (p.status === 'READY FOR DISCHARGE') {
+            managementLabel = "Patient Management (FOR DISCHARGE)";
+            statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
         }
-        // --- QUEUE LOGIC END ---
 
         container.innerHTML = `
             <div class="patient-header">
@@ -189,9 +179,9 @@
                     </div>
 
                     <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
-                        <h3>Patient Management (${currentLabel})</h3>
+                        <h3>${managementLabel}</h3>
                         <div class="action-footer">
-                            ${actionButton}
+                            ${statusButton}
                         </div>
                     </div>
                 </div>
@@ -216,6 +206,12 @@
             });
         } else if (type === 'doctor') {
             title.innerText = "Assign Doctor in Charge";
+            // Dynamically load from localStorage 'teamData' (populated in team.html)
+            const medicalTeam = JSON.parse(localStorage.getItem('teamData')) || [
+                { name: "Dr. Aris Rodriguez", role: "ER Consultant" },
+                { name: "Dr. Elena Cruz", role: "Resident Physician" }
+            ];
+            
             medicalTeam.forEach(doc => {
                 options.innerHTML += `
                     <div class="opt-btn" onclick="updateField('doctorInCharge', '${doc.name}')">
@@ -233,15 +229,12 @@
     function updateField(field, value) {
         let patients = JSON.parse(localStorage.getItem('patients'));
         patients[pIndex][field] = value;
+        // If assigning a bed from Queue, transition to In Treatment
+        if (field === 'bed' && (!patients[pIndex].status || patients[pIndex].status === 'WAITING')) {
+            patients[pIndex].status = 'IN TREATMENT';
+        }
         localStorage.setItem('patients', JSON.stringify(patients));
         closeModal();
-        loadProfile();
-    }
-
-    function updateStatus(newStatus) {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex].status = newStatus;
-        localStorage.setItem('patients', JSON.stringify(patients));
         loadProfile();
     }
 
@@ -251,7 +244,7 @@
         if (p.level === 'NORMAL') {
             window.location.href = `discharge.html?id=${pIndex}`;
         } else {
-            alert("Clinical Warning: Patient status must be NORMAL to process discharge.");
+            alert("Clinical Warning: Patient level must be NORMAL before proceeding to discharge.");
         }
     }
 
