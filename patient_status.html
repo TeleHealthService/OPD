@@ -3,268 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Profile | General Hospital</title>
+    <title>Patient Clinical Profile | General Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --pgh-dark-green: #0D2818;
             --pgh-emerald: #04471C;
-            --white: #ffffff;
             --light-gray: #f4f7f6;
-            --urgent-red: #e74c3c;
-            --info-blue: #3498db;
-            --success-green: #27ae60;
         }
-
-        * { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: #333; }
-
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); }
         header { 
-            background: linear-gradient(rgba(13, 40, 24, 0.9), rgba(13, 40, 24, 0.9)), url('bg1.png');
-            background-size: cover; padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
+            background: var(--pgh-dark-green); padding: 15px; color: white;
+            display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald);
         }
-        .hospital-logo { width: 40px; height: 40px; }
-        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; }
-
-        nav { background: var(--pgh-dark-green); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .back-btn { color: white; text-decoration: none; font-size: 0.7rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-
-        .container { padding: 20px; max-width: 1400px; margin: 0 auto; }
-
-        .patient-header { background: white; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .patient-identity h1 { margin: 0; font-size: 1.8rem; color: var(--pgh-dark-green); display: flex; align-items: center; gap: 10px; }
-        
-        .status-badge { padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; cursor: pointer; }
-        .bg-CRITICAL { background: var(--urgent-red); }
-        .bg-STABLE { background: var(--info-blue); }
-        .bg-NORMAL { background: var(--success-green); }
-        .bg-URGENT { background: #f39c12; }
-
-        .profile-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; font-size: 0.9rem; color: #888; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-
-        .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; text-align: center; margin-bottom: 15px; }
-        .vital-box { padding: 15px; border-radius: 10px; background: #fcfcfc; border: 1px solid #f0f0f0; }
-        .vital-box i { font-size: 1.2rem; margin-bottom: 10px; display: block; }
-        .vital-box span { font-size: 1.4rem; font-weight: 800; color: var(--pgh-dark-green); }
-
-        .doc-charge-area { border-top: 1px solid #eee; padding-top: 15px; display: flex; align-items: center; gap: 10px; }
-        .doc-tag { font-size: 0.75rem; font-weight: bold; color: var(--pgh-emerald); cursor: pointer; background: #e8f5e9; padding: 4px 10px; border-radius: 4px; }
-
-        .tool-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tool-btn { flex: 1; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 5px; }
-        .tool-btn.active { background: var(--pgh-emerald); color: white; border-color: var(--pgh-emerald); }
-        .tool-content { display: none; }
-        .tool-content.active { display: block; }
-        .score-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
-        .score-val { font-weight: bold; color: var(--pgh-emerald); }
-
-        .action-footer { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-status { flex: 1; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
-        .btn-queue { background: #fff3e0; color: #ef6c00; }
-        .btn-care { background: #e3f2fd; color: #1565c0; }
-        .btn-ready { background: var(--pgh-emerald); color: white; }
-
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; }
-        .modal-content { background:white; padding:25px; border-radius:15px; width:350px; text-align:center; }
-        .choice-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
-        .opt-btn { padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem; text-align: left; display: flex; align-items: center; gap: 10px; }
-        .opt-btn:hover { background: #f0f7f3; border-color: var(--pgh-emerald); }
+        .back-btn { color: white; text-decoration: none; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-left: 15px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-title { color: var(--pgh-emerald); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .info-item label { display: block; font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
+        .info-item span { font-size: 1rem; color: #333; font-weight: 600; }
+        .vitals-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; }
+        .vital-box { background: #f8fcf9; padding: 15px; border-radius: 8px; border: 1px solid #e0eee4; }
+        .vital-box i { color: var(--pgh-emerald); margin-bottom: 5px; }
+        .status-badge { padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; background: var(--pgh-emerald); color: white; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" class="hospital-logo" alt="Logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Clinical Profile View</small>
+    <img src="logo.png" alt="Logo" style="width: 40px;">
+    <div>
+        <h2 style="margin:0; font-size: 1.1rem;">GENERAL HOSPITAL</h2>
+        <small style="opacity:0.8;">Clinical Profile View</small>
     </div>
 </header>
 
-<nav>
-    <a href="admin_dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i> BACK TO DASHBOARD</a>
-</nav>
+<div style="background: #111; padding: 10px;">
+    <a href="admin_dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i> Back to Dashboard</a>
+</div>
 
-<div class="container" id="profileContainer"></div>
-
-<div id="selectorModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle">Select Option</h3>
-        <div class="choice-grid" id="modalOptions"></div>
-        <button onclick="closeModal()" style="margin-top:20px; border:none; background:none; color:#888; cursor:pointer;">Cancel</button>
+<div class="container" id="profileContent">
+    <div style="text-align:center; padding: 50px; color: #888;">
+        <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Loading patient records...
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const pIndex = params.get('id');
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
 
-    function loadProfile() {
-        let patients = JSON.parse(localStorage.getItem('patients')) || [];
-        const p = patients[pIndex];
-        if (!p) return;
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        const container = document.getElementById('profileContainer');
+    // 1. Get ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const patientId = urlParams.get('id');
+
+    if (!patientId) {
+        document.getElementById('profileContent').innerHTML = "<h1>No Patient ID Provided</h1>";
+    } else {
+        fetchPatientData();
+    }
+
+    // 2. Logic to check both nodes
+    function fetchPatientData() {
+        const paths = ['patients', 'appointments'];
+        let found = false;
+
+        db.ref('patients/' + patientId).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                renderProfile(snapshot.val());
+                found = true;
+            } else {
+                // If not in 'patients', try 'appointments'
+                db.ref('appointments/' + patientId).once('value', (snap2) => {
+                    if (snap2.exists()) {
+                        renderProfile(snap2.val());
+                        found = true;
+                    } else {
+                        document.getElementById('profileContent').innerHTML = "<h1>Patient Record Not Found</h1>";
+                    }
+                });
+            }
+        });
+    }
+
+    // 3. Render the data to HTML
+    function renderProfile(p) {
+        const container = document.getElementById('profileContent');
         
-        // Define dynamic Management UI based on current status
-        let managementLabel = "Patient Management";
-        let statusButton = '';
-
-        if (!p.status || p.status === 'WAITING') {
-            managementLabel = "Patient Management (QUEUE)";
-            statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT</button>`;
-        } else if (p.status === 'IN TREATMENT' || p.status === 'IN CARE') {
-            managementLabel = "Patient Management (IN TREATMENT)";
-            statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck()">PROCEED TO DISCHARGE</button>`;
-        } else if (p.status === 'READY FOR DISCHARGE') {
-            managementLabel = "Patient Management (FOR DISCHARGE)";
-            statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
-        }
+        // Handle vital signs from nurse.html (if they exist)
+        const v = p.vitals || { bp: '--', temp: '--', hr: '--', o2: '--' };
 
         container.innerHTML = `
-            <div class="patient-header">
-                <div class="patient-identity">
-                    <h1>${p.name} <span class="status-badge bg-${p.level}" onclick="openModal('level')">${p.level}</span></h1>
-                    <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.sex} • ARRIVED: ${p.arrived || '11:36 AM'}</small>
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div class="section-title">Personal Information</div>
+                    <span class="status-badge">${p.status || 'ACTIVE'}</span>
                 </div>
-                <div style="text-align:right; cursor:pointer;" onclick="openModal('bed')">
-                    <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
-                    <div style="font-size:1.5rem; font-weight:900; color:var(--pgh-emerald);">${p.bed || 'NONE'}</div>
+                <div class="grid">
+                    <div class="info-item"><label>Full Name</label><span>${p.name || 'N/A'}</span></div>
+                    <div class="info-item"><label>Patient ID</label><span>${patientId}</span></div>
+                    <div class="info-item"><label>Age / Gender</label><span>${p.age || 'N/A'} / ${p.gender || p.sex || 'N/A'}</span></div>
+                    <div class="info-item"><label>Contact</label><span>${p.contact || 'N/A'}</span></div>
                 </div>
             </div>
 
-            <div class="profile-layout">
-                <div>
-                    <div class="card">
-                        <h3><i class="fas fa-notes-medical"></i> Chief Complaint</h3>
-                        <p style="font-size: 1.2rem; font-weight: 600; color: var(--pgh-dark-green); margin: 10px 0;">${p.complaint || 'No complaint noted'}</p>
-                    </div>
-
-                    <div class="card">
-                        <h3><i class="fas fa-heartbeat"></i> Vital Signs (via Nurse)</h3>
-                        <div class="vitals-grid">
-                            <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><span>${p.vitals?.bp || '---'}</span><label>BP</label></div>
-                            <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><span>${p.vitals?.hr || '---'}</span><label>HR</label></div>
-                            <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><span>${p.vitals?.temp || '---'}</span><label>TEMP</label></div>
-                            <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><span>${p.vitals?.o2 || '---'}</span><label>SPO2</label></div>
-                        </div>
-                        <div class="doc-charge-area">
-                            <i class="fas fa-user-md" style="color:#888"></i>
-                            <span style="font-size:0.7rem; color:#888; font-weight:bold;">MD IN CHARGE:</span>
-                            <span class="doc-tag" onclick="openModal('doctor')">${p.doctorInCharge || 'ASSIGN DOCTOR +'}</span>
-                        </div>
-                    </div>
+            <div class="card">
+                <div class="section-title">Vital Signs (from Nurse Station)</div>
+                <div class="vitals-grid">
+                    <div class="vital-box"><i class="fas fa-heartbeat"></i><label>BP</label><span>${v.bp}</span></div>
+                    <div class="vital-box"><i class="fas fa-thermometer-half"></i><label>TEMP</label><span>${v.temp}°C</span></div>
+                    <div class="vital-box"><i class="fas fa-wind"></i><label>O2 Sat</label><span>${v.o2}%</span></div>
+                    <div class="vital-box"><i class="fas fa-pulse"></i><label>HR</label><span>${v.hr} bpm</span></div>
                 </div>
+            </div>
 
-                <div>
-                    <div class="card">
-                        <h3><i class="fas fa-toolbox"></i> Clinical Tools</h3>
-                        <div class="tool-tabs">
-                            <button class="tool-btn active" onclick="switchTool(event, 'gcs')">GCS</button>
-                            <button class="tool-btn" onclick="switchTool(event, 'pain')">PAIN SCALE</button>
-                        </div>
-                        <div id="gcs" class="tool-content active">
-                            <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '0'}</span></div>
-                            <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.verbal || '0'}</span></div>
-                            <div class="score-row"><span>Motor</span><span class="score-val">${p.gcs?.motor || '0'}</span></div>
-                        </div>
-                        <div id="pain" class="tool-content">
-                            <div style="text-align:center; padding: 20px 0;">
-                                <label style="display:block; font-size:0.7rem; color:#888;">PAIN RATING</label>
-                                <strong style="font-size:3rem; color:var(--urgent-red);">${p.painScale || '0'}/10</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
-                        <h3>${managementLabel}</h3>
-                        <div class="action-footer">
-                            ${statusButton}
-                        </div>
-                    </div>
+            <div class="card">
+                <div class="section-title">Clinical Assessment</div>
+                <div class="info-item" style="margin-bottom:15px;">
+                    <label>Chief Complaint</label>
+                    <p style="margin:5px 0; font-weight:600;">${p.symptoms || p.complaint || 'No complaint recorded.'}</p>
+                </div>
+                <div class="info-item">
+                    <label>Nurse/Doctor Notes</label>
+                    <p style="margin:5px 0; color:#555;">${p.clinical_notes || 'Pending evaluation from nurse station...'}</p>
                 </div>
             </div>
         `;
     }
-
-    function openModal(type) {
-        const title = document.getElementById('modalTitle');
-        const options = document.getElementById('modalOptions');
-        options.innerHTML = '';
-
-        if (type === 'bed') {
-            title.innerText = "Assign ER Bed";
-            ['A1','A2','A3','B1','B2','B3','C1','C2','C3'].forEach(b => {
-                options.innerHTML += `<div class="opt-btn" onclick="updateField('bed', '${b}')"><i class="fas fa-bed"></i> Bed ${b}</div>`;
-            });
-        } else if (type === 'level') {
-            title.innerText = "Set Triage Level";
-            ['NORMAL', 'STABLE', 'URGENT', 'CRITICAL'].forEach(l => {
-                options.innerHTML += `<div class="opt-btn" onclick="updateField('level', '${l}')">${l}</div>`;
-            });
-        } else if (type === 'doctor') {
-            title.innerText = "Assign Doctor in Charge";
-            // Dynamically load from localStorage 'teamData' (populated in team.html)
-            const medicalTeam = JSON.parse(localStorage.getItem('teamData')) || [
-                { name: "Dr. Aris Rodriguez", role: "ER Consultant" },
-                { name: "Dr. Elena Cruz", role: "Resident Physician" }
-            ];
-            
-            medicalTeam.forEach(doc => {
-                options.innerHTML += `
-                    <div class="opt-btn" onclick="updateField('doctorInCharge', '${doc.name}')">
-                        <i class="fas fa-user-md"></i>
-                        <div>
-                            <div>${doc.name}</div>
-                            <div style="font-size:0.65rem; color:#888;">${doc.role}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-        document.getElementById('selectorModal').style.display = 'flex';
-    }
-
-    function updateField(field, value) {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex][field] = value;
-        // If assigning a bed from Queue, transition to In Treatment
-        if (field === 'bed' && (!patients[pIndex].status || patients[pIndex].status === 'WAITING')) {
-            patients[pIndex].status = 'IN TREATMENT';
-        }
-        localStorage.setItem('patients', JSON.stringify(patients));
-        closeModal();
-        loadProfile();
-    }
-
-    function handleDischargeCheck() {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        const p = patients[pIndex];
-        if (p.level === 'NORMAL') {
-            window.location.href = `discharge.html?id=${pIndex}`;
-        } else {
-            alert("Clinical Warning: Patient level must be NORMAL before proceeding to discharge.");
-        }
-    }
-
-    function finalizeDischarge() {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex].status = 'DISCHARGED';
-        localStorage.setItem('patients', JSON.stringify(patients));
-        window.location.href = 'admin_dashboard.html';
-    }
-
-    function switchTool(evt, toolId) {
-        document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(toolId).classList.add('active');
-        evt.currentTarget.classList.add('active');
-    }
-
-    function closeModal() { document.getElementById('selectorModal').style.display = 'none'; }
-    window.onload = loadProfile;
 </script>
-
 </body>
 </html>
