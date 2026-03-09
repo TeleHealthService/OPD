@@ -165,12 +165,30 @@
         }
 
         footer {
-            position: absolute;
-            bottom: 20px;
+            padding: 30px 20px;
             width: 100%;
             text-align: center;
             font-size: 0.75rem;
             color: #888;
+            background: #f9f9f9; /* Light contrast from the white body */
+            border-top: 1px solid #eee;
+        }
+
+        .admin-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--pgh-emerald);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 1px solid var(--pgh-emerald);
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .admin-link:hover {
+            background: var(--pgh-emerald);
+            color: white;
         }
     </style>
 </head>
@@ -219,7 +237,7 @@
                     <a href="#" style="color: var(--pgh-emerald); text-decoration: none;">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn-login">SIGN IN TO PORTAL</button>
+                <button type="submit" class="btn-login">SIGN IN</button>
             </form>
 
             <div style="text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666;">
@@ -235,8 +253,12 @@
 </div>
 
 <footer class="desktop-footer">
-    &copy; 2026 General Hospital Outpatient Department. Empowering Health Through Innovation.
+    <div>
+        &copy; 2026 General Hospital Outpatient Department. Empowering Health Through Innovation.
+    </div>
+    <a href="admin_login.html" class="admin-link">
+        <i class="fas fa-user-shield"></i> ADMIN LOGIN
+    </a>
 </footer>
-
 </body>
 </html>
