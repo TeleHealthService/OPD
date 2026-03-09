@@ -166,17 +166,32 @@
         render();
     }
 
-    // Real-time listener for the 'patients' node
-    db.ref('patients').on('value', (snapshot) => {
-        allPatients = [];
-        const data = snapshot.val();
-        if (data) {
-            Object.keys(data).forEach(id => {
-                allPatients.push({ ...data[id], firebaseId: id });
+    // Combined Real-time listener for both 'patients' and 'appointments'
+    function syncData() {
+        const paths = ['patients', 'appointments'];
+        let dataStore = { patients: {}, appointments: {} };
+
+        paths.forEach(path => {
+            db.ref(path).on('value', (snapshot) => {
+                dataStore[path] = snapshot.val() || {};
+                
+                // Re-combine all data whenever either node updates
+                allPatients = [];
+                Object.keys(dataStore.patients).forEach(id => {
+                    allPatients.push({ ...dataStore.patients[id], firebaseId: id });
+                });
+                Object.keys(dataStore.appointments).forEach(id => {
+                    // Check to prevent duplicate entries if a patient exists in both
+                    const isDuplicate = allPatients.some(p => p.name === dataStore.appointments[id].name);
+                    if (!isDuplicate) {
+                        allPatients.push({ ...dataStore.appointments[id], firebaseId: id });
+                    }
+                });
+                
+                render();
             });
-        }
-        render();
-    });
+        });
+    }
 
     function render() {
         const tbody = document.getElementById('patientTableBody');
@@ -186,7 +201,7 @@
         let occupiedBeds = [];
 
         allPatients.forEach(p => {
-            if (p.isDischarged) return;
+            if (p.isDischarged || p.status === 'DISCHARGED') return;
 
             stats.total++;
             if (p.status === 'WAITING') stats.wait++;
@@ -198,17 +213,19 @@
 
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
             
-            // Build Clinical Summary string
-            const vitalsText = p.vitals ? `<span class="vitals-pill">BP: ${p.vitals.bp}</span><span class="vitals-pill">O2: ${p.vitals.o2}%</span>` : '<span style="color:#ccc">No vitals yet</span>';
+            // Support both Triage (vitals object) and basic Registry formats
+            const vitalsText = p.vitals ? 
+                `<span class="vitals-pill">BP: ${p.vitals.bp}</span><span class="vitals-pill">O2: ${p.vitals.o2}%</span>` : 
+                '<span style="color:#ccc">No vitals yet</span>';
 
             tbody.innerHTML += `
                 <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.arrived || '--:--'}</td>
-                    <td><span class="level-pill ${levelClass}">${p.level}</span></td>
+                    <td><strong>${p.name || 'Unknown'}</strong></td>
+                    <td>${p.arrived || p.timestamp || '--:--'}</td>
+                    <td><span class="level-pill ${levelClass}">${p.level || 'NORMAL'}</span></td>
                     <td>${vitalsText}</td>
                     <td style="font-weight:bold; color:var(--pgh-emerald)">${p.bed || '---'}</td>
-                    <td style="font-size:0.7rem; font-weight:bold">${p.status}</td>
+                    <td style="font-size:0.7rem; font-weight:bold">${p.status || 'PENDING'}</td>
                 </tr>
             `;
         });
@@ -230,7 +247,11 @@
             grid.innerHTML += `<div class="bed-unit ${isOcc ? 'bed-occupied' : ''}">${b}</div>`;
         });
     }
+
+    // Initialize the dual-sync
+    syncData();
 </script>
 </body>
 </html>
+
 
