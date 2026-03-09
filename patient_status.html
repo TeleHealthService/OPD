@@ -13,13 +13,12 @@
             --light-gray: #f4f7f6;
             --urgent-red: #e74c3c;
             --info-blue: #3498db;
-            --border-color: #e0e0e0;
+            --success-green: #27ae60;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: #333; }
 
-        /* --- Header & Nav (Dashboard Match) --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.9), rgba(13, 40, 24, 0.9)), url('bg1.png');
             background-size: cover; padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
@@ -32,45 +31,44 @@
 
         .container { padding: 20px; max-width: 1400px; margin: 0 auto; }
 
-        /* --- Profile Header --- */
         .patient-header { background: white; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         .patient-identity h1 { margin: 0; font-size: 1.8rem; color: var(--pgh-dark-green); display: flex; align-items: center; gap: 10px; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; }
-        .bg-crit { background: var(--urgent-red); }
-        .bg-stable { background: var(--success-green); }
+        
+        .status-badge { padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; cursor: pointer; }
+        .bg-CRITICAL { background: var(--urgent-red); }
+        .bg-STABLE { background: var(--info-blue); }
+        .bg-NORMAL { background: var(--success-green); }
+        .bg-URGENT { background: #f39c12; }
 
-        /* --- Layout Grid --- */
         .profile-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
         .card h3 { margin-top: 0; font-size: 0.9rem; color: #888; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-        /* --- Vitals Monitor Style --- */
         .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; text-align: center; }
         .vital-box { padding: 15px; border-radius: 10px; background: #fcfcfc; border: 1px solid #f0f0f0; }
         .vital-box i { font-size: 1.2rem; margin-bottom: 10px; display: block; }
-        .vital-box label { font-size: 0.6rem; font-weight: bold; color: #999; display: block; }
         .vital-box span { font-size: 1.4rem; font-weight: 800; color: var(--pgh-dark-green); }
 
-        /* --- Clinical Tools --- */
+        /* --- Tools Styling --- */
         .tool-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tool-btn { flex: 1; padding: 8px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 5px; }
+        .tool-btn { flex: 1; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 5px; }
         .tool-btn.active { background: var(--pgh-emerald); color: white; border-color: var(--pgh-emerald); }
+        .tool-content { display: none; }
+        .tool-content.active { display: block; }
         .score-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
         .score-val { font-weight: bold; color: var(--pgh-emerald); }
 
-        /* --- Status Control --- */
         .action-footer { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-status { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
+        .btn-status { flex: 1; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
         .btn-queue { background: #fff3e0; color: #ef6c00; }
         .btn-care { background: #e3f2fd; color: #1565c0; }
-        .btn-discharge { background: var(--pgh-emerald); color: white; }
+        .btn-ready { background: var(--pgh-emerald); color: white; }
 
-        /* --- Bed Overlay --- */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; }
-        .modal-content { background:white; padding:25px; border-radius:15px; width:400px; text-align:center; }
-        .bed-choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .bed-opt { padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .bed-opt:hover { background: var(--pgh-emerald); color: white; }
+        .modal-content { background:white; padding:25px; border-radius:15px; width:350px; text-align:center; }
+        .choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .opt-btn { padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .opt-btn:hover { background: var(--pgh-emerald); color: white; }
     </style>
 </head>
 <body>
@@ -87,14 +85,12 @@
     <a href="admin_dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i> BACK TO DASHBOARD</a>
 </nav>
 
-<div class="container" id="profileContainer">
-    </div>
+<div class="container" id="profileContainer"></div>
 
-<div id="bedModal" class="modal">
+<div id="selectorModal" class="modal">
     <div class="modal-content">
-        <h3><i class="fas fa-bed"></i> Assign ER Bed</h3>
-        <p style="font-size:0.8rem; color:#888;">Select an available bed to start treatment</p>
-        <div class="bed-choice-grid" id="bedOptions"></div>
+        <h3 id="modalTitle">Select Option</h3>
+        <div class="choice-grid" id="modalOptions"></div>
         <button onclick="closeModal()" style="margin-top:20px; border:none; background:none; color:#888; cursor:pointer;">Cancel</button>
     </div>
 </div>
@@ -102,32 +98,31 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     const pIndex = params.get('id');
+    let patients = JSON.parse(localStorage.getItem('patients')) || [];
     
     function loadProfile() {
-        const patients = JSON.parse(localStorage.getItem('patients')) || [];
         const p = patients[pIndex];
-
         if (!p) return;
 
         const container = document.getElementById('profileContainer');
         
-        // Status Button Logic
+        // Dynamic Status Button Logic
         let statusButton = '';
         if (p.status === 'WAITING') {
-            statusButton = `<button class="btn-status btn-queue" onclick="openBedModal()">SELECT BED (QUEUE)</button>`;
-        } else if (p.status === 'READY') {
-            statusButton = `<button class="btn-status btn-discharge" onclick="dischargePatient()">FINAL DISCHARGE</button>`;
-        } else {
-            statusButton = `<button class="btn-status btn-care" disabled>PATIENT IN CARE</button>`;
+            statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">SELECT BED (QUEUE)</button>`;
+        } else if (p.status === 'IN TREATMENT') {
+            statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck()">PROCEED TO DISCHARGE</button>`;
+        } else if (p.status === 'READY FOR DISCHARGE') {
+            statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
         }
 
         container.innerHTML = `
             <div class="patient-header">
                 <div class="patient-identity">
-                    <h1>${p.name} <span class="status-badge bg-crit">${p.level}</span></h1>
+                    <h1>${p.name} <span class="status-badge bg-${p.level}" onclick="openModal('level')">${p.level}</span></h1>
                     <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.sex} • ARRIVED: ${p.arrived || '11:36 AM'}</small>
                 </div>
-                <div style="text-align:right">
+                <div style="text-align:right; cursor:pointer;" onclick="openModal('bed')">
                     <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
                     <div style="font-size:1.5rem; font-weight:900; color:var(--pgh-emerald);">${p.bed || 'NONE'}</div>
                 </div>
@@ -143,11 +138,10 @@
                     <div class="card">
                         <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
                         <div class="vitals-grid">
-                            <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><label>BLOOD PRESSURE</label><span>${p.vitals?.bp || '160/95'}</span></div>
-                            <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><label>HEART RATE</label><span>${p.vitals?.hr || '110'}</span></div>
-                            <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><label>TEMP</label><span>${p.vitals?.temp || '36.8'}°C</span></div>
-                            <div class="vital-box"><i class="fas fa-wind" style="color:#81ecec"></i><label>RESP RATE</label><span>${p.vitals?.resp || '24'}</span></div>
-                            <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><label>SPO2</label><span>${p.vitals?.o2 || '92'}%</span></div>
+                            <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><span>${p.vitals?.bp || '120/80'}</span><label>BP</label></div>
+                            <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><span>${p.vitals?.hr || '72'}</span><label>HR</label></div>
+                            <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><span>${p.vitals?.temp || '36.5'}°C</span><label>TEMP</label></div>
+                            <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><span>${p.vitals?.o2 || '98'}%</span><label>SPO2</label></div>
                         </div>
                     </div>
                 </div>
@@ -156,17 +150,18 @@
                     <div class="card">
                         <h3><i class="fas fa-toolbox"></i> Clinical Tools</h3>
                         <div class="tool-tabs">
-                            <button class="tool-btn active">GCS</button>
-                            <button class="tool-btn">PAIN SCALE</button>
-                            <button class="tool-btn">ABCDE</button>
+                            <button class="tool-btn active" onclick="switchTool(event, 'gcs')">GCS</button>
+                            <button class="tool-btn" onclick="switchTool(event, 'pain')">PAIN SCALE</button>
                         </div>
-                        <div id="toolData">
+                        <div id="gcs" class="tool-content active">
                             <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '4'}</span></div>
-                            <div class="score-row"><span>Verbal Response</span><span class="score-val">${p.gcs?.verbal || '5'}</span></div>
-                            <div class="score-row"><span>Motor Response</span><span class="score-val">${p.gcs?.motor || '6'}</span></div>
-                            <div style="text-align:center; padding-top:15px;">
-                                <small style="display:block; color:#aaa;">TOTAL SCORE</small>
-                                <strong style="font-size:1.5rem; color:var(--pgh-emerald)">15/15</strong>
+                            <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.verbal || '5'}</span></div>
+                            <div class="score-row"><span>Motor</span><span class="score-val">${p.gcs?.motor || '6'}</span></div>
+                        </div>
+                        <div id="pain" class="tool-content">
+                            <div style="text-align:center; padding: 20px 0;">
+                                <label style="display:block; font-size:0.7rem; color:#888;">CURRENT PAIN RATING</label>
+                                <strong style="font-size:3rem; color:var(--urgent-red);">${p.painScale || '0'}/10</strong>
                             </div>
                         </div>
                     </div>
@@ -182,34 +177,61 @@
         `;
     }
 
-    // --- Interaction Logic ---
-    function openBedModal() {
-        const grid = document.getElementById('bedOptions');
-        grid.innerHTML = '';
-        ['A1','A2','A3','B1','B2','B3','C1','C2','C3'].forEach(b => {
-            grid.innerHTML += `<div class="bed-opt" onclick="assignBed('${b}')">${b}</div>`;
-        });
-        document.getElementById('bedModal').style.display = 'flex';
+    // --- State Management ---
+    function openModal(type) {
+        const title = document.getElementById('modalTitle');
+        const options = document.getElementById('modalOptions');
+        options.innerHTML = '';
+
+        if (type === 'bed') {
+            title.innerText = "Assign Bed";
+            ['A1','A2','A3','B1','B2','B3','C1','C2','C3'].forEach(b => {
+                options.innerHTML += `<div class="opt-btn" onclick="updateField('bed', '${b}')">${b}</div>`;
+            });
+        } else if (type === 'level') {
+            title.innerText = "Set Triage Level";
+            ['NORMAL', 'STABLE', 'URGENT', 'CRITICAL'].forEach(l => {
+                options.innerHTML += `<div class="opt-btn" onclick="updateField('level', '${l}')">${l}</div>`;
+            });
+        }
+        document.getElementById('selectorModal').style.display = 'flex';
     }
 
-    function assignBed(bedNum) {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex].bed = bedNum;
-        patients[pIndex].status = 'IN CARE';
+    function updateField(field, value) {
+        patients[pIndex][field] = value;
+        if (field === 'bed') patients[pIndex].status = 'IN CARE';
+        saveData();
+    }
+
+    function handleDischargeCheck() {
+        const p = patients[pIndex];
+        if (p.level === 'NORMAL') {
+            window.location.href = `discharge.html?id=${pIndex}`;
+        } else {
+            alert("Patient is not ready for discharge. Level must be NORMAL.");
+        }
+    }
+
+    function finalizeDischarge() {
+        patients[pIndex].status = 'DISCHARGED';
+        saveData();
+        window.location.href = 'admin_dashboard.html';
+    }
+
+    function switchTool(evt, toolId) {
+        document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(toolId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    function saveData() {
         localStorage.setItem('patients', JSON.stringify(patients));
         closeModal();
         loadProfile();
     }
 
-    function dischargePatient() {
-        let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex].status = 'DISCH'; // Moves to archived list
-        localStorage.setItem('patients', JSON.stringify(patients));
-        location.href = 'admin_dashboard.html';
-    }
-
-    function closeModal() { document.getElementById('bedModal').style.display = 'none'; }
-
+    function closeModal() { document.getElementById('selectorModal').style.display = 'none'; }
     window.onload = loadProfile;
 </script>
 
