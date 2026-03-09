@@ -24,8 +24,8 @@
 </head>
 <body>
 <header>
-    <div><i class="fas fa-user-nurse"></i> NURSE STATION</div>
-    <div class="back-nav" onclick="location.reload()"><i class="fas fa-sync"></i> REFRESH LIST</div>
+    <div><i class="fas fa-user-nurse"></i>MONITORING</div>
+    <div class="back-nav" onclick="location.reload()"><i class="fas fa-sync"></i> BACK</div>
 </header>
 <div class="container">
     <div id="successNote" class="success-msg">Data Updated Successfully! Ready for next patient.</div>
@@ -52,7 +52,7 @@
             <div class="vitals-input-grid">
                 <div class="form-group"><label>GCS Eye (1-4)</label><input type="number" id="g_eye" min="1" max="4"></div>
                 <div class="form-group"><label>GCS Verbal (1-5)</label><input type="number" id="g_verbal" min="1" max="5"></div>
-                <div class="form-group"><label>GCS Motor (1-6)</label><input type="number" id="g_motor" min="1" max="6"></div>
+                <div class="form-group"><label>GCS Motor (1-5)</label><input type="number" id="g_motor" min="1" max="5"></div>
                 <div class="form-group"><label>Pain (0-10)</label><input type="number" id="pain_val" min="0" max="10" oninput="document.getElementById('painDisplay').innerText = this.value"></div>
             </div>
             <div class="pain-display" id="painDisplay">0</div>
