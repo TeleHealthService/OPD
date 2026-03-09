@@ -60,9 +60,8 @@
         .score-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
         .score-val { font-weight: bold; color: var(--pgh-emerald); }
 
-        .action-footer { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .management-label { font-size: 0.65rem; color: #888; font-weight: 800; text-transform: uppercase; margin-bottom: -5px; }
-        .btn-status { width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
+        .action-footer { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-status { flex: 1; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
         .btn-queue { background: #fff3e0; color: #ef6c00; }
         .btn-care { background: #e3f2fd; color: #1565c0; }
         .btn-ready { background: var(--pgh-emerald); color: white; }
@@ -110,52 +109,37 @@
     const db = firebase.database();
 
     const params = new URLSearchParams(window.location.search);
-    const patientId = params.get('id');
-    
-    let currentMedicalTeam = [];
-
-    // Load Doctors from team.html (Cloud)
-    function syncMedicalTeam() {
-        db.ref('team').on('value', (snapshot) => {
-            currentMedicalTeam = [];
-            snapshot.forEach((child) => {
-                currentMedicalTeam.push({
-                    name: child.val().name,
-                    role: child.val().role || "Medical Staff"
-                });
-            });
-        });
-    }
+    const pId = params.get('id');
 
     function loadProfile() {
-        if (!patientId) return;
+        if (!pId) return;
 
-        db.ref('patients/' + patientId).on('value', (snapshot) => {
+        db.ref('patients/' + pId).on('value', (snapshot) => {
             const p = snapshot.val();
             if (!p) return;
 
             const container = document.getElementById('profileContainer');
             
-            let statusLabel = '';
+            let managementLabel = "Patient Management";
             let statusButton = '';
 
-            // Patient Management Logic (Queue -> In Treatment -> Discharge)
-            if (p.status === 'WAITING' || !p.status) {
-                statusLabel = 'IN QUEUE';
-                statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT (ASSIGN BED)</button>`;
+            // Queue -> Treatment -> Discharge Logic
+            if (!p.status || p.status === 'WAITING') {
+                managementLabel = "Patient Management (QUEUE)";
+                statusButton = `<button class="btn-status btn-queue" onclick="openModal('bed')">START TREATMENT</button>`;
             } else if (p.status === 'IN TREATMENT' || p.status === 'IN CARE') {
-                statusLabel = 'IN TREATMENT';
+                managementLabel = "Patient Management (IN TREATMENT)";
                 statusButton = `<button class="btn-status btn-care" onclick="handleDischargeCheck('${p.level}')">PROCEED TO DISCHARGE</button>`;
             } else if (p.status === 'READY FOR DISCHARGE') {
-                statusLabel = 'PENDING RELEASE';
+                managementLabel = "Patient Management (FOR DISCHARGE)";
                 statusButton = `<button class="btn-status btn-ready" onclick="finalizeDischarge()">CONFIRM FINAL DISCHARGE</button>`;
             }
 
             container.innerHTML = `
                 <div class="patient-header">
                     <div class="patient-identity">
-                        <h1>${p.name} <span class="status-badge bg-${p.level || 'STABLE'}" onclick="openModal('level')">${p.level || 'STABLE'}</span></h1>
-                        <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.gender || p.sex} • ARRIVED: ${p.arrived || '---'}</small>
+                        <h1>${p.name} <span class="status-badge bg-${p.level}" onclick="openModal('level')">${p.level}</span></h1>
+                        <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.sex || p.gender} • ARRIVED: ${p.arrived || '---'}</small>
                     </div>
                     <div style="text-align:right; cursor:pointer;" onclick="openModal('bed')">
                         <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
@@ -196,7 +180,7 @@
                             <div id="gcs" class="tool-content active">
                                 <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '0'}</span></div>
                                 <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.verbal || '0'}</span></div>
-                                <div class="score-row"><span>Motor</span><span class="score-val">${p.gcs?.motor || '0'}</span></div>
+                                <div class="score-row"><span>Verbal</span><span class="score-val">${p.gcs?.motor || '0'}</span></div>
                             </div>
                             <div id="pain" class="tool-content">
                                 <div style="text-align:center; padding: 20px 0;">
@@ -207,9 +191,8 @@
                         </div>
 
                         <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
-                            <h3>Patient Management</h3>
+                            <h3>${managementLabel}</h3>
                             <div class="action-footer">
-                                <div class="management-label">${statusLabel}</div>
                                 ${statusButton}
                             </div>
                         </div>
@@ -236,41 +219,44 @@
             });
         } else if (type === 'doctor') {
             title.innerText = "Assign Doctor in Charge";
-            currentMedicalTeam.forEach(doc => {
-                options.innerHTML += `
-                    <div class="opt-btn" onclick="updateField('doctorInCharge', '${doc.name}')">
-                        <i class="fas fa-user-md"></i>
-                        <div>
-                            <div>${doc.name}</div>
-                            <div style="font-size:0.65rem; color:#888;">${doc.role}</div>
-                        </div>
-                    </div>`;
+            db.ref('team').once('value', (snapshot) => {
+                snapshot.forEach((child) => {
+                    const doc = child.val();
+                    options.innerHTML += `
+                        <div class="opt-btn" onclick="updateField('doctorInCharge', '${doc.name}')">
+                            <i class="fas fa-user-md"></i>
+                            <div>
+                                <div>${doc.name}</div>
+                                <div style="font-size:0.65rem; color:#888;">${doc.role || 'Staff'}</div>
+                            </div>
+                        </div>`;
+                });
             });
         }
         document.getElementById('selectorModal').style.display = 'flex';
     }
 
-    function updateField(field, value, startTreatment = false) {
+    function updateField(field, value, isBed = false) {
         let updates = {};
         updates[field] = value;
-        if (startTreatment) updates['status'] = 'IN TREATMENT';
-        
-        db.ref('patients/' + patientId).update(updates).then(() => {
+        // Auto-switch to Treatment if bed is assigned from Queue
+        if (isBed) updates['status'] = 'IN TREATMENT';
+
+        db.ref('patients/' + pId).update(updates).then(() => {
             closeModal();
         });
     }
 
     function handleDischargeCheck(level) {
         if (level === 'NORMAL') {
-            // Only if level is NORMAL, go to discharge page
-            window.location.href = `discharge.html?id=${patientId}`;
+            window.location.href = `discharge.html?id=${pId}`;
         } else {
-            alert("Clinical Warning: Patient level must be NORMAL before proceeding to discharge. Currently: " + level);
+            alert("Clinical Warning: Patient level must be NORMAL before proceeding to discharge.");
         }
     }
 
     function finalizeDischarge() {
-        db.ref('patients/' + patientId).update({ status: 'DISCHARGED' }).then(() => {
+        db.ref('patients/' + pId).update({ status: 'DISCHARGED' }).then(() => {
             window.location.href = 'admin_dashboard.html';
         });
     }
@@ -283,11 +269,7 @@
     }
 
     function closeModal() { document.getElementById('selectorModal').style.display = 'none'; }
-    
-    window.onload = () => {
-        syncMedicalTeam();
-        loadProfile();
-    };
+    window.onload = loadProfile;
 </script>
 
 </body>
