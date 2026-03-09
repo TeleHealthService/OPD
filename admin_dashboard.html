@@ -234,22 +234,33 @@
         paths.forEach(path => {
             db.ref(path).on('value', (snapshot) => {
                 dataStore[path] = snapshot.val() || {};
-                allPatients = [];
                 
-                Object.keys(dataStore.patients).forEach(id => {
-                    allPatients.push({ ...dataStore.patients[id], firebaseId: id });
-                });
+                allPatients = [];
+                const mergedMap = new Map();
+
                 Object.keys(dataStore.appointments).forEach(id => {
-                    const appt = dataStore.appointments[id];
-                    const isDuplicate = allPatients.some(p => p.name === appt.name && p.status !== 'DISCHARGED');
-                    if (!isDuplicate) {
-                        allPatients.push({ 
-                            ...appt, 
-                            firebaseId: id,
-                            arrived: appt.arrived || appt.timestamp || '--:--'
-                        });
-                    }
+                    const data = dataStore.appointments[id];
+                    // Logic: If no bed assigned, force status to WAITING
+                    const finalStatus = data.bed ? (data.status || 'WAITING') : 'WAITING';
+                    mergedMap.set(id, {
+                        ...data,
+                        status: finalStatus,
+                        firebaseId: id,
+                        arrived: data.arrived || data.timestamp || '--:--'
+                    });
                 });
+
+                Object.keys(dataStore.patients).forEach(id => {
+                    const data = dataStore.patients[id];
+                    const finalStatus = data.bed ? (data.status || 'WAITING') : 'WAITING';
+                    mergedMap.set(id, {
+                        ...data,
+                        status: finalStatus,
+                        firebaseId: id
+                    });
+                });
+
+                allPatients = Array.from(mergedMap.values());
                 render();
             });
         });
