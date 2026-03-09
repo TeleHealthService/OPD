@@ -13,7 +13,6 @@
             --pgh-emerald: #04471C;
             --white: #ffffff;
             --light-gray: #f4f7f6;
-            --accent-gold: #f39c12;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
@@ -22,7 +21,6 @@
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
-            background-position: center;
             padding: 15px; 
             display: flex; 
             align-items: center; 
@@ -37,30 +35,15 @@
         nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
         nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
         nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
-        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
+        .active-nav { background: var(--pgh-emerald) !important; }
 
         .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
-        .page-header { margin-bottom: 20px; }
-        h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.3rem; margin: 0; }
-        
         .referral-card {
             background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             border-top: 6px solid var(--pgh-emerald);
-        }
-
-        h3 { 
-            font-size: 0.9rem; 
-            color: var(--pgh-dark-green); 
-            text-transform: uppercase;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .form-group { margin-bottom: 15px; }
@@ -87,10 +70,9 @@
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
-            margin-top: 10px;
         }
 
-        footer { text-align: center; padding: 25px; color: #999; font-size: 0.65rem; }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
 
         .success-toast {
             position: fixed;
@@ -101,7 +83,6 @@
             color: white;
             padding: 12px 25px;
             border-radius: 50px;
-            font-size: 0.8rem;
             display: none;
             z-index: 2000;
         }
@@ -127,9 +108,7 @@
 </nav>
 
 <div class="container">
-    <div class="page-header">
-        <h1>Patient Referral</h1>
-    </div>
+    <h1>Patient Referral</h1>
 
     <div class="referral-card">
         <form id="referralForm">
@@ -143,7 +122,6 @@
                 <input type="hidden" id="patientNameDisplay">
             </div>
 
-            <h3 style="margin-top: 30px;"><i class="fas fa-hospital-alt"></i> Transfer Details</h3>
             <div class="form-group">
                 <label>Referring To (Department)</label>
                 <select id="targetDept" required>
@@ -156,13 +134,13 @@
                 <select id="priority" required>
                     <option value="Routine">Routine</option>
                     <option value="Urgent">Urgent</option>
-                    <option value="Emergency">Emergency (Immediate)</option>
+                    <option value="Emergency">Emergency</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Clinical Notes & Instructions</label>
-                <textarea id="notes" rows="4" placeholder="Brief clinical summary and reason for transfer..." required></textarea>
+                <label>Clinical Notes</label>
+                <textarea id="notes" rows="4" required placeholder="Reason for transfer..."></textarea>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">Generate & Email Referral</button>
@@ -170,17 +148,13 @@
     </div>
 </div>
 
-<div id="successToast" class="success-toast">Referral Sent to Patient Email</div>
-
-<footer>
-    &copy; 2026 General Hospital Health Informatics Division
-</footer>
+<div id="successToast" class="success-toast">Referral Sent Successfully!</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
 <script>
-    // 1. Firebase Configuration
+    // 1. Firebase Initialization
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
@@ -189,11 +163,9 @@
     const db = firebase.database();
 
     // 2. EmailJS Initialization
-    (function() {
-        emailjs.init("X1q_pBNl_5kmT8her"); 
-    })();
+    emailjs.init("6vxfanTnFPba4cmq7"); 
 
-    // 3. Load Dynamic Data
+    // 3. Load Data
     window.onload = function() {
         loadPatientsFromCloud();
         loadDepartmentsFromTeam();
@@ -201,11 +173,13 @@
 
     function loadPatientsFromCloud() {
         const patientSelect = document.getElementById('patientSelect');
+        // Listens to the 'appointments' node
         db.ref('appointments').on('value', (snapshot) => {
             patientSelect.innerHTML = '<option value="">-- Choose Patient --</option>';
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
-                if (data.status === "Active") {
+                // Broadened filter to include "Pending" or "Active"
+                if (data.status === "Active" || data.status === "Pending" || !data.status) {
                     const opt = document.createElement('option');
                     opt.value = childSnapshot.key;
                     opt.textContent = `${data.name} (ID: ${childSnapshot.key.substring(1, 6)})`;
@@ -219,16 +193,13 @@
 
     function loadDepartmentsFromTeam() {
         const deptSelect = document.getElementById('targetDept');
-        // Fetch specialties directly from hospitalDoctors data
         const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
         const uniqueSpecs = [...new Set(doctors.map(d => d.spec))];
         
         uniqueSpecs.forEach(spec => {
-            const opt = new Option(spec, spec);
-            deptSelect.add(opt);
+            deptSelect.add(new Option(spec, spec));
         });
-        
-        deptSelect.add(new Option("External Hospital Facility", "External"));
+        deptSelect.add(new Option("External Facility", "External"));
     }
 
     function updatePatientDetails() {
@@ -238,11 +209,11 @@
         document.getElementById('patientNameDisplay').value = selectedOption.dataset.name || "";
     }
 
-    // 4. Send Referral Email
+    // 4. Form Submission
     document.getElementById('referralForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "Sending Referral...";
+        btn.innerText = "Sending...";
         btn.disabled = true;
 
         const referralData = {
@@ -254,21 +225,18 @@
             referral_date: new Date().toLocaleDateString()
         };
 
-        // Linked to your 'service_z8p5csl' and 'template_41hxvd9'
         emailjs.send("service_z8p5csl", "template_41hxvd9", referralData)
             .then(() => {
-                const toast = document.getElementById('successToast');
-                toast.style.display = 'block';
-                
+                document.getElementById('successToast').style.display = 'block';
                 setTimeout(() => {
-                    toast.style.display = 'none';
+                    document.getElementById('successToast').style.display = 'none';
                     document.getElementById('referralForm').reset();
                     btn.innerText = "Generate & Email Referral";
                     btn.disabled = false;
                 }, 3000);
-            }, (err) => {
-                alert("Failed to send referral: " + JSON.stringify(err));
-                btn.innerText = "Try Again";
+            })
+            .catch((err) => {
+                alert("Error: " + JSON.stringify(err));
                 btn.disabled = false;
             });
     };
