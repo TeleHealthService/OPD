@@ -19,7 +19,6 @@
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
 
-        /* --- Header & Nav --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -35,12 +34,11 @@
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
-        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
         nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
         nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
         .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
 
-        /* --- Content Layout --- */
         .container { padding: 20px 15px; max-width: 1400px; margin: 0 auto; min-height: 80vh; }
         
         .page-header { margin-bottom: 20px; }
@@ -62,8 +60,7 @@
         .tab { padding: 8px 15px; cursor: pointer; font-weight: 600; color: #888; font-size: 0.8rem; border-radius: 5px; background: #eee; white-space: nowrap; }
         .tab.active { color: white; background: var(--pgh-emerald); }
 
-        /* Table Wrapper for Horizontal Scroll on Mobile */
-        .table-responsive { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-responsive { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { background: #f9f9f9; text-align: left; padding: 12px; font-size: 0.7rem; text-transform: uppercase; color: #666; border-bottom: 2px solid #eee; }
         td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; vertical-align: middle; }
@@ -78,7 +75,6 @@
         .action-btn { background: none; border: 1.5px solid var(--pgh-emerald); color: var(--pgh-emerald); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
         .btn-delete { border-color: var(--urgent-red); color: var(--urgent-red); margin-left: 5px; }
 
-        /* --- Modal for Details --- */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 15px; }
         .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 450px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 10px; margin-bottom: 15px; }
@@ -131,7 +127,7 @@
                     <th>Patient</th>
                     <th>Contact</th>
                     <th>Date/Time</th>
-                    <th>Level</th>
+                    <th>Level / Dept</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -158,6 +154,7 @@
 
 <script>
     function loadRecords(filter = 'ALL') {
+        // Receives from home.html (hospitalAppointments) and admin_triage.html (patients)
         const portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
         const triageData = JSON.parse(localStorage.getItem('patients')) || [];
 
@@ -170,15 +167,17 @@
         tbody.innerHTML = '';
 
         allPatients.forEach((p, index) => {
-            const isDischarged = p.status === 'Discharged' || p.isDischarged === true;
+            const isDischarged = p.status === 'DISCHARGED' || p.status === 'ARCHIVED' || p.isDischarged === true;
             if (filter === 'ACTIVE' && isDischarged) return;
             if (filter === 'DISCHARGED' && !isDischarged) return;
 
             const name = p.name || "Unknown";
-            const contact = p.contact || p.phone || p.contactNo || p.contactNumber || "N/A";
+            const contact = p.contact || p.phone || p.contactNo || "N/A";
             const time = p.timestamp || p.arrived || "N/A";
-            const detail = p.source === 'PORTAL' ? (p.doctor || "General") : (p.level || "Stable");
-            const subtext = p.source === 'PORTAL' ? "Online" : (p.age + "Y | " + p.sex);
+            
+            // Logic to handle different data structures from the two sources
+            const detail = p.source === 'PORTAL' ? (p.doctor || "General Dept") : (p.level || "Regular");
+            const subtext = p.source === 'PORTAL' ? "Online Portal" : (p.age ? p.age + "Y | " + p.sex : "ER Triage");
 
             const row = `
                 <tr>
@@ -202,7 +201,7 @@
                     </td>
                     <td>
                         <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
-                            ${isDischarged ? 'Disc' : 'Active'}
+                            ${isDischarged ? 'Discharged' : 'Active'}
                         </span>
                     </td>
                     <td>
@@ -217,7 +216,7 @@
         });
 
         if (tbody.innerHTML === '') {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records found.</td></tr>';
         }
     }
 
@@ -228,28 +227,29 @@
         const body = document.getElementById('modalBody');
         document.getElementById('modalName').innerText = p.name;
         
-        const contactVal = p.contact || p.phone || p.contactNo || p.contactNumber || 'N/A';
+        const contactVal = p.contact || p.phone || p.contactNo || 'N/A';
 
         if (source === 'PORTAL') {
             body.innerHTML = `
-                <div class="detail-row"><span class="detail-label">Source:</span> <span>Portal</span></div>
+                <div class="detail-row"><span class="detail-label">Origin:</span> <span>Online Appointment</span></div>
                 <div class="detail-row"><span class="detail-label">Contact:</span> <span>${contactVal}</span></div>
-                <div class="detail-row"><span class="detail-label">Doctor:</span> <span>${p.doctor}</span></div>
-                <div class="detail-row"><span class="detail-label">Symptoms:</span> <span>${p.symptoms || 'None'}</span></div>
+                <div class="detail-row"><span class="detail-label">Assigned Doctor:</span> <span>${p.doctor || 'TBD'}</span></div>
+                <div class="detail-row"><span class="detail-label">Symptoms:</span> <span>${p.symptoms || 'Not listed'}</span></div>
             `;
         } else {
             body.innerHTML = `
-                <div class="detail-row"><span class="detail-label">Source:</span> <span>Triage</span></div>
-                <div class="detail-row"><span class="detail-label">Age/Sex:</span> <span>${p.age} / ${p.sex}</span></div>
-                <div class="detail-row"><span class="detail-label">Severity:</span> <span style="font-weight:bold">${p.level}</span></div>
-                <div class="detail-row"><span class="detail-label">Complaint:</span> <span>${p.complaint}</span></div>
+                <div class="detail-row"><span class="detail-label">Origin:</span> <span>ER Triage Intake</span></div>
+                <div class="detail-row"><span class="detail-label">Age / Sex:</span> <span>${p.age || 'N/A'} / ${p.sex || 'N/A'}</span></div>
+                <div class="detail-row"><span class="detail-label">Triage Level:</span> <span style="font-weight:bold">${p.level || 'STABLE'}</span></div>
+                <div class="detail-row"><span class="detail-label">Bed Assignment:</span> <span>${p.bed || 'Unassigned'}</span></div>
+                <div class="detail-row"><span class="detail-label">Complaint:</span> <span>${p.complaint || 'N/A'}</span></div>
             `;
         }
         document.getElementById('detailsModal').style.display = 'flex';
     }
 
     function deleteRecord(source, index) {
-        if(confirm("Delete record?")) {
+        if(confirm("Are you sure you want to permanently delete this record?")) {
             const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
             let data = JSON.parse(localStorage.getItem(key));
             data.splice(index, 1);
@@ -278,5 +278,3 @@
 </script>
 </body>
 </html>
-</html>
-
