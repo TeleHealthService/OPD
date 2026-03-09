@@ -24,14 +24,14 @@
 </head>
 <body>
 <header>
-    <div><i class="fas fa-user-nurse"></i>MONITORING</div>
-    <div class="back-nav" onclick="location.reload()"><i class="fas fa-sync"></i> BACK</div>
+    <div><i class="fas fa-user-nurse"></i> MONITORING STATION</div>
+    <div class="back-nav" onclick="location.href='patient_records.html'"><i class="fas fa-arrow-left"></i> RECORDS</div>
 </header>
 <div class="container">
-    <div id="successNote" class="success-msg">Data Updated Successfully! Ready for next patient.</div>
+    <div id="successNote" class="success-msg">Clinical Data Updated Successfully!</div>
     
     <div class="card">
-        <h3><i class="fas fa-user-injured"></i> Select Patient</h3>
+        <h3><i class="fas fa-user-injured"></i> Select Patient for Monitoring</h3>
         <select id="patientSelect" onchange="loadPatientData()">
             <option value="">-- Choose Patient --</option>
         </select>
@@ -40,6 +40,7 @@
     <div id="inputForm" style="display:none;">
         <div class="card">
             <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
+            
             <div class="vitals-input-grid">
                 <div class="form-group"><label>BP (mmHg)</label><input type="text" id="v_bp" placeholder="e.g. 120/80"></div>
                 <div class="form-group"><label>HR (bpm)</label><input type="number" id="v_hr" placeholder="72"></div>
@@ -48,36 +49,45 @@
             </div>
         </div>
         <div class="card">
-            <h3><i class="fas fa-brain"></i> GCS & Pain</h3>
+            <h3><i class="fas fa-brain"></i> GCS & Pain Assessment</h3>
+            
             <div class="vitals-input-grid">
                 <div class="form-group"><label>GCS Eye (1-4)</label><input type="number" id="g_eye" min="1" max="4"></div>
                 <div class="form-group"><label>GCS Verbal (1-5)</label><input type="number" id="g_verbal" min="1" max="5"></div>
-                <div class="form-group"><label>GCS Motor (1-5)</label><input type="number" id="g_motor" min="1" max="5"></div>
+                <div class="form-group"><label>GCS Motor (1-6)</label><input type="number" id="g_motor" min="1" max="6"></div>
                 <div class="form-group"><label>Pain (0-10)</label><input type="number" id="pain_val" min="0" max="10" oninput="document.getElementById('painDisplay').innerText = this.value"></div>
             </div>
             <div class="pain-display" id="painDisplay">0</div>
         </div>
         
-        <button class="btn-save" onclick="saveData()">SUBMIT UPDATE</button>
-        <button class="btn-clear" onclick="location.reload()">CANCEL & CLEAR</button>
+        <button class="btn-save" onclick="saveData()">SUBMIT CLINICAL UPDATE</button>
+        <button class="btn-clear" onclick="location.reload()">CANCEL</button>
     </div>
 </div>
 
 <script>
-    let patients = JSON.parse(localStorage.getItem('patients')) || [];
+    // Pulling from both storage keys to match patient_record.html
+    let portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
+    let triageData = JSON.parse(localStorage.getItem('patients')) || [];
+    
+    // Create a master list to reference
+    let allPatients = [
+        ...portalData.map((p, i) => ({ ...p, source: 'PORTAL', originalIndex: i })),
+        ...triageData.map((p, i) => ({ ...p, source: 'TRIAGE', originalIndex: i }))
+    ];
+
     const select = document.getElementById('patientSelect');
-    const params = new URLSearchParams(window.location.search);
-    const urlId = params.get('id');
 
     function init() {
-        patients.forEach((p, i) => {
-            if (p.status !== 'DISCHARGED') {
-                let opt = new Option(p.name + (p.bed ? ` (Bed ${p.bed})` : ""), i);
-                if(urlId == i) opt.selected = true;
+        allPatients.forEach((p, i) => {
+            // Only show patients that are not discharged
+            const isDischarged = p.status === 'Discharged' || p.status === 'ARCHIVED' || p.isDischarged === true;
+            if (!isDischarged) {
+                let label = p.name + (p.source === 'PORTAL' ? " (Portal)" : ` (Triage${p.bed ? ' - Bed ' + p.bed : ''})`);
+                let opt = new Option(label, i);
                 select.add(opt);
             }
         });
-        if(urlId !== null && urlId !== "") loadPatientData();
     }
 
     function loadPatientData() {
@@ -86,10 +96,11 @@
             document.getElementById('inputForm').style.display = 'none';
             return;
         }
-        const p = patients[val];
+        const p = allPatients[val];
         document.getElementById('inputForm').style.display = 'block';
         document.getElementById('successNote').style.display = 'none';
         
+        // Populate existing data if available
         document.getElementById('v_bp').value = p.vitals?.bp || '';
         document.getElementById('v_hr').value = p.vitals?.hr || '';
         document.getElementById('v_temp').value = p.vitals?.temp || '';
@@ -102,30 +113,39 @@
     }
 
     function saveData() {
-        const i = select.value;
-        if(!i) return alert("Please select a patient first.");
+        const globalIndex = select.value;
+        if(!globalIndex) return alert("Please select a patient first.");
 
-        patients[i].vitals = { 
+        const patientRef = allPatients[globalIndex];
+        const updatedVitals = { 
             bp: document.getElementById('v_bp').value, 
             hr: document.getElementById('v_hr').value, 
             temp: document.getElementById('v_temp').value, 
             o2: document.getElementById('v_o2').value 
         };
-        patients[i].gcs = { 
+        const updatedGcs = { 
             eye: document.getElementById('g_eye').value, 
             verbal: document.getElementById('g_verbal').value, 
             motor: document.getElementById('g_motor').value 
         };
-        patients[i].painScale = document.getElementById('pain_val').value;
+        const updatedPain = document.getElementById('pain_val').value;
+
+        // Save back to the correct specific LocalStorage key
+        if(patientRef.source === 'PORTAL') {
+            portalData[patientRef.originalIndex].vitals = updatedVitals;
+            portalData[patientRef.originalIndex].gcs = updatedGcs;
+            portalData[patientRef.originalIndex].painScale = updatedPain;
+            localStorage.setItem('hospitalAppointments', JSON.stringify(portalData));
+        } else {
+            triageData[patientRef.originalIndex].vitals = updatedVitals;
+            triageData[patientRef.originalIndex].gcs = updatedGcs;
+            triageData[patientRef.originalIndex].painScale = updatedPain;
+            localStorage.setItem('patients', JSON.stringify(triageData));
+        }
         
-        localStorage.setItem('patients', JSON.stringify(patients));
-        
-        // UI Feedback
         document.getElementById('inputForm').style.display = 'none';
         select.value = "";
         document.getElementById('successNote').style.display = 'block';
-        
-        // Form stays on Nurse page for the next entry
         window.scrollTo(0,0);
     }
     window.onload = init;
