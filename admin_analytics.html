@@ -43,7 +43,10 @@
         .container { max-width: 1400px; margin: 25px auto; padding: 0 15px; flex: 1; }
         .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
         .page-header h1 { color: var(--pgh-dark-green); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
+        
         #lastUpdated { font-size: 0.65rem; color: #888; font-weight: 700; text-transform: uppercase; background: white; padding: 5px 12px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .sync-pulse { border: 1px solid var(--chart-green); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
         .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .overview-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--pgh-emerald); position: relative; overflow: hidden; }
@@ -90,7 +93,7 @@
 <div class="container">
     <div class="page-header">
         <h1>ER Real-Time Analytics</h1>
-        <div id="lastUpdated">Initializing Real-time Sync...</div>
+        <div id="lastUpdated">Connecting to Cloud...</div>
     </div>
 
     <div class="overview-grid">
@@ -148,7 +151,6 @@
 </footer>
 
 <script>
-    // Firebase Configuration
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
@@ -202,29 +204,28 @@
                 responsive: true, 
                 maintainAspectRatio: false, 
                 cutout: '70%',
+                animation: { duration: 500 },
                 plugins: { legend: { display: false } } 
             }
         });
     }
 
-    // Real-time Cloud Listener
+    // MAIN CLOUD LISTENER - TRIGGERS ON ANY CHANGE
     db.ref('patients').on('value', (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
         const patients = Object.values(data);
         
-        // Accurate filtering for Active vs Discharged
-        // This ensures that when an admin changes status to 'DISCHARGED', the census drops instantly.
+        // Filtering for Active vs Discharged
         const active = patients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
         const dischargedTodayCount = patients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
         
-        // Accurate Severity Mix
-        // Filters by 'CRITICAL' triage level; all others are grouped as Standard/Stable.
-        const criticalCount = active.filter(p => p.level === 'CRITICAL').length;
+        // Recalculating Severity Mix for Pie Chart
+        const criticalCount = active.filter(p => p.level === 'CRITICAL' || p.triage === 'CRITICAL').length;
         const standardCount = active.length - criticalCount;
 
-        // UI Updates - Cards
+        // UI Updates
         document.getElementById('valActive').innerText = active.length;
         document.getElementById('valDischarged').innerText = dischargedTodayCount;
         
@@ -250,9 +251,14 @@
 
         document.getElementById('countCritical').innerText = criticalCount;
         document.getElementById('countStable').innerText = standardCount;
-        document.getElementById('lastUpdated').innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
+        
+        // Visual Sync Feedback
+        const lastUp = document.getElementById('lastUpdated');
+        lastUp.innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
+        lastUp.classList.add('sync-pulse');
+        setTimeout(() => lastUp.classList.remove('sync-pulse'), 2000);
 
-        // Update Charts instantly without page reload
+        // LIVE PIE CHART UPDATE
         triageChart.data.datasets[0].data = [criticalCount, standardCount];
         triageChart.update();
 
