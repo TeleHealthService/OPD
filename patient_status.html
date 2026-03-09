@@ -236,19 +236,23 @@
             });
         } else if (type === 'doctor') {
             title.innerText = "Assign Doctor in Charge";
-            db.ref('team').once('value', (snapshot) => {
-                snapshot.forEach((child) => {
-                    const doc = child.val();
+            // Get doctors from localStorage to match your hospitalDoctors registry
+            const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
+            
+            if (doctors.length === 0) {
+                options.innerHTML = `<div style="padding:20px; color:#888; font-size:0.8rem;">No doctors found in local registry.</div>`;
+            } else {
+                doctors.forEach((doc) => {
                     options.innerHTML += `
                         <div class="opt-btn" onclick="updateField('doctorInCharge', '${doc.name}')">
                             <i class="fas fa-user-md"></i>
                             <div>
                                 <div>${doc.name}</div>
-                                <div style="font-size:0.65rem; color:#888;">${doc.role || 'Staff'}</div>
+                                <div style="font-size:0.65rem; color:#888;">${doc.spec || 'Staff'}</div>
                             </div>
                         </div>`;
                 });
-            });
+            }
         }
         document.getElementById('selectorModal').style.display = 'flex';
     }
