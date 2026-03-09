@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Patient Referral | General Hospital Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --pgh-black: #020202;
@@ -18,7 +19,6 @@
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
 
-        /* --- Header & Nav (Consistent with Dashboard/Analytics) --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -34,14 +34,12 @@
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
-        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
         nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
         nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
         .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
 
-        /* --- Content Layout --- */
         .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
-        
         .page-header { margin-bottom: 20px; }
         h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.3rem; margin: 0; }
         
@@ -65,8 +63,6 @@
             gap: 10px;
         }
 
-        /* Form Elements */
-        .form-section { margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
         
@@ -80,14 +76,6 @@
             background: #fafafa;
         }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--pgh-emerald);
-            background: #fff;
-        }
-
-        .grid-half { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 600px) { .grid-half { grid-template-columns: 1fr 1fr; } }
-
         .btn-submit {
             width: 100%;
             padding: 16px;
@@ -100,10 +88,7 @@
             text-transform: uppercase;
             cursor: pointer;
             margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(4, 71, 28, 0.2);
         }
-
-        .btn-submit:active { transform: scale(0.98); background: var(--pgh-dark-green); }
 
         footer { text-align: center; padding: 25px; color: #999; font-size: 0.65rem; }
 
@@ -149,27 +134,20 @@
     <div class="referral-card">
         <form id="referralForm">
             <h3><i class="fas fa-user-injured"></i> Patient Information</h3>
-            <div class="grid-half">
-                <div class="form-group">
-                    <label>Patient Full Name</label>
-                    <input type="text" id="patientName" placeholder="Juan Dela Cruz" required>
-                </div>
-                <div class="form-group">
-                    <label>Case/Ticket ID</label>
-                    <input type="text" id="caseId" placeholder="ER-2026-001" required>
-                </div>
+            <div class="form-group">
+                <label>Select Active Patient (From Cloud)</label>
+                <select id="patientSelect" required onchange="updatePatientDetails()">
+                    <option value="">-- Loading Patients... --</option>
+                </select>
+                <input type="hidden" id="patientEmail">
+                <input type="hidden" id="patientNameDisplay">
             </div>
 
             <h3 style="margin-top: 30px;"><i class="fas fa-hospital-alt"></i> Transfer Details</h3>
             <div class="form-group">
-                <label>Referring To</label>
+                <label>Referring To (Department)</label>
                 <select id="targetDept" required>
-                    <option value="">Select Department/Facility</option>
-                    <option value="ICU">Intensive Care Unit (ICU)</option>
-                    <option value="OPD">Outpatient Department (OPD)</option>
-                    <option value="Surgery">Surgical Department</option>
-                    <option value="Radiology">Radiology/Imaging</option>
-                    <option value="External">External Hospital Facility</option>
+                    <option value="">-- Select Specialty --</option>
                 </select>
             </div>
 
@@ -183,39 +161,117 @@
             </div>
 
             <div class="form-group">
-                <label>Reason for Referral / Clinical Notes</label>
+                <label>Clinical Notes & Instructions</label>
                 <textarea id="notes" rows="4" placeholder="Brief clinical summary and reason for transfer..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-submit">Generate Referral</button>
+            <button type="submit" class="btn-submit" id="submitBtn">Generate & Email Referral</button>
         </form>
     </div>
 </div>
 
-<div id="successToast" class="success-toast">Referral Processed Successfully</div>
+<div id="successToast" class="success-toast">Referral Sent to Patient Email</div>
 
 <footer>
     &copy; 2026 General Hospital Health Informatics Division
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
 <script>
+    // 1. Firebase Configuration
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 2. EmailJS Initialization
+    (function() {
+        emailjs.init("X1q_pBNl_5kmT8her"); 
+    })();
+
+    // 3. Load Dynamic Data
+    window.onload = function() {
+        loadPatientsFromCloud();
+        loadDepartmentsFromTeam();
+    };
+
+    function loadPatientsFromCloud() {
+        const patientSelect = document.getElementById('patientSelect');
+        db.ref('appointments').on('value', (snapshot) => {
+            patientSelect.innerHTML = '<option value="">-- Choose Patient --</option>';
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                if (data.status === "Active") {
+                    const opt = document.createElement('option');
+                    opt.value = childSnapshot.key;
+                    opt.textContent = `${data.name} (ID: ${childSnapshot.key.substring(1, 6)})`;
+                    opt.dataset.email = data.email;
+                    opt.dataset.name = data.name;
+                    patientSelect.appendChild(opt);
+                }
+            });
+        });
+    }
+
+    function loadDepartmentsFromTeam() {
+        const deptSelect = document.getElementById('targetDept');
+        // Fetch specialties directly from hospitalDoctors data
+        const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
+        const uniqueSpecs = [...new Set(doctors.map(d => d.spec))];
+        
+        uniqueSpecs.forEach(spec => {
+            const opt = new Option(spec, spec);
+            deptSelect.add(opt);
+        });
+        
+        deptSelect.add(new Option("External Hospital Facility", "External"));
+    }
+
+    function updatePatientDetails() {
+        const select = document.getElementById('patientSelect');
+        const selectedOption = select.options[select.selectedIndex];
+        document.getElementById('patientEmail').value = selectedOption.dataset.email || "";
+        document.getElementById('patientNameDisplay').value = selectedOption.dataset.name || "";
+    }
+
+    // 4. Send Referral Email
     document.getElementById('referralForm').onsubmit = function(e) {
         e.preventDefault();
-        
-        // Logical processing (simulated)
-        const toast = document.getElementById('successToast');
-        toast.style.display = 'block';
-        
-        // Log to console (simulating database save)
-        console.log("Referral Created for:", document.getElementById('patientName').value);
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Sending Referral...";
+        btn.disabled = true;
 
-        setTimeout(() => {
-            toast.style.display = 'none';
-            // Reset form
-            document.getElementById('referralForm').reset();
-        }, 3000);
+        const referralData = {
+            to_name: document.getElementById('patientNameDisplay').value,
+            to_email: document.getElementById('patientEmail').value,
+            department: document.getElementById('targetDept').value,
+            priority: document.getElementById('priority').value,
+            message: document.getElementById('notes').value,
+            referral_date: new Date().toLocaleDateString()
+        };
+
+        // Linked to your 'service_z8p5csl' and 'template_41hxvd9'
+        emailjs.send("service_z8p5csl", "template_41hxvd9", referralData)
+            .then(() => {
+                const toast = document.getElementById('successToast');
+                toast.style.display = 'block';
+                
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    document.getElementById('referralForm').reset();
+                    btn.innerText = "Generate & Email Referral";
+                    btn.disabled = false;
+                }, 3000);
+            }, (err) => {
+                alert("Failed to send referral: " + JSON.stringify(err));
+                btn.innerText = "Try Again";
+                btn.disabled = false;
+            });
     };
 </script>
-
 </body>
 </html>
