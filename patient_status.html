@@ -251,15 +251,12 @@
         document.getElementById('selectorModal').style.display = 'flex';
     }
 
-    // CLOUD UPDATE LOGIC
     function updateField(field, value, isBed = false) {
         let updates = {};
         updates[field] = value;
         if (isBed) updates['status'] = 'IN TREATMENT';
 
-        // Direct push to Firebase Cloud
         db.ref(currentPath + '/' + pId).update(updates).then(() => {
-            console.log("Cloud synced: " + field + " updated to " + value);
             closeModal();
         }).catch(err => alert("Cloud Sync Failed: " + err.message));
     }
@@ -272,12 +269,11 @@
         }
     }
 
-    // CLOUD DISCHARGE LOGIC
     function finalizeDischarge() {
         db.ref(currentPath + '/' + pId).update({ 
             status: 'DISCHARGED', 
             isDischarged: true,
-            bed: 'NONE' // Frees the bed in the cloud
+            bed: 'NONE' 
         }).then(() => {
             window.location.href = 'admin_dashboard.html';
         });
