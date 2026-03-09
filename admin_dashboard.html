@@ -15,73 +15,122 @@
             --border-color: #e0e0e0;
             --urgent-red: #e74c3c;
             --info-blue: #3498db;
+            --warning-gold: #f39c12;
+            --success-green: #27ae60;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
 
+        /* Header Matching Triage Layout */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
+            background-size: cover; 
+            background-position: center;
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 12px; 
+            border-bottom: 4px solid var(--pgh-emerald); 
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .header-actions { display: flex; gap: 10px; }
         
-        .btn-action { padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
-        .btn-alert { background: var(--urgent-red); box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
-        .btn-add { background: var(--info-blue); }
-
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
+        /* Button Styling */
+        .btn-action { padding: 10px 18px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
+        .btn-alert { background: var(--urgent-red); box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); }
+        .btn-alert:hover { background: #c0392b; transform: translateY(-2px); }
+        .btn-add { background: var(--pgh-emerald); box-shadow: 0 4px 12px rgba(4, 71, 28, 0.3); }
+        .btn-add:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
+
+        /* Oblong Navigation */
         nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; }
-        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
-        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
-        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
+        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; overflow-x: auto; }
+        nav ul li a { color: white; text-decoration: none; padding: 8px 18px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; border-radius: 50px; background: rgba(255,255,255,0.1); border: 1px solid transparent; }
+        nav ul li a:hover { background: rgba(255,255,255,0.2); }
+        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.3) !important; }
 
-        .container { padding: 20px 15px; max-width: 1400px; margin: 0 auto; }
+        .container { padding: 25px 15px; max-width: 1400px; margin: 0 auto; flex: 1; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .stat-card.active-filter { background: #f0f7f3; border-bottom: 4px solid var(--pgh-emerald); }
-        .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--pgh-dark-green); display: block; }
-        .stat-label { font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase; }
-
-        .dash-layout { display: grid; grid-template-columns: 2.8fr 1fr; gap: 20px; align-items: start; }
-        .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .scrollable-list { max-height: 600px; overflow-y: auto; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        th { text-align: left; padding: 12px; font-size: 0.65rem; color: #888; text-transform: uppercase; border-bottom: 2px solid #eee; position: sticky; top: 0; background: white; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        /* Stats Filter Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border-bottom: 4px solid transparent;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            border-left: 5px solid #ddd;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         
-        .vitals-pill { font-size: 0.65rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-right: 4px; font-weight: bold; }
-        .level-pill { padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: white; }
+        /* Active Filter Colors */
+        .stat-card.active-filter { border-bottom-color: var(--pgh-emerald); background: #f0fdf4; }
+        #cardALL { border-left-color: var(--pgh-dark-green); }
+        #cardWAITING { border-left-color: var(--warning-gold); }
+        #cardIN { border-left-color: var(--info-blue); } /* ID shortened for status logic */
+        #cardREADY { border-left-color: var(--success-green); }
+
+        .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--pgh-dark-green); display: block; line-height: 1; }
+        .stat-label { font-size: 0.7rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .dash-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
+        @media (max-width: 1000px) { .dash-layout { grid-template-columns: 1fr; } }
+
+        .panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .scrollable-list { max-height: 600px; overflow-y: auto; margin-top: 15px; border-radius: 8px; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; font-size: 0.65rem; color: #999; text-transform: uppercase; border-bottom: 2px solid #f4f4f4; background: white; position: sticky; top: 0; }
+        td { padding: 15px; border-bottom: 1px solid #f9f9f9; font-size: 0.85rem; }
+        tr:hover td { background: #fcfdfc; }
+        
+        .vitals-pill { font-size: 0.65rem; background: #f0f0f0; padding: 3px 8px; border-radius: 4px; margin-right: 5px; font-weight: 700; color: #555; border: 1px solid #e0e0e0; }
+        .level-pill { padding: 5px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: white; display: inline-block; }
         .bg-crit { background: var(--urgent-red); }
         .bg-normal { background: var(--pgh-emerald); }
-        .bg-urgent { background: #f39c12; }
+        .bg-urgent { background: var(--warning-gold); }
 
-        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .bed-unit { padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #eee; font-size: 0.75rem; font-weight: bold; color: #ccc; }
-        .bed-occupied { border-color: var(--pgh-emerald); color: var(--pgh-emerald); background: #f0f7f3; }
+        /* Side Panel / Bed Grid */
+        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .bed-unit { padding: 12px 5px; border-radius: 10px; text-align: center; border: 2px solid #eee; font-size: 0.8rem; font-weight: 800; color: #ddd; }
+        .bed-occupied { border-color: var(--pgh-emerald); color: var(--pgh-emerald); background: #f0fdf4; }
 
-        .btn-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #fff; color: #888; text-decoration: none; border-radius: 8px; font-size: 0.75rem; font-weight: bold; border: 1px solid #eee; margin-top: 20px; }
+        /* Log Out Button */
+        .btn-logout { 
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            width: 100%; padding: 15px; background: #fff; color: var(--urgent-red); 
+            text-decoration: none; border-radius: 12px; font-size: 0.8rem; font-weight: 800; 
+            border: 2px solid #fee2e2; margin-top: 20px; text-transform: uppercase;
+        }
+        .btn-logout:hover { background: #fef2f2; border-color: var(--urgent-red); }
+
+        footer { background: var(--pgh-dark-green); color: rgba(255,255,255,0.6); text-align: center; padding: 20px; font-size: 0.7rem; border-top: 4px solid var(--pgh-emerald); }
     </style>
 </head>
 <body>
 
 <header>
     <div class="header-left">
-        <img src="logo.png" alt="Logo" class="hospital-logo">
+        <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
         <div class="brand-text">
             <h2>General Hospital</h2>
             <small>Emergency Operations Dashboard</small>
         </div>
     </div>
     <div class="header-actions">
-        <button class="btn-action btn-alert" onclick="alert('Code Blue Broadcasted!')"><i class="fas fa-exclamation-triangle"></i> Call Code</button>
-        <a href="admin_triage.html" class="btn-action btn-add"><i class="fas fa-plus"></i> New Patient</a>
+        <button class="btn-action btn-alert" onclick="alert('Code Blue Broadcasted!')"><i class="fas fa-bullhorn"></i> Call Code</button>
+        <a href="admin_triage.html" class="btn-action btn-add"><i class="fas fa-plus"></i> Admit Patient</a>
     </div>
 </header>
 
@@ -97,36 +146,40 @@
 <div class="container">
     <div class="stats-grid">
         <div class="stat-card active-filter" id="cardALL" onclick="setFilter('ALL')">
-            <div><span class="stat-label">Total Patients</span><span class="stat-val" id="countTotal">0</span></div>
-            <i class="fas fa-users" style="color:var(--pgh-emerald); opacity:0.3"></i>
+            <div><span class="stat-label">All Active</span><span class="stat-val" id="countTotal">0</span></div>
+            <i class="fas fa-hospital-user fa-2x" style="color:var(--pgh-dark-green); opacity:0.1"></i>
         </div>
         <div class="stat-card" id="cardWAITING" onclick="setFilter('WAITING')">
-            <div><span class="stat-label">In Waiting</span><span class="stat-val" id="countWait">0</span></div>
-            <i class="fas fa-clock" style="color:#f39c12; opacity:0.3"></i>
+            <div><span class="stat-label">In Queue</span><span class="stat-val" id="countWait">0</span></div>
+            <i class="fas fa-clock fa-2x" style="color:var(--warning-gold); opacity:0.1"></i>
         </div>
-        <div class="stat-card" id="cardIN TREATMENT" onclick="setFilter('IN TREATMENT')">
+        <div class="stat-card" id="cardIN" onclick="setFilter('IN TREATMENT')">
             <div><span class="stat-label">In Treatment</span><span class="stat-val" id="countTreat">0</span></div>
-            <i class="fas fa-procedures" style="color:#3498db; opacity:0.3"></i>
+            <i class="fas fa-stethoscope fa-2x" style="color:var(--info-blue); opacity:0.1"></i>
         </div>
         <div class="stat-card" id="cardREADY" onclick="setFilter('READY FOR DISCHARGE')">
             <div><span class="stat-label">For Discharge</span><span class="stat-val" id="countReady">0</span></div>
-            <i class="fas fa-check-circle" style="color:#27ae60; opacity:0.3"></i>
+            <i class="fas fa-door-open fa-2x" style="color:var(--success-green); opacity:0.1"></i>
         </div>
     </div>
 
     <div class="dash-layout">
         <div class="panel">
-            <h3 id="tableTitle" style="margin-top:0; font-size:0.9rem; border-bottom: 2px solid var(--pgh-emerald); display:inline-block; padding-bottom:5px;">ACTIVE ER PATIENTS</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #f4f4f4; padding-bottom: 10px;">
+                <h3 id="tableTitle" style="margin:0; font-size:0.9rem; color:var(--pgh-dark-green); text-transform: uppercase;">Current Patient Monitor</h3>
+                <span id="filterTag" style="font-size: 0.6rem; background: var(--pgh-emerald); color: white; padding: 2px 10px; border-radius: 50px; font-weight: bold;">SHOWING: ALL</span>
+            </div>
+            
             <div class="scrollable-list">
                 <table>
                     <thead>
                         <tr>
                             <th>Patient Name</th>
-                            <th>Arrived</th>
-                            <th>Level</th>
-                            <th>Clinical Summary (Latest)</th>
+                            <th>Arrival</th>
+                            <th>Triage Level</th>
+                            <th>Vitals / Summary</th>
                             <th>Bed</th>
-                            <th>Status</th>
+                            <th>Current Status</th>
                         </tr>
                     </thead>
                     <tbody id="patientTableBody"></tbody>
@@ -136,13 +189,17 @@
 
         <div class="side-panel">
             <div class="panel">
-                <h3 style="margin-top:0; font-size:0.8rem; color:#888;">BED UTILIZATION</h3>
+                <h3 style="margin-top:0; font-size:0.75rem; color:#888; text-transform: uppercase;">ER Bed Map</h3>
                 <div class="bed-grid" id="bedGrid"></div>
             </div>
-            <a href="portal.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> LOG OUT SYSTEM</a>
+            <a href="portal.html" class="btn-logout"><i class="fas fa-power-off"></i> Sign Out System</a>
         </div>
     </div>
 </div>
+
+<footer>
+    <p>&copy; 2026 General Hospital Health Informatics Division | Secure Admin Terminal</p>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -161,12 +218,17 @@
 
     function setFilter(status) {
         currentFilter = status;
+        // Update Filter Tag UI
+        document.getElementById('filterTag').innerText = "SHOWING: " + status;
+        
+        // Update Card Visuals - Logic matches the shortened IDs in the HTML
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
-        document.getElementById('card' + status.split(' ')[0]).classList.add('active-filter');
+        const targetId = 'card' + status.split(' ')[0];
+        if(document.getElementById(targetId)) document.getElementById(targetId).classList.add('active-filter');
+        
         render();
     }
 
-    // Combined Real-time listener for both 'patients' and 'appointments'
     function syncData() {
         const paths = ['patients', 'appointments'];
         let dataStore = { patients: {}, appointments: {} };
@@ -174,20 +236,18 @@
         paths.forEach(path => {
             db.ref(path).on('value', (snapshot) => {
                 dataStore[path] = snapshot.val() || {};
-                
-                // Re-combine all data whenever either node updates
                 allPatients = [];
+                
+                // Merge Data
                 Object.keys(dataStore.patients).forEach(id => {
                     allPatients.push({ ...dataStore.patients[id], firebaseId: id });
                 });
                 Object.keys(dataStore.appointments).forEach(id => {
-                    // Check to prevent duplicate entries if a patient exists in both
                     const isDuplicate = allPatients.some(p => p.name === dataStore.appointments[id].name);
                     if (!isDuplicate) {
                         allPatients.push({ ...dataStore.appointments[id], firebaseId: id });
                     }
                 });
-                
                 render();
             });
         });
@@ -196,7 +256,6 @@
     function render() {
         const tbody = document.getElementById('patientTableBody');
         tbody.innerHTML = '';
-        
         let stats = { total: 0, wait: 0, treat: 0, ready: 0 };
         let occupiedBeds = [];
 
@@ -209,23 +268,22 @@
             if (p.status === 'READY FOR DISCHARGE') stats.ready++;
             if (p.bed) occupiedBeds.push(p.bed);
 
+            // Apply Status Filter
             if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
-            
-            // Support both Triage (vitals object) and basic Registry formats
             const vitalsText = p.vitals ? 
-                `<span class="vitals-pill">BP: ${p.vitals.bp}</span><span class="vitals-pill">O2: ${p.vitals.o2}%</span>` : 
-                '<span style="color:#ccc">No vitals yet</span>';
+                `<span class="vitals-pill">BP ${p.vitals.bp}</span><span class="vitals-pill">O2 ${p.vitals.o2}%</span>` : 
+                `<span style="color:#bbb; font-style:italic; font-size:0.7rem;">Clinical summary pending...</span>`;
 
             tbody.innerHTML += `
                 <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
-                    <td><strong>${p.name || 'Unknown'}</strong></td>
-                    <td>${p.arrived || p.timestamp || '--:--'}</td>
-                    <td><span class="level-pill ${levelClass}">${p.level || 'NORMAL'}</span></td>
+                    <td><div style="font-weight:800; color:var(--pgh-dark-green);">${p.name || 'Anonymous'}</div><div style="font-size:0.6rem; color:#aaa">ID: ${p.firebaseId.substring(1,7)}</div></td>
+                    <td>${p.arrived || '--:--'}</td>
+                    <td><span class="level-pill ${levelClass}">${p.level || 'STABLE'}</span></td>
                     <td>${vitalsText}</td>
-                    <td style="font-weight:bold; color:var(--pgh-emerald)">${p.bed || '---'}</td>
-                    <td style="font-size:0.7rem; font-weight:bold">${p.status || 'PENDING'}</td>
+                    <td style="font-weight:900; color:var(--pgh-emerald)">${p.bed || '---'}</td>
+                    <td><span style="font-weight:800; color:#555; font-size:0.7rem;"><i class="fas fa-circle" style="font-size:0.4rem; margin-right:5px; vertical-align:middle; color:${getStatusColor(p.status)}"></i>${p.status || 'WAITING'}</span></td>
                 </tr>
             `;
         });
@@ -234,8 +292,14 @@
         document.getElementById('countWait').innerText = stats.wait;
         document.getElementById('countTreat').innerText = stats.treat;
         document.getElementById('countReady').innerText = stats.ready;
-        
         renderBeds(occupiedBeds);
+    }
+
+    function getStatusColor(status) {
+        if(status === 'WAITING') return '#f39c12';
+        if(status === 'IN TREATMENT') return '#3498db';
+        if(status === 'READY FOR DISCHARGE') return '#27ae60';
+        return '#ddd';
     }
 
     function renderBeds(used) {
@@ -248,10 +312,7 @@
         });
     }
 
-    // Initialize the dual-sync
     syncData();
 </script>
 </body>
 </html>
-
-
