@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ER Dashboard | General Hospital Admin</title>
+    <title>ER Admin Dashboard | General Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --pgh-black: #020202;
             --pgh-dark-green: #0D2818;
             --pgh-emerald: #04471C;
             --white: #ffffff;
             --light-gray: #f4f7f6;
-            --border-color: #e0e0e0;
             --urgent-red: #e74c3c;
             --info-blue: #3498db;
             --success-green: #27ae60;
@@ -20,76 +18,71 @@
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: #333; }
 
-        /* --- Header & Nav (Matched to Records Layout) --- */
+        /* --- Header --- */
         header { 
-            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover; background-position: center;
-            padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
+            background: linear-gradient(rgba(13, 40, 24, 0.9), rgba(13, 40, 24, 0.9)), url('bg1.png');
+            background-size: cover; padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
         }
-        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
-        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
-        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
+        .hospital-logo { width: 40px; height: 40px; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; }
 
-        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
+        /* --- Navigation --- */
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding-right: 20px; }
         nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
-        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
-        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
+        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; font-size: 0.7rem; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
+        .active-nav { background: var(--pgh-emerald) !important; }
+        .nav-logout { color: #ff7675; text-decoration: none; font-size: 0.7rem; font-weight: bold; border: 1px solid #ff7675; padding: 5px 12px; border-radius: 50px; }
+        .nav-logout:hover { background: #ff7675; color: white; }
 
-        /* --- Dashboard Stats --- */
         .container { padding: 20px 15px; max-width: 1400px; margin: 0 auto; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .stat-card:hover { transform: translateY(-3px); }
-        .stat-card i { font-size: 1.5rem; color: var(--pgh-emerald); opacity: 0.7; }
-        .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--pgh-dark-green); display: block; }
-        .stat-label { font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase; }
 
-        /* --- Main Content --- */
-        .dash-layout { display: grid; grid-template-columns: 2.5fr 1fr; gap: 20px; }
+        /* --- Action Bar --- */
+        .action-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn-alert { background: var(--urgent-red); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-add { background: var(--info-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; }
+
+        /* --- Stats --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 4px solid var(--pgh-emerald); cursor: pointer; }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: var(--pgh-dark-green); display: block; }
+        .stat-label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: bold; }
+
+        /* --- Tables --- */
         .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .panel h3 { margin: 0 0 15px 0; font-size: 1rem; color: var(--pgh-dark-green); border-bottom: 2px solid var(--pgh-emerald); display: inline-block; padding-bottom: 5px; text-transform: uppercase; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 12px; font-size: 0.65rem; color: #888; text-transform: uppercase; border-bottom: 2px solid #eee; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { text-align: left; padding: 12px; color: #888; text-transform: uppercase; border-bottom: 2px solid #eee; font-size: 0.65rem; }
         td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        /* Person Icon Utility */
-        .patient-cell { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .patient-cell i { color: var(--pgh-emerald); font-size: 1rem; }
+        .clickable-data { cursor: pointer; padding: 4px 8px; border-radius: 4px; font-weight: 600; color: var(--pgh-emerald); }
+        .clickable-data:hover { background: #f0f7f3; }
 
-        /* Clickable Editable Styles */
-        .editable { cursor: pointer; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
-        .editable:hover { background: #f0f0f0; }
-
-        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; display: inline-block; text-decoration: none; }
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
         .bg-wait { background: #fff3e0; color: #ef6c00; }
-        .bg-treat { background: #e3f2fd; color: #1565c0; }
+        .bg-care { background: #e3f2fd; color: #1565c0; }
         .bg-ready { background: #e8f5e9; color: #2e7d32; }
-        .bg-crit { background: #ffebee; color: #c62828; }
 
-        /* Bed Grid */
-        .bed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .bed-unit { padding: 10px; border-radius: 8px; text-align: center; border: 1.5px solid #eee; font-size: 0.75rem; font-weight: bold; color: #ccc; }
+        /* --- Beds --- */
+        .bed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .bed-unit { padding: 10px; border-radius: 6px; text-align: center; border: 1px solid #eee; font-size: 0.7rem; color: #ccc; font-weight: bold; }
         .bed-occupied { border-color: var(--pgh-emerald); color: var(--pgh-emerald); background: #f0f7f3; }
 
-        /* Modal Layout */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 400px; }
-        .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; }
+        /* --- Modal --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center; }
+        .modal-content { background:white; padding:25px; border-radius:12px; width:320px; text-align:center; }
+        .modal-content select { width:100%; padding:10px; margin:15px 0; border-radius:6px; border:1px solid #ddd; }
 
-        .btn-logout { display: block; width: 200px; margin: 40px auto; padding: 10px; background: #eee; color: #666; text-decoration: none; text-align: center; border-radius: 50px; font-size: 0.7rem; font-weight: bold; }
-        .btn-logout:hover { background: var(--urgent-red); color: white; }
+        footer { text-align: center; padding: 20px; color: #aaa; font-size: 0.7rem; margin-top: 40px; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="hospital-logo">
+    <img src="logo.png" class="hospital-logo" alt="Logo">
     <div class="brand-text">
         <h2>General Hospital</h2>
-        <small>Emergency Operations Dashboard</small>
+        <small>Electronic Health Record System</small>
     </div>
 </header>
 
@@ -100,184 +93,170 @@
         <li><a href="referral.html">Referral</a></li>
         <li><a href="admin_analytics.html">ER Analytics</a></li>
     </ul>
+    <a href="portal.html" class="nav-logout"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
 </nav>
 
 <div class="container">
+    <div class="action-bar">
+        <button class="btn-alert" onclick="alert('EMERGENCY CODE ACTIVATED')"><i class="fas fa-exclamation-triangle"></i> ALERT CODE</button>
+        <a href="admin_triage.html" class="btn-add"><i class="fas fa-user-plus"></i> NEW ADMISSION</a>
+    </div>
+
     <div class="stats-grid">
         <div class="stat-card" onclick="setFilter('ALL')">
-            <div><span class="stat-label">Today's Total</span><span class="stat-val" id="countToday">0</span></div>
-            <i class="fas fa-users"></i>
+            <span class="stat-label">Census</span>
+            <span class="stat-val" id="stat-all">0</span>
         </div>
         <div class="stat-card" onclick="setFilter('WAITING')">
-            <div><span class="stat-label">In Waiting</span><span class="stat-val" id="countWait">0</span></div>
-            <i class="fas fa-clock"></i>
+            <span class="stat-label">Waiting</span>
+            <span class="stat-val" id="stat-wait">0</span>
         </div>
-        <div class="stat-card" onclick="setFilter('IN TREATMENT')">
-            <div><span class="stat-label">In Treatment</span><span class="stat-val" id="countTreat">0</span></div>
-            <i class="fas fa-procedures"></i>
+        <div class="stat-card" onclick="setFilter('IN CARE')">
+            <span class="stat-label">In Care</span>
+            <span class="stat-val" id="stat-care">0</span>
         </div>
-        <div class="stat-card" onclick="setFilter('READY FOR DISCHARGE')">
-            <div><span class="stat-label">For Discharge</span><span class="stat-val" id="countReady">0</span></div>
-            <i class="fas fa-check-double"></i>
+        <div class="stat-card" onclick="setFilter('READY')">
+            <span class="stat-label">Cleared</span>
+            <span class="stat-val" id="stat-ready">0</span>
         </div>
     </div>
 
-    <div class="dash-layout">
+    <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
         <div class="panel">
-            <h3 id="tableTitle">ER Patient List</h3>
+            <h3>Active ER List</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Patient Name</th>
                         <th>Arrived</th>
                         <th>Level</th>
                         <th>Bed</th>
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="patientTableBody"></tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
 
         <div class="panel">
-            <h3>Bed Tracking</h3>
+            <h3>Bed Status</h3>
             <div class="bed-grid" id="bedGrid"></div>
         </div>
     </div>
-
-    <a href="portal.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> LOG OUT SYSTEM</a>
 </div>
 
-<div id="editModal" class="modal">
+<div id="universalModal" class="modal">
     <div class="modal-content">
-        <h3 style="margin-top:0">Update Patient Info</h3>
-        <p id="editName" style="font-weight:bold; color:var(--pgh-emerald)"></p>
-        
-        <label style="font-size:0.7rem; font-weight:bold">Status</label>
-        <select id="editStatus">
-            <option value="WAITING">Queue</option>
-            <option value="IN TREATMENT">In Treatment</option>
-            <option value="READY FOR DISCHARGE">Ready for Discharge</option>
-            <option value="DISCHARGED">Finalize Discharge</option>
-        </select>
-
-        <label style="font-size:0.7rem; font-weight:bold">Triage Level</label>
-        <select id="editLevel">
-            <option value="NORMAL">Normal</option>
-            <option value="URGENT">Urgent</option>
-            <option value="CRITICAL">Critical</option>
-        </select>
-
-        <label style="font-size:0.7rem; font-weight:bold">Assign Bed</label>
-        <select id="editBed">
-            <option value="">No Bed</option>
-            <option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option>
-            <option value="B2">B2</option><option value="C1">C1</option><option value="C2">C2</option>
-        </select>
-
-        <button onclick="saveEdit()" style="width:100%; padding:12px; background:var(--pgh-emerald); color:white; border:none; border-radius:8px; font-weight:bold; margin-top:10px;">SAVE UPDATES</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:#888; font-size:0.8rem; margin-top:10px; cursor:pointer;">Cancel</button>
+        <h4 id="modalTitle">Update</h4>
+        <div id="modalInputs"></div>
+        <button onclick="saveUpdate()" style="width:100%; padding:10px; background:var(--pgh-emerald); color:white; border:none; border-radius:6px; cursor:pointer;">CONFIRM</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:#888; margin-top:10px; cursor:pointer;">Cancel</button>
     </div>
 </div>
 
+<footer>
+    &copy; 2026 General Hospital Information Management. All Rights Reserved.
+</footer>
+
 <script>
     let patients = JSON.parse(localStorage.getItem('patients')) || [];
-    let activeFilter = 'ALL';
-    let currentEditIdx = null;
+    let currentIdx = null;
+    let currentField = null;
+    let filter = 'ALL';
 
     function render() {
-        const tbody = document.getElementById('patientTableBody');
+        const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
-        let stats = { total: 0, wait: 0, treat: 0, ready: 0 };
-        let usedBeds = [];
+        let stats = { all:0, wait:0, care:0, ready:0 };
+        let occupied = [];
 
         patients.forEach((p, i) => {
-            if(p.status === 'DISCHARGED') return;
+            if (p.status === 'ARCHIVED') return;
 
-            stats.total++;
+            stats.all++;
             if(p.status === 'WAITING') stats.wait++;
-            if(p.status === 'IN TREATMENT') stats.treat++;
-            if(p.status === 'READY FOR DISCHARGE') stats.ready++;
-            if(p.bed) usedBeds.push(p.bed);
+            if(p.status === 'IN CARE') stats.care++;
+            if(p.status === 'READY') stats.ready++;
+            if(p.bed) occupied.push(p.bed);
 
-            if(activeFilter !== 'ALL' && p.status !== activeFilter) return;
+            if(filter !== 'ALL' && p.status !== filter) return;
 
-            // Logic: If Treatment + Normal Level = Show "Discharge Pt" button
-            let statusDisplay;
-            if(p.status === 'IN TREATMENT' && p.level === 'NORMAL') {
-                statusDisplay = `<a href="discharge.html?id=${i}" class="status-pill bg-ready">Discharge Pt</a>`;
-            } else if (p.status === 'READY FOR DISCHARGE') {
-                statusDisplay = `<button class="status-pill bg-ready" onclick="openModal(${i})">Discharged</button>`;
+            // STATUS LOGIC
+            let statusBtn;
+            if (p.status === 'IN CARE' && p.level === 'NORMAL') {
+                statusBtn = `<a href="discharge.html?id=${i}" class="status-pill bg-ready">Discharge Pt</a>`;
+            } else if (p.status === 'READY') {
+                statusBtn = `<button class="status-pill bg-ready" onclick="finalize(${i})">Finalize Exit</button>`;
             } else {
-                statusDisplay = `<button class="status-pill ${p.status === 'WAITING' ? 'bg-wait' : 'bg-treat'}" onclick="openModal(${i})">${p.status}</button>`;
+                statusBtn = `<button class="status-pill ${p.status==='WAITING'?'bg-wait':'bg-care'}" onclick="openUpdate(${i}, 'status')">${p.status}</button>`;
             }
 
-            const row = `
+            tbody.innerHTML += `
                 <tr>
-                    <td>
-                        <div class="patient-cell" onclick="location.href='patient_status.html?id=${i}'">
-                            <i class="fas fa-user-circle"></i>
-                            <strong>${p.name}</strong>
-                        </div>
-                    </td>
+                    <td><i class="fas fa-user-circle" style="color:#ddd"></i> <strong>${p.name}</strong></td>
                     <td>${p.arrived || '--:--'}</td>
-                    <td onclick="openModal(${i})" class="editable">
-                        <span style="color:${p.level === 'CRITICAL' ? 'var(--urgent-red)' : 'inherit'}">${p.level}</span>
-                    </td>
-                    <td onclick="openModal(${i})" class="editable">${p.bed || '---'}</td>
-                    <td>${statusDisplay}</td>
+                    <td><span class="clickable-data" onclick="openUpdate(${i}, 'level')">${p.level}</span></td>
+                    <td><span class="clickable-data" onclick="openUpdate(${i}, 'bed')">${p.bed || 'Assign'}</span></td>
+                    <td>${statusBtn}</td>
                 </tr>
             `;
-            tbody.innerHTML += row;
         });
 
-        document.getElementById('countToday').innerText = stats.total;
-        document.getElementById('countWait').innerText = stats.wait;
-        document.getElementById('countTreat').innerText = stats.treat;
-        document.getElementById('countReady').innerText = stats.ready;
-
-        renderBeds(usedBeds);
+        document.getElementById('stat-all').innerText = stats.all;
+        document.getElementById('stat-wait').innerText = stats.wait;
+        document.getElementById('stat-care').innerText = stats.care;
+        document.getElementById('stat-ready').innerText = stats.ready;
+        renderBeds(occupied);
     }
 
-    function renderBeds(usedBeds) {
+    function renderBeds(occ) {
         const grid = document.getElementById('bedGrid');
         grid.innerHTML = '';
-        ['A1','A2','B1','B2','C1','C2'].forEach(b => {
-            const occ = usedBeds.includes(b);
-            grid.innerHTML += `<div class="bed-unit ${occ ? 'bed-occupied' : ''}">${b}</div>`;
+        ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','E1','E2','E3'].forEach(b => {
+            const isOcc = occ.includes(b);
+            grid.innerHTML += `<div class="bed-unit ${isOcc?'bed-occupied':''}">${b}</div>`;
         });
     }
 
-    function openModal(idx) {
-        currentEditIdx = idx;
-        const p = patients[idx];
-        document.getElementById('editName').innerText = p.name;
-        document.getElementById('editStatus').value = p.status;
-        document.getElementById('editLevel').value = p.level;
-        document.getElementById('editBed').value = p.bed || "";
-        document.getElementById('editModal').style.display = 'flex';
+    function openUpdate(idx, field) {
+        currentIdx = idx;
+        currentField = field;
+        const inputs = document.getElementById('modalInputs');
+        const title = document.getElementById('modalTitle');
+        inputs.innerHTML = '';
+
+        if (field === 'level') {
+            title.innerText = "Clinical Priority";
+            inputs.innerHTML = `<select id="modalSelect"><option value="NORMAL">Normal</option><option value="URGENT">Urgent</option><option value="CRITICAL">Critical</option></select>`;
+        } else if (field === 'bed') {
+            title.innerText = "Assign Bed";
+            inputs.innerHTML = `<select id="modalSelect"><option value="">No Bed</option><option value="A1">A1</option><option value="B1">B1</option><option value="C1">C1</option></select>`;
+        } else if (field === 'status') {
+            title.innerText = "Progress Status";
+            inputs.innerHTML = `<select id="modalSelect"><option value="WAITING">Queue</option><option value="IN CARE">In Care</option></select>`;
+        }
+
+        document.getElementById('universalModal').style.display = 'flex';
     }
 
-    function saveEdit() {
-        const p = patients[currentEditIdx];
-        p.status = document.getElementById('editStatus').value;
-        p.level = document.getElementById('editLevel').value;
-        p.bed = document.getElementById('editBed').value;
+    function saveUpdate() {
+        const val = document.getElementById('modalSelect').value;
+        patients[currentIdx][currentField] = val;
         localStorage.setItem('patients', JSON.stringify(patients));
         closeModal();
         render();
     }
 
-    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-
-    function setFilter(f) {
-        activeFilter = f;
-        document.getElementById('tableTitle').innerText = f === 'ALL' ? 'ER Patient List' : f + " Patients";
+    function finalize(idx) {
+        patients[idx].status = 'ARCHIVED';
+        localStorage.setItem('patients', JSON.stringify(patients));
         render();
     }
 
+    function closeModal() { document.getElementById('universalModal').style.display = 'none'; }
+    function setFilter(f) { filter = f; render(); }
+
     window.onload = render;
 </script>
-
 </body>
 </html>
