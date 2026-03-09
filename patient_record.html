@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Records | General Hospital Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
     <style>
         :root {
             --pgh-black: #020202;
@@ -153,108 +156,109 @@
 </footer>
 
 <script>
-    function loadRecords(filter = 'ALL') {
-        // Receives from home.html (hospitalAppointments) and admin_triage.html (patients)
-        const portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
-        const triageData = JSON.parse(localStorage.getItem('patients')) || [];
+    // --- FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+        // Add your apiKey and other fields from Firebase Console here
+    };
 
-        const allPatients = [
-            ...portalData.map(p => ({ ...p, source: 'PORTAL' })),
-            ...triageData.map(p => ({ ...p, source: 'TRIAGE' }))
-        ];
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
+    let currentFilter = 'ALL';
+    let cachedPatients = []; // To store data from cloud for searching/filtering
+
+    function loadRecordsFromCloud(filter = 'ALL') {
+        currentFilter = filter;
         const tbody = document.getElementById('recordsTableBody');
-        tbody.innerHTML = '';
+        
+        // Use '.on' to listen for real-time changes across all devices
+        db.ref('appointments').on('value', (snapshot) => {
+            const data = snapshot.val();
+            tbody.innerHTML = '';
+            cachedPatients = [];
 
-        allPatients.forEach((p, index) => {
-            const isDischarged = p.status === 'DISCHARGED' || p.status === 'ARCHIVED' || p.isDischarged === true;
-            if (filter === 'ACTIVE' && isDischarged) return;
-            if (filter === 'DISCHARGED' && !isDischarged) return;
+            if (!data) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records found.</td></tr>';
+                return;
+            }
 
-            const name = p.name || "Unknown";
-            const contact = p.contact || p.phone || p.contactNo || "N/A";
-            const time = p.timestamp || p.arrived || "N/A";
-            
-            // Logic to handle different data structures from the two sources
-            const detail = p.source === 'PORTAL' ? (p.doctor || "General Dept") : (p.level || "Regular");
-            const subtext = p.source === 'PORTAL' ? "Online Portal" : (p.age ? p.age + "Y | " + p.sex : "ER Triage");
+            // Convert Firebase object to Array and store IDs
+            Object.keys(data).forEach(id => {
+                const p = data[id];
+                p.firebaseID = id; // Keep track of the ID for deleting/viewing
+                cachedPatients.push(p);
 
-            const row = `
-                <tr>
-                    <td>
-                        <div class="patient-info">
-                            <div class="patient-avatar">
-                                <i class="fas ${p.source === 'PORTAL' ? 'fa-globe' : 'fa-user-nurse'}"></i>
+                const isDischarged = p.status === 'DISCHARGED' || p.isDischarged === true;
+                if (filter === 'ACTIVE' && isDischarged) return;
+                if (filter === 'DISCHARGED' && !isDischarged) return;
+
+                const name = p.name || "Unknown";
+                const contact = p.contact || "N/A";
+                const time = p.timestamp || "N/A";
+                const detail = p.doctor || p.dept || "General";
+                const subtext = p.age ? `${p.age}Y | ${p.sex}` : "New Entry";
+
+                const row = `
+                    <tr>
+                        <td>
+                            <div class="patient-info">
+                                <div class="patient-avatar">
+                                    <i class="fas fa-user-injured"></i>
+                                </div>
+                                <div>
+                                    <strong>${name}</strong><br>
+                                    <small style="color:#888">${subtext}</small>
+                                </div>
                             </div>
-                            <div>
-                                <strong>${name}</strong><br>
-                                <small style="color:#888">${subtext}</small>
+                        </td>
+                        <td>${contact}</td>
+                        <td>${time}</td>
+                        <td>
+                            <span style="font-weight:bold; color: var(--pgh-emerald)">
+                                ${detail}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
+                                ${isDischarged ? 'Discharged' : 'Active'}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;">
+                                <button class="action-btn" onclick="viewDetails('${id}')">View</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('${id}')"><i class="fas fa-trash"></i></button>
                             </div>
-                        </div>
-                    </td>
-                    <td>${contact}</td>
-                    <td>${time}</td>
-                    <td>
-                        <span style="font-weight:bold; color: ${p.level === 'CRITICAL' ? 'var(--urgent-red)' : 'var(--pgh-emerald)'}">
-                            ${detail}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
-                            ${isDischarged ? 'Discharged' : 'Active'}
-                        </span>
-                    </td>
-                    <td>
-                        <div style="display:flex;">
-                            <button class="action-btn" onclick="viewDetails('${p.source}', ${index})">View</button>
-                            <button class="action-btn btn-delete" onclick="deleteRecord('${p.source}', ${index})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            tbody.insertAdjacentHTML('beforeend', row);
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
         });
-
-        if (tbody.innerHTML === '') {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records found.</td></tr>';
-        }
     }
 
-    function viewDetails(source, index) {
-        const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
-        const data = JSON.parse(localStorage.getItem(key));
-        const p = data[index];
+    function viewDetails(id) {
+        const p = cachedPatients.find(item => item.firebaseID === id);
         const body = document.getElementById('modalBody');
         document.getElementById('modalName').innerText = p.name;
         
-        const contactVal = p.contact || p.phone || p.contactNo || 'N/A';
-
-        if (source === 'PORTAL') {
-            body.innerHTML = `
-                <div class="detail-row"><span class="detail-label">Origin:</span> <span>Online Appointment</span></div>
-                <div class="detail-row"><span class="detail-label">Contact:</span> <span>${contactVal}</span></div>
-                <div class="detail-row"><span class="detail-label">Assigned Doctor:</span> <span>${p.doctor || 'TBD'}</span></div>
-                <div class="detail-row"><span class="detail-label">Symptoms:</span> <span>${p.symptoms || 'Not listed'}</span></div>
-            `;
-        } else {
-            body.innerHTML = `
-                <div class="detail-row"><span class="detail-label">Origin:</span> <span>ER Triage Intake</span></div>
-                <div class="detail-row"><span class="detail-label">Age / Sex:</span> <span>${p.age || 'N/A'} / ${p.sex || 'N/A'}</span></div>
-                <div class="detail-row"><span class="detail-label">Triage Level:</span> <span style="font-weight:bold">${p.level || 'STABLE'}</span></div>
-                <div class="detail-row"><span class="detail-label">Bed Assignment:</span> <span>${p.bed || 'Unassigned'}</span></div>
-                <div class="detail-row"><span class="detail-label">Complaint:</span> <span>${p.complaint || 'N/A'}</span></div>
-            `;
-        }
+        body.innerHTML = `
+            <div class="detail-row"><span class="detail-label">Age / Sex:</span> <span>${p.age || 'N/A'} / ${p.sex || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Contact:</span> <span>${p.contact || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Department:</span> <span>${p.dept || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Doctor:</span> <span>${p.doctor || 'Unassigned'}</span></div>
+            <div class="detail-row"><span class="detail-label">Symptoms:</span> <span>${p.symptoms || 'N/A'}</span></div>
+            <div class="detail-row" style="background:#f9f9f9; padding:10px; border-radius:5px; margin-top:10px;">
+                <span class="detail-label">Latest BP:</span> <span>${(p.vitals && p.vitals.bp) ? p.vitals.bp : '---'}</span>
+            </div>
+        `;
         document.getElementById('detailsModal').style.display = 'flex';
     }
 
-    function deleteRecord(source, index) {
-        if(confirm("Are you sure you want to permanently delete this record?")) {
-            const key = source === 'PORTAL' ? 'hospitalAppointments' : 'patients';
-            let data = JSON.parse(localStorage.getItem(key));
-            data.splice(index, 1);
-            localStorage.setItem(key, JSON.stringify(data));
-            loadRecords();
+    function deleteRecord(id) {
+        if(confirm("Are you sure you want to permanently delete this record from the cloud?")) {
+            db.ref('appointments/' + id).remove();
         }
     }
 
@@ -263,7 +267,7 @@
     function switchTab(type, element) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
-        loadRecords(type);
+        loadRecordsFromCloud(type);
     }
 
     function searchRecords() {
@@ -274,7 +278,7 @@
         }
     }
 
-    window.onload = () => loadRecords();
+    window.onload = () => loadRecordsFromCloud();
 </script>
 </body>
 </html>
