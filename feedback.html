@@ -24,7 +24,6 @@
             overflow-x: hidden;
         }
 
-        /* [ UNIVERSAL HEADER & NAV STYLE ] */
         header {
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
             background-size: cover;
@@ -91,7 +90,6 @@
             min-height: 35px;
         }
 
-        /* --- Feedback Specifics --- */
         .container { padding: 40px 5%; max-width: 700px; margin: 0 auto; }
         
         .feedback-header { text-align: center; margin-bottom: 30px; }
@@ -200,15 +198,13 @@
         <p>Help us improve our digital healthcare services by providing your honest feedback. We value your time and insights.</p>
     </div>
 
-    
-
     <div class="card">
         <form id="feedbackForm">
             <label>Full Name (Optional)</label>
             <input type="text" id="patientName" placeholder="e.g. Juan Dela Cruz">
 
             <label>Service Received</label>
-            <select required>
+            <select id="serviceType" required>
                 <option value="">-- Choose a service --</option>
                 <option>Video Consultation</option>
                 <option>Lab Results Review</option>
@@ -226,7 +222,7 @@
             </div>
 
             <label>What could we do better?</label>
-            <textarea rows="5" placeholder="Tell us about your experience..." required></textarea>
+            <textarea id="comments" rows="5" placeholder="Tell us about your experience..." required></textarea>
 
             <button type="submit" class="btn-submit">Submit Feedback</button>
         </form>
@@ -254,7 +250,18 @@
    <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | Providing Care Beyond Boundaries</p>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
 <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const stars = document.querySelectorAll('#starRating i');
     let currentRating = 0;
 
@@ -266,7 +273,6 @@
             });
         });
 
-        // Hover effect
         star.addEventListener('mouseover', function() {
             const hoverVal = this.getAttribute('data-value');
             stars.forEach(s => {
@@ -283,17 +289,36 @@
 
     document.getElementById('feedbackForm').onsubmit = function(e) {
         e.preventDefault();
+
         if(currentRating === 0) {
             alert("Please provide a star rating.");
             return;
         }
-        alert("Thank you for your feedback! It has been successfully recorded.");
-        this.reset();
-        stars.forEach(s => s.classList.remove('active'));
-        currentRating = 0;
+
+        // Prepare data
+        const feedbackData = {
+            id: Date.now().toString(),
+            name: document.getElementById('patientName').value || "Anonymous",
+            service: document.getElementById('serviceType').value,
+            rating: currentRating,
+            comment: document.getElementById('comments').value,
+            timestamp: new Date().toLocaleString()
+        };
+
+        // Push to Firebase
+        db.ref('feedbacks/' + feedbackData.id).set(feedbackData)
+        .then(() => {
+            alert("Thank you for your feedback! It has been successfully recorded.");
+            this.reset();
+            stars.forEach(s => s.classList.remove('active'));
+            currentRating = 0;
+        })
+        .catch(error => {
+            console.error("Firebase Error:", error);
+            alert("Failed to save feedback. Please check your connection.");
+        });
     };
 </script>
 
 </body>
 </html>
-
