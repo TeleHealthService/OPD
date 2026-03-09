@@ -6,51 +6,76 @@
     <title>Nurse Station | Clinical Input</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --pgh-dark-green: #0D2818; --pgh-emerald: #04471C; --light-gray: #f4f7f6; }
+        :root { 
+            --pgh-dark-green: #0D2818; 
+            --pgh-emerald: #04471C; 
+            --light-gray: #f4f7f6; 
+            --white: #ffffff;
+        }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); }
-        header { background: var(--pgh-dark-green); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        
+        header { 
+            background: var(--pgh-dark-green); 
+            padding: 15px; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 4px solid var(--pgh-emerald);
+        }
+
         .container { padding: 20px; max-width: 800px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h3 { margin-top: 0; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1rem; }
+        .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        h3 { margin-top: 0; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1rem; text-transform: uppercase; }
+        
         .vitals-input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group label { display: block; font-size: 0.8rem; font-weight: bold; color: #666; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .pain-display { text-align: center; font-size: 2.5rem; font-weight: 900; color: #e74c3c; }
-        .btn-save { width: 100%; padding: 15px; background: var(--pgh-emerald); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
-        .btn-clear { width: 100%; padding: 12px; background: #eee; color: #666; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .success-msg { display: none; background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; border: 1px solid #2e7d32; }
+        
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        input:focus { border-color: var(--pgh-emerald); outline: none; }
+
+        .pain-display { text-align: center; font-size: 2.5rem; font-weight: 900; color: #e74c3c; margin-top: 10px; }
+        
+        .btn-save { width: 100%; padding: 15px; background: var(--pgh-emerald); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; text-transform: uppercase; }
+        .btn-clear { width: 100%; padding: 12px; background: #eee; color: #666; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
+        .success-msg { display: none; background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px solid #2e7d32; font-weight: bold; }
         .back-nav { color: white; text-decoration: none; font-size: 0.8rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 4px; }
+        
+        @media (max-width: 480px) { .vitals-input-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+
 <header>
     <div><i class="fas fa-user-nurse"></i> MONITORING STATION</div>
     <div class="back-nav" onclick="location.href='patient_records.html'"><i class="fas fa-arrow-left"></i> RECORDS</div>
 </header>
+
 <div class="container">
     <div id="successNote" class="success-msg">Clinical Data Updated Successfully!</div>
     
     <div class="card">
-        <h3><i class="fas fa-user-injured"></i> Select Patient for Monitoring</h3>
+        <h3><i class="fas fa-user-injured"></i> Select Patient</h3>
         <select id="patientSelect" onchange="loadPatientData()">
-            <option value="">-- Choose Patient --</option>
+            <option value="">-- Choose Patient for Monitoring --</option>
         </select>
     </div>
 
     <div id="inputForm" style="display:none;">
         <div class="card">
             <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
-            
             <div class="vitals-input-grid">
-                <div class="form-group"><label>BP (mmHg)</label><input type="text" id="v_bp" placeholder="e.g. 120/80"></div>
+                <div class="form-group"><label>BP (mmHg)</label><input type="text" id="v_bp" placeholder="120/80"></div>
                 <div class="form-group"><label>HR (bpm)</label><input type="number" id="v_hr" placeholder="72"></div>
                 <div class="form-group"><label>Temp (°C)</label><input type="number" step="0.1" id="v_temp" placeholder="36.5"></div>
                 <div class="form-group"><label>SPO2 (%)</label><input type="number" id="v_o2" placeholder="98"></div>
             </div>
         </div>
+
         <div class="card">
-            <h3><i class="fas fa-brain"></i> GCS & Pain Assessment</h3>
-            
+            <h3><i class="fas fa-brain"></i> GCS & Pain Scale</h3>
             <div class="vitals-input-grid">
                 <div class="form-group"><label>GCS Eye (1-4)</label><input type="number" id="g_eye" min="1" max="4"></div>
                 <div class="form-group"><label>GCS Verbal (1-5)</label><input type="number" id="g_verbal" min="1" max="5"></div>
@@ -60,47 +85,66 @@
             <div class="pain-display" id="painDisplay">0</div>
         </div>
         
-        <button class="btn-save" onclick="saveData()">SUBMIT CLINICAL UPDATE</button>
-        <button class="btn-clear" onclick="location.reload()">CANCEL</button>
+        <button class="btn-save" onclick="saveData()">Update Clinical Record</button>
+        <button class="btn-clear" onclick="location.reload()">Cancel</button>
     </div>
 </div>
 
-<script>
-    // Pulling from both storage keys to match patient_record.html
-    let portalData = JSON.parse(localStorage.getItem('hospitalAppointments')) || [];
-    let triageData = JSON.parse(localStorage.getItem('patients')) || [];
-    
-    // Create a master list to reference
-    let allPatients = [
-        ...portalData.map((p, i) => ({ ...p, source: 'PORTAL', originalIndex: i })),
-        ...triageData.map((p, i) => ({ ...p, source: 'TRIAGE', originalIndex: i }))
-    ];
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
+<script>
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let allPatients = {}; 
     const select = document.getElementById('patientSelect');
 
     function init() {
-        allPatients.forEach((p, i) => {
-            // Only show patients that are not discharged
-            const isDischarged = p.status === 'Discharged' || p.status === 'ARCHIVED' || p.isDischarged === true;
-            if (!isDischarged) {
-                let label = p.name + (p.source === 'PORTAL' ? " (Portal)" : ` (Triage${p.bed ? ' - Bed ' + p.bed : ''})`);
-                let opt = new Option(label, i);
-                select.add(opt);
-            }
+        const nodes = ['appointments', 'patients'];
+        nodes.forEach(node => {
+            db.ref(node).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.keys(data).forEach(id => {
+                        allPatients[id] = { ...data[id], firebaseId: id, sourceNode: node };
+                    });
+                    renderDropdown();
+                }
+            });
         });
     }
 
+    function renderDropdown() {
+        const currentSelection = select.value;
+        select.innerHTML = '<option value="">-- Choose Patient for Monitoring --</option>';
+        Object.keys(allPatients).forEach(id => {
+            const p = allPatients[id];
+            const isDischarged = p.status === 'Discharged' || p.isDischarged === true;
+            if (!isDischarged) {
+                let label = `${p.name} (${p.sourceNode === 'appointments' ? 'Portal' : 'Triage'})`;
+                let opt = new Option(label, id);
+                select.add(opt);
+            }
+        });
+        select.value = currentSelection;
+    }
+
     function loadPatientData() {
-        const val = select.value;
-        if(val === "") {
+        const id = select.value;
+        if(!id) {
             document.getElementById('inputForm').style.display = 'none';
             return;
         }
-        const p = allPatients[val];
+        const p = allPatients[id];
         document.getElementById('inputForm').style.display = 'block';
         document.getElementById('successNote').style.display = 'none';
         
-        // Populate existing data if available
         document.getElementById('v_bp').value = p.vitals?.bp || '';
         document.getElementById('v_hr').value = p.vitals?.hr || '';
         document.getElementById('v_temp').value = p.vitals?.temp || '';
@@ -113,42 +157,38 @@
     }
 
     function saveData() {
-        const globalIndex = select.value;
-        if(!globalIndex) return alert("Please select a patient first.");
-
-        const patientRef = allPatients[globalIndex];
-        const updatedVitals = { 
-            bp: document.getElementById('v_bp').value, 
-            hr: document.getElementById('v_hr').value, 
-            temp: document.getElementById('v_temp').value, 
-            o2: document.getElementById('v_o2').value 
-        };
-        const updatedGcs = { 
-            eye: document.getElementById('g_eye').value, 
-            verbal: document.getElementById('g_verbal').value, 
-            motor: document.getElementById('g_motor').value 
-        };
-        const updatedPain = document.getElementById('pain_val').value;
-
-        // Save back to the correct specific LocalStorage key
-        if(patientRef.source === 'PORTAL') {
-            portalData[patientRef.originalIndex].vitals = updatedVitals;
-            portalData[patientRef.originalIndex].gcs = updatedGcs;
-            portalData[patientRef.originalIndex].painScale = updatedPain;
-            localStorage.setItem('hospitalAppointments', JSON.stringify(portalData));
-        } else {
-            triageData[patientRef.originalIndex].vitals = updatedVitals;
-            triageData[patientRef.originalIndex].gcs = updatedGcs;
-            triageData[patientRef.originalIndex].painScale = updatedPain;
-            localStorage.setItem('patients', JSON.stringify(triageData));
-        }
+        const id = select.value;
+        if(!id) return;
+        const p = allPatients[id];
         
-        document.getElementById('inputForm').style.display = 'none';
-        select.value = "";
-        document.getElementById('successNote').style.display = 'block';
-        window.scrollTo(0,0);
+        const updates = {
+            vitals: {
+                bp: document.getElementById('v_bp').value,
+                hr: document.getElementById('v_hr').value,
+                temp: document.getElementById('v_temp').value,
+                o2: document.getElementById('v_o2').value
+            },
+            gcs: {
+                eye: document.getElementById('g_eye').value,
+                verbal: document.getElementById('g_verbal').value,
+                motor: document.getElementById('g_motor').value
+            },
+            painScale: document.getElementById('pain_val').value,
+            lastUpdated: Date.now()
+        };
+
+        db.ref(`${p.sourceNode}/${id}`).update(updates)
+            .then(() => {
+                document.getElementById('inputForm').style.display = 'none';
+                select.value = "";
+                document.getElementById('successNote').style.display = 'block';
+                window.scrollTo(0,0);
+            })
+            .catch(err => alert("Update failed: " + err.message));
     }
+
     window.onload = init;
 </script>
+
 </body>
 </html>
