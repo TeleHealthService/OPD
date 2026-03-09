@@ -14,6 +14,7 @@
             --light-gray: #f4f7f6;
             --border-color: #e0e0e0;
             --urgent-red: #e74c3c;
+            --info-blue: #3498db;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
@@ -22,8 +23,16 @@
         /* --- Header & Nav --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover; padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
+            background-size: cover; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
         }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-actions { display: flex; gap: 10px; }
+        
+        .btn-action { padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
+        .btn-alert { background: var(--urgent-red); box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+        .btn-add { background: var(--info-blue); }
+        .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
+
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
@@ -37,7 +46,9 @@
 
         /* --- Stats --- */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); display: flex; justify-content: space-between; align-items: center; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--pgh-emerald); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .stat-card.active-filter { border-bottom: 4px solid var(--pgh-emerald); background: #f0f7f3; }
         .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--pgh-dark-green); display: block; }
         .stat-label { font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase; }
 
@@ -78,10 +89,16 @@
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Emergency Operations Dashboard</small>
+    <div class="header-left">
+        <img src="logo.png" alt="Logo" class="hospital-logo">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Emergency Operations Dashboard</small>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button class="btn-action btn-alert" onclick="alert('Emergency Alert Triggered!')"><i class="fas fa-exclamation-triangle"></i> Call Code</button>
+        <a href="patient_record.html" class="btn-action btn-add"><i class="fas fa-plus"></i> New Patient</a>
     </div>
 </header>
 
@@ -96,19 +113,19 @@
 
 <div class="container">
     <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" id="cardTotal" onclick="filterList('ALL')">
             <div><span class="stat-label">Total Patients</span><span class="stat-val" id="countToday">0</span></div>
             <i class="fas fa-users" style="color:var(--pgh-emerald); opacity:0.5"></i>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="cardWait" onclick="filterList('WAITING')">
             <div><span class="stat-label">In Waiting</span><span class="stat-val" id="countWait">0</span></div>
             <i class="fas fa-clock" style="color:#f39c12; opacity:0.5"></i>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="cardTreat" onclick="filterList('IN TREATMENT')">
             <div><span class="stat-label">In Treatment</span><span class="stat-val" id="countTreat">0</span></div>
             <i class="fas fa-procedures" style="color:#3498db; opacity:0.5"></i>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="cardReady" onclick="filterList('READY FOR DISCHARGE')">
             <div><span class="stat-label">For Discharge</span><span class="stat-val" id="countReady">0</span></div>
             <i class="fas fa-check-circle" style="color:#27ae60; opacity:0.5"></i>
         </div>
@@ -116,7 +133,7 @@
 
     <div class="dash-layout">
         <div class="panel">
-            <h3 style="margin-top:0; font-size:0.9rem; border-bottom: 2px solid var(--pgh-emerald); display:inline-block; padding-bottom:5px;">ACTIVE ER PATIENTS</h3>
+            <h3 id="tableTitle" style="margin-top:0; font-size:0.9rem; border-bottom: 2px solid var(--pgh-emerald); display:inline-block; padding-bottom:5px;">ACTIVE ER PATIENTS</h3>
             <div class="scrollable-list">
                 <table>
                     <thead>
@@ -147,7 +164,22 @@
 </div>
 
 <script>
+    let currentFilter = 'ALL';
     const patients = JSON.parse(localStorage.getItem('patients')) || [];
+
+    function filterList(status) {
+        currentFilter = status;
+        // Visual feedback for active filter
+        document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active-filter'));
+        if(status === 'ALL') document.getElementById('cardTotal').classList.add('active-filter');
+        if(status === 'WAITING') document.getElementById('cardWait').classList.add('active-filter');
+        if(status === 'IN TREATMENT') document.getElementById('cardTreat').classList.add('active-filter');
+        if(status === 'READY FOR DISCHARGE') document.getElementById('cardReady').classList.add('active-filter');
+        
+        const titleText = status === 'ALL' ? 'ACTIVE ER PATIENTS' : `${status} PATIENTS`;
+        document.getElementById('tableTitle').innerText = titleText;
+        render();
+    }
 
     function render() {
         const tbody = document.getElementById('patientTableBody');
@@ -156,13 +188,17 @@
         let occupiedBeds = [];
 
         patients.forEach((p, i) => {
-            if(p.status === 'ARCHIVED') return;
+            if(p.status === 'ARCHIVED' || p.status === 'DISCHARGED') return;
 
+            // Update stats
             stats.total++;
             if(p.status === 'WAITING') stats.wait++;
             if(p.status === 'IN TREATMENT') stats.treat++;
             if(p.status === 'READY FOR DISCHARGE') stats.ready++;
             if(p.bed) occupiedBeds.push(p.bed);
+
+            // Filter logic
+            if(currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
 
@@ -198,9 +234,11 @@
         });
     }
 
-    window.onload = render;
+    window.onload = () => {
+        document.getElementById('cardTotal').classList.add('active-filter');
+        render();
+    };
 </script>
 
 </body>
 </html>
-
