@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Clinical Profile | General Hospital</title>
+    <title>Patient Profile | General Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -13,192 +13,204 @@
             --light-gray: #f4f7f6;
             --urgent-red: #e74c3c;
             --info-blue: #3498db;
-            --success-green: #27ae60;
-            --text-main: #2c3e50;
+            --border-color: #e0e0e0;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light-gray); margin: 0; padding: 0; color: var(--text-main); }
-        
-        /* Layout */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        
-        .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .back-link { text-decoration: none; color: var(--pgh-dark-green); font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .back-link:hover { color: var(--pgh-emerald); transform: translateX(-3px); }
+        * { box-sizing: border-box; transition: 0.3s ease; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: #333; }
 
-        /* Profile Card Styling */
-        .profile-card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
-        
-        .profile-header { 
-            background: linear-gradient(135deg, var(--pgh-dark-green) 0%, var(--pgh-emerald) 100%); 
-            color: white; padding: 40px; display: flex; justify-content: space-between; align-items: center; 
+        /* --- Header & Nav (Dashboard Match) --- */
+        header { 
+            background: linear-gradient(rgba(13, 40, 24, 0.9), rgba(13, 40, 24, 0.9)), url('bg1.png');
+            background-size: cover; padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
         }
-        .header-left { display: flex; align-items: center; gap: 25px; }
-        .hospital-logo { width: 70px; height: 70px; object-fit: contain; filter: brightness(0) invert(1); }
-        .profile-header h1 { margin: 0; font-size: 2.2rem; letter-spacing: -0.5px; }
+        .hospital-logo { width: 40px; height: 40px; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; }
 
-        .status-badges { display: flex; gap: 10px; margin-top: 15px; }
-        .badge { padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; color: white; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .bg-critical { background: var(--urgent-red); }
+        nav { background: var(--pgh-dark-green); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { color: white; text-decoration: none; font-size: 0.7rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+
+        .container { padding: 20px; max-width: 1400px; margin: 0 auto; }
+
+        /* --- Profile Header --- */
+        .patient-header { background: white; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .patient-identity h1 { margin: 0; font-size: 1.8rem; color: var(--pgh-dark-green); display: flex; align-items: center; gap: 10px; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; }
+        .bg-crit { background: var(--urgent-red); }
         .bg-stable { background: var(--success-green); }
-        .bg-status { background: var(--info-blue); }
-        .bg-bed { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
 
-        /* Grid Content */
-        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; padding: 45px; }
-        section h3 { border-bottom: 2px solid #eee; padding-bottom: 12px; color: var(--pgh-dark-green); font-size: 1.1rem; margin-top: 0; display: flex; align-items: center; gap: 12px; }
+        /* --- Layout Grid --- */
+        .profile-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; font-size: 0.9rem; color: #888; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-        .info-row { margin-bottom: 22px; }
-        .info-row label { display: block; font-size: 0.75rem; color: #95a5a6; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
-        .info-row p { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+        /* --- Vitals Monitor Style --- */
+        .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; text-align: center; }
+        .vital-box { padding: 15px; border-radius: 10px; background: #fcfcfc; border: 1px solid #f0f0f0; }
+        .vital-box i { font-size: 1.2rem; margin-bottom: 10px; display: block; }
+        .vital-box label { font-size: 0.6rem; font-weight: bold; color: #999; display: block; }
+        .vital-box span { font-size: 1.4rem; font-weight: 800; color: var(--pgh-dark-green); }
 
-        /* Vital Signs Display */
-        .vitals-card { 
-            background: #f9fdfb; border: 1px dashed #ceddd4; border-radius: 14px; padding: 25px; 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
-        }
-        .vital-item { text-align: center; padding: 10px; }
-        .vital-item label { color: #7f8c8d; font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 5px; }
-        .vital-item span { font-size: 1.5rem; font-weight: 800; color: var(--pgh-emerald); display: block; }
+        /* --- Clinical Tools --- */
+        .tool-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tool-btn { flex: 1; padding: 8px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 5px; }
+        .tool-btn.active { background: var(--pgh-emerald); color: white; border-color: var(--pgh-emerald); }
+        .score-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
+        .score-val { font-weight: bold; color: var(--pgh-emerald); }
 
-        /* Action Buttons */
-        .action-bar { background: #f8f9fa; padding: 25px 45px; display: flex; flex-wrap: wrap; gap: 15px; border-top: 1px solid #edf2f4; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; transition: all 0.2s ease; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        
-        .btn-bed { background: var(--pgh-emerald); color: white; }
-        .btn-lvl { background: #34495e; color: white; }
-        .btn-status { background: var(--info-blue); color: white; }
-        .btn-print { background: white; border: 1.5px solid #dcdde1; color: #2f3640; }
+        /* --- Status Control --- */
+        .action-footer { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-status { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; }
+        .btn-queue { background: #fff3e0; color: #ef6c00; }
+        .btn-care { background: #e3f2fd; color: #1565c0; }
+        .btn-discharge { background: var(--pgh-emerald); color: white; }
 
-        /* Choice Overlay */
-        #choiceOverlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(13, 40, 24, 0.85); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; 
-        }
-        .choice-card { background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .choice-card h3 { color: var(--pgh-dark-green); margin-bottom: 25px; }
-        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { padding: 16px; border: 1.5px solid #eee; border-radius: 10px; cursor: pointer; font-weight: 700; background: #fff; transition: 0.2s; font-size: 0.9rem; }
-        .opt-btn:hover { border-color: var(--pgh-emerald); background: #f0f7f3; color: var(--pgh-emerald); }
-        
-        .close-btn { margin-top: 25px; border: none; background: #f1f2f6; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; color: #718093; width: 100%; }
-
-        @media print {
-            .nav-header, .action-bar, #choiceOverlay { display: none; }
-            body { padding: 0; background: white; }
-            .profile-card { box-shadow: none; border: 1px solid #ccc; }
-        }
+        /* --- Bed Overlay --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; }
+        .modal-content { background:white; padding:25px; border-radius:15px; width:400px; text-align:center; }
+        .bed-choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+        .bed-opt { padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .bed-opt:hover { background: var(--pgh-emerald); color: white; }
     </style>
 </head>
 <body>
 
-<div id="choiceOverlay">
-    <div class="choice-card" id="choiceCard"></div>
-</div>
+<header>
+    <img src="logo.png" class="hospital-logo" alt="Logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Clinical Profile View</small>
+    </div>
+</header>
 
-<div class="container">
-    <div class="nav-header">
-        <a href="admin_dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> RETURN TO DASHBOARD</a>
-        <button onclick="window.print()" class="btn btn-print"><i class="fas fa-print"></i> EXPORT MEDICAL CHART</button>
+<nav>
+    <a href="admin_dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i> BACK TO DASHBOARD</a>
+</nav>
+
+<div class="container" id="profileContainer">
     </div>
 
-    <div class="profile-card" id="profileOutput"></div>
+<div id="bedModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-bed"></i> Assign ER Bed</h3>
+        <p style="font-size:0.8rem; color:#888;">Select an available bed to start treatment</p>
+        <div class="bed-choice-grid" id="bedOptions"></div>
+        <button onclick="closeModal()" style="margin-top:20px; border:none; background:none; color:#888; cursor:pointer;">Cancel</button>
+    </div>
 </div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
     const pIndex = params.get('id');
-    const overlay = document.getElementById('choiceOverlay');
-    const choiceCard = document.getElementById('choiceCard');
-
-    function renderProfile() {
+    
+    function loadProfile() {
         const patients = JSON.parse(localStorage.getItem('patients')) || [];
         const p = patients[pIndex];
 
-        if (!p) {
-            document.getElementById('profileOutput').innerHTML = `<div style="padding:80px; text-align:center;"><i class="fas fa-folder-open fa-3x" style="color:#ccc; margin-bottom:20px;"></i><h3>Patient record not found in database.</h3></div>`;
-            return;
+        if (!p) return;
+
+        const container = document.getElementById('profileContainer');
+        
+        // Status Button Logic
+        let statusButton = '';
+        if (p.status === 'WAITING') {
+            statusButton = `<button class="btn-status btn-queue" onclick="openBedModal()">SELECT BED (QUEUE)</button>`;
+        } else if (p.status === 'READY') {
+            statusButton = `<button class="btn-status btn-discharge" onclick="dischargePatient()">FINAL DISCHARGE</button>`;
+        } else {
+            statusButton = `<button class="btn-status btn-care" disabled>PATIENT IN CARE</button>`;
         }
 
-        document.getElementById('profileOutput').innerHTML = `
-            <div class="profile-header">
-                <div class="header-left">
-                    <img src="logo.png" alt="Hospital Logo" class="hospital-logo">
-                    <div>
-                        <h1>${p.name}</h1>
-                        <span style="opacity:0.9; font-size:0.85rem; font-weight:600;">EMERGENCY CARE UNIT • CASE REF: #${1000 + parseInt(pIndex)}</span>
-                        <div class="status-badges">
-                            <span class="badge ${p.level === 'CRITICAL' ? 'bg-critical' : 'bg-stable'}">${p.level}</span>
-                            <span class="badge bg-status">${p.status}</span>
-                            <span class="badge bg-bed"><i class="fas fa-bed"></i> ${p.bed || 'UNASSIGNED'}</span>
+        container.innerHTML = `
+            <div class="patient-header">
+                <div class="patient-identity">
+                    <h1>${p.name} <span class="status-badge bg-crit">${p.level}</span></h1>
+                    <small style="color:#888; font-weight:bold;">${p.age} Yrs • ${p.sex} • ARRIVED: ${p.arrived || '11:36 AM'}</small>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:0.6rem; color:#999; font-weight:bold;">ASSIGNED BED</div>
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--pgh-emerald);">${p.bed || 'NONE'}</div>
+                </div>
+            </div>
+
+            <div class="profile-layout">
+                <div>
+                    <div class="card">
+                        <h3><i class="fas fa-notes-medical"></i> Chief Complaint</h3>
+                        <p style="font-size: 1.2rem; font-weight: 600; color: var(--pgh-dark-green); margin: 10px 0;">${p.complaint || 'No complaint noted'}</p>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
+                        <div class="vitals-grid">
+                            <div class="vital-box"><i class="fas fa-tint" style="color:#e74c3c"></i><label>BLOOD PRESSURE</label><span>${p.vitals?.bp || '160/95'}</span></div>
+                            <div class="vital-box"><i class="fas fa-heart" style="color:#ff7675"></i><label>HEART RATE</label><span>${p.vitals?.hr || '110'}</span></div>
+                            <div class="vital-box"><i class="fas fa-thermometer-half" style="color:#fab1a0"></i><label>TEMP</label><span>${p.vitals?.temp || '36.8'}°C</span></div>
+                            <div class="vital-box"><i class="fas fa-wind" style="color:#81ecec"></i><label>RESP RATE</label><span>${p.vitals?.resp || '24'}</span></div>
+                            <div class="vital-box"><i class="fas fa-wave-square" style="color:#55efc4"></i><label>SPO2</label><span>${p.vitals?.o2 || '92'}%</span></div>
                         </div>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <label style="font-size: 0.65rem; font-weight:800; opacity: 0.8; text-transform:uppercase;">Admission Timestamp</label>
-                    <div style="font-weight: 700; font-size: 1.2rem;">${p.arrived || '--:--'}</div>
-                </div>
-            </div>
 
-            <div class="profile-grid">
-                <section>
-                    <h3><i class="fas fa-user-md"></i> Patient Demographics</h3>
-                    <div class="info-row"><label>Age / Sex</label><p>${p.age} Years • ${p.sex}</p></div>
-                    <div class="info-row"><label>Assigned Unit</label><p>ER Bed: <strong>${p.bed || 'Pending Assignment'}</strong></p></div>
-                    <div class="info-row"><label>Clinical Presentation</label><p>${p.complaint || 'No documented chief complaint'}</p></div>
-                </section>
-                <section>
-                    <h3><i class="fas fa-heartbeat"></i> Latest Vital Signs</h3>
-                    <div class="vitals-card">
-                        <div class="vital-item"><label>BLOOD PRESSURE</label><span>${p.vitals?.bp || '120/80'}</span></div>
-                        <div class="vital-item"><label>HEART RATE</label><span>${p.vitals?.hr || '72'} <small style="font-size:0.6rem">BPM</small></span></div>
-                        <div class="vital-item"><label>TEMPERATURE</label><span>${p.vitals?.temp || '36.5'}°C</span></div>
-                        <div class="vital-item"><label>SPO2</label><span>${p.vitals?.o2 || '98'}%</span></div>
+                <div>
+                    <div class="card">
+                        <h3><i class="fas fa-toolbox"></i> Clinical Tools</h3>
+                        <div class="tool-tabs">
+                            <button class="tool-btn active">GCS</button>
+                            <button class="tool-btn">PAIN SCALE</button>
+                            <button class="tool-btn">ABCDE</button>
+                        </div>
+                        <div id="toolData">
+                            <div class="score-row"><span>Eye Opening</span><span class="score-val">${p.gcs?.eye || '4'}</span></div>
+                            <div class="score-row"><span>Verbal Response</span><span class="score-val">${p.gcs?.verbal || '5'}</span></div>
+                            <div class="score-row"><span>Motor Response</span><span class="score-val">${p.gcs?.motor || '6'}</span></div>
+                            <div style="text-align:center; padding-top:15px;">
+                                <small style="display:block; color:#aaa;">TOTAL SCORE</small>
+                                <strong style="font-size:1.5rem; color:var(--pgh-emerald)">15/15</strong>
+                            </div>
+                        </div>
                     </div>
-                </section>
-            </div>
 
-            <div class="action-bar">
-                <button class="btn btn-bed" onclick="openMenu('bed')"><i class="fas fa-bed"></i> ALLOCATE BED</button>
-                <button class="btn btn-lvl" onclick="openMenu('level')"><i class="fas fa-stethoscope"></i> ADJUST TRIAGE</button>
-                <button class="btn btn-status" onclick="openMenu('status')"><i class="fas fa-user-edit"></i> UPDATE STATUS</button>
-                <a href="patient_record.html" class="btn" style="background:#eee; text-decoration:none; color:#555;"><i class="fas fa-file-medical"></i> CLINICAL HISTORY</a>
+                    <div class="card" style="border-top: 5px solid var(--pgh-emerald);">
+                        <h3>Patient Management</h3>
+                        <div class="action-footer">
+                            ${statusButton}
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     }
 
-    function openMenu(type) {
-        let html = '';
-        if (type === 'bed') {
-            const beds = ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3'];
-            html = `<h3><i class="fas fa-bed"></i> Assign ER Bed</h3><div class="choice-grid" style="grid-template-columns: repeat(3, 1fr);">`;
-            beds.forEach(b => html += `<div class="opt-btn" onclick="saveChange('bed', '${b}')">${b}</div>`);
-        } else if (type === 'level') {
-            html = `<h3><i class="fas fa-stethoscope"></i> Set Triage Priority</h3><div class="choice-grid">
-                <div class="opt-btn" onclick="saveChange('level', 'CRITICAL')">CRITICAL</div>
-                <div class="opt-btn" onclick="saveChange('level', 'STABLE')">STABLE</div>`;
-        } else {
-            html = `<h3><i class="fas fa-sync-alt"></i> Update Patient Status</h3><div class="choice-grid">
-                <div class="opt-btn" onclick="saveChange('status', 'WAITING')">WAITING</div>
-                <div class="opt-btn" onclick="saveChange('status', 'IN TREATMENT')">IN TREATMENT</div>
-                <div class="opt-btn" onclick="saveChange('status', 'READY FOR DISCHARGE')">DISCHARGE</div>`;
-        }
-        html += `</div><button class="close-btn" onclick="closeMenu()">CANCEL</button>`;
-        choiceCard.innerHTML = html;
-        overlay.style.display = 'flex';
+    // --- Interaction Logic ---
+    function openBedModal() {
+        const grid = document.getElementById('bedOptions');
+        grid.innerHTML = '';
+        ['A1','A2','A3','B1','B2','B3','C1','C2','C3'].forEach(b => {
+            grid.innerHTML += `<div class="bed-opt" onclick="assignBed('${b}')">${b}</div>`;
+        });
+        document.getElementById('bedModal').style.display = 'flex';
     }
 
-    function saveChange(field, value) {
+    function assignBed(bedNum) {
         let patients = JSON.parse(localStorage.getItem('patients'));
-        patients[pIndex][field] = value;
+        patients[pIndex].bed = bedNum;
+        patients[pIndex].status = 'IN CARE';
         localStorage.setItem('patients', JSON.stringify(patients));
-        closeMenu();
-        renderProfile();
+        closeModal();
+        loadProfile();
     }
 
-    function closeMenu() { overlay.style.display = 'none'; }
-    window.onload = renderProfile;
+    function dischargePatient() {
+        let patients = JSON.parse(localStorage.getItem('patients'));
+        patients[pIndex].status = 'DISCH'; // Moves to archived list
+        localStorage.setItem('patients', JSON.stringify(patients));
+        location.href = 'admin_dashboard.html';
+    }
+
+    function closeModal() { document.getElementById('bedModal').style.display = 'none'; }
+
+    window.onload = loadProfile;
 </script>
 
 </body>
