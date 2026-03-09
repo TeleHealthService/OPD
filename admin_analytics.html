@@ -6,6 +6,9 @@
     <title>ER Analytics | General Hospital Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
     <style>
         :root {
             --pgh-black: #020202;
@@ -22,66 +25,40 @@
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
 
-        /* --- Header & Nav (Synced with Dashboard) --- */
         header { 
             background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover;
-            background-position: center;
-            padding: 15px 5%; 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            border-bottom: 4px solid var(--pgh-emerald); 
+            background-size: cover; background-position: center; padding: 15px 5%; display: flex; align-items: center; gap: 15px; border-bottom: 4px solid var(--pgh-emerald); 
         }
         
-        .hospital-logo { width: 45px; height: 45px; object-fit: contain; filter: brightness(0) invert(1); }
+        .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1.1rem; color: var(--white); text-transform: uppercase; letter-spacing: 0.5px; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.7rem; }
 
         nav { background: var(--pgh-dark-green); padding: 0 5%; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         nav ul { list-style: none; margin: 0; padding: 12px 0; display: flex; gap: 10px; }
         nav ul li a { color: white; text-decoration: none; padding: 8px 20px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.05); }
-        nav ul li a:hover { background: rgba(255,255,255,0.15); }
         .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
 
-        /* --- Content Layout --- */
         .container { max-width: 1400px; margin: 30px auto; padding: 0 5%; }
-        
         .page-header { margin-bottom: 25px; }
         .page-header h1 { color: var(--pgh-dark-green); font-size: 1.8rem; margin: 0; }
         #lastUpdated { font-size: 0.8rem; color: #7f8c8d; margin-top: 5px; font-weight: 500; }
-        
-        h3 { 
-            font-size: 1rem; 
-            color: var(--pgh-dark-green); 
-            text-transform: uppercase;
-            border-bottom: 2px solid #f0f0f0; 
-            padding-bottom: 12px; 
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
 
-        /* Overview Cards */
         .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .overview-card { background: white; padding: 25px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 6px solid var(--pgh-emerald); }
         .overview-card h4 { margin: 0 0 8px; font-size: 0.7rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
         .overview-card .value { font-size: 1.8rem; font-weight: 800; color: var(--pgh-dark-green); }
 
-        /* Charts Section */
         .charts-section { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 25px; }
-        @media (max-width: 1024px) { .charts-section { grid-template-columns: 1fr; } }
-
-        .chart-box { background: white; padding: 25px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; }
-        .viz-container { width: 100%; height: 250px; position: relative; }
+        .chart-box { background: white; padding: 25px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .viz-container { width: 100%; height: 300px; position: relative; }
 
         .triage-stat-list { list-style: none; padding: 0; margin: 20px 0 0; }
         .triage-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f8f9fa; font-size: 0.85rem; }
         .triage-label { display: flex; align-items: center; gap: 8px; font-weight: 600; }
         .dot { width: 10px; height: 10px; border-radius: 50%; }
-        
-        footer { background: var(--white); padding: 30px; text-align: center; border-top: 1px solid #edf2f4; margin-top: 40px; color: #bdc3c7; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        footer { background: var(--white); padding: 30px; text-align: center; border-top: 1px solid #edf2f4; margin-top: 40px; color: #bdc3c7; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -104,43 +81,43 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>ER Analytics Performance</h1>
-        <div id="lastUpdated">Initializing Data Stream...</div>
+        <h1>ER Real-Time Analytics</h1>
+        <div id="lastUpdated">Connecting to Cloud Server...</div>
     </div>
 
     <div class="overview-grid">
         <div class="overview-card">
             <h4>Active Census</h4>
             <div class="value" id="valActive">0</div>
-            <div style="color: var(--success-green); font-size: 0.7rem; font-weight: 700; margin-top: 5px;"><i class="fas fa-user-check"></i> Current in ER</div>
+            <div style="color: var(--pgh-emerald); font-size: 0.7rem; font-weight: 700; margin-top: 5px;">Currently Admitted</div>
         </div>
         <div class="overview-card">
-            <h4>Historical Total</h4>
-            <div class="value" id="valTotal">0</div>
-            <div style="color: #95a5a6; font-size: 0.7rem; font-weight: 700; margin-top: 5px;">Total Admissions</div>
+            <h4>Discharged Today</h4>
+            <div class="value" id="valDischarged">0</div>
+            <div style="color: #95a5a6; font-size: 0.7rem; font-weight: 700; margin-top: 5px;">Completed Cases</div>
         </div>
         <div class="overview-card">
-            <h4>Bed Utilization</h4>
+            <h4>Bed Occupancy</h4>
             <div class="value" id="valOccupancy">0%</div>
-            <div style="color: var(--chart-orange); font-size: 0.7rem; font-weight: 700; margin-top: 5px;"><i class="fas fa-bed"></i> Facility Capacity</div>
+            <div style="color: var(--chart-orange); font-size: 0.7rem; font-weight: 700; margin-top: 5px;">Total Capacity (12 Beds)</div>
         </div>
         <div class="overview-card">
-            <h4>Acuity Alert</h4>
-            <div class="value" id="valEmergency">Normal</div>
-            <div style="color: var(--urgent-red); font-size: 0.7rem; font-weight: 700; margin-top: 5px;" id="emergencyTrend">Unit Status</div>
+            <h4>Unit Status</h4>
+            <div class="value" id="valEmergency" style="color: var(--pgh-emerald);">NORMAL</div>
+            <div style="color: var(--urgent-red); font-size: 0.7rem; font-weight: 700; margin-top: 5px;" id="emergencyTrend">Critical Patient Alert</div>
         </div>
     </div>
 
     <div class="charts-section">
         <div class="chart-box">
-            <h3><i class="fas fa-chart-line"></i> Patient Admission Influx</h3>
+            <h3><i class="fas fa-chart-line"></i> Patient Admission Log</h3>
             <div class="viz-container">
                 <canvas id="influxChart"></canvas>
             </div>
         </div>
 
         <div class="chart-box">
-            <h3><i class="fas fa-triage"></i> Severity Mix</h3>
+            <h3><i class="fas fa-filter"></i> Severity Mix</h3>
             <div class="viz-container" style="height: 180px;">
                 <canvas id="triageChart"></canvas>
             </div>
@@ -150,44 +127,119 @@
                     <strong id="countCritical">0</strong>
                 </li>
                 <li class="triage-item">
-                    <div class="triage-label"><span class="dot" style="background: var(--chart-blue);"></span> Standard Care (Others)</div>
+                    <div class="triage-label"><span class="dot" style="background: var(--chart-blue);"></span> Standard/Stable</div>
                     <strong id="countStable">0</strong>
                 </li>
             </ul>
         </div>
     </div>
-
-    <div class="chart-box">
-        <h3><i class="fas fa-exchange-alt"></i> Patient Flow Distribution</h3>
-        <div class="viz-container" style="height: 180px;">
-            <canvas id="flowChart"></canvas>
-        </div>
-    </div>
 </div>
 
 <footer>
-    <p>&copy; 2026 General Hospital Health Informatics Unit</p>
+    <p>&copy; 2026 General Hospital | Health Informatics Unit</p>
 </footer>
 
 <script>
-    let influxChart, triageChart, flowChart;
+    // Firebase Config
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function updateAnalytics() {
-        const patients = JSON.parse(localStorage.getItem('patients')) || [];
-        const total = patients.length;
-        const active = patients.filter(p => !p.isDischarged).length;
-        const critical = patients.filter(p => !p.isDischarged && p.level === 'CRITICAL').length;
-        const stable = active - critical;
-        const occupancy = Math.round((active / 12) * 100);
+    let influxChart, triageChart;
 
-        document.getElementById('valActive').innerText = active;
-        document.getElementById('valTotal').innerText = total;
+    // Initialize Charts
+    function initCharts() {
+        const ctxInflux = document.getElementById('influxChart').getContext('2d');
+        influxChart = new Chart(ctxInflux, {
+            type: 'line',
+            data: {
+                labels: [], // Time slots
+                datasets: [{
+                    label: 'New Admissions',
+                    data: [],
+                    borderColor: '#04471C',
+                    backgroundColor: 'rgba(4, 71, 28, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        const ctxTriage = document.getElementById('triageChart').getContext('2d');
+        triageChart = new Chart(ctxTriage, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'Stable'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#e74c3c', '#3498db']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    // Process Firebase Data
+    db.ref('patients').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        const patients = Object.values(data);
+        const active = patients.filter(p => !p.isDischarged);
+        const discharged = patients.filter(p => p.isDischarged);
+        const critical = active.filter(p => p.level === 'CRITICAL').length;
+        const stable = active.length - critical;
+
+        // Update Overview Cards
+        document.getElementById('valActive').innerText = active.length;
+        document.getElementById('valDischarged').innerText = discharged.length;
+        const occupancy = Math.round((active.length / 12) * 100);
         document.getElementById('valOccupancy').innerText = occupancy + "%";
+        
+        // Criticality Alert
+        const alertBox = document.getElementById('valEmergency');
+        if (critical >= 3) {
+            alertBox.innerText = "CRITICAL";
+            alertBox.style.color = "var(--urgent-red)";
+        } else {
+            alertBox.innerText = "NORMAL";
+            alertBox.style.color = "var(--pgh-emerald)";
+        }
+
         document.getElementById('countCritical').innerText = critical;
         document.getElementById('countStable').innerText = stable;
-        document.getElementById('lastUpdated').innerText = "System Live • Sync: " + new Date().toLocaleTimeString();
+        document.getElementById('lastUpdated').innerText = "Real-time Sync: " + new Date().toLocaleTimeString();
 
-        if (critical > 3) {
-            document.getElementById('valEmergency').innerText = "CRITICAL";
-            document.getElementById('valEmergency').style.color = "var(--urgent-red)";
-        }
+        // Update Triage Chart
+        triageChart.data.datasets[0].data = [critical, stable];
+        triageChart.update();
+
+        // Update Influx Chart (Based on Arrived Time)
+        updateInfluxData(patients);
+    });
+
+    function updateInfluxData(patients) {
+        // Simple mock of time distribution based on 'arrived' field
+        const hourlyCounts = {};
+        patients.forEach(p => {
+            if(p.arrived) {
+                const hour = p.arrived.split(':')[0] + ":00";
+                hourlyCounts[hour] = (hourlyCounts[hour] || 0) + 1;
+            }
+        });
+
+        influxChart.data.labels = Object.keys(hourlyCounts);
+        influxChart.data.datasets[0].data = Object.values(hourlyCounts);
+        influxChart.update();
+    }
+
+    window.onload = () => {
+        initCharts();
+    };
+</script>
+</body>
+</html>
