@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Station | Clinical Input</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --border-color: #ddd;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: #333; }
+        header { 
+            background: var(--pgh-dark-green); padding: 15px; color: white; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h3 { margin-top: 0; color: var(--pgh-emerald); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1rem; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #666; }
+        select, input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; }
+
+        .vitals-input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .gcs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .gcs-box { text-align: center; }
+
+        .pain-slider { width: 100%; margin: 20px 0; accent-color: var(--pgh-emerald); }
+        .pain-display { text-align: center; font-size: 2rem; font-weight: 900; color: #e74c3c; }
+
+        .btn-save { 
+            width: 100%; padding: 15px; background: var(--pgh-emerald); color: white; 
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem;
+        }
+        .btn-save:hover { background: #033615; }
+        
+        .success-msg { display: none; background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><i class="fas fa-user-nurse"></i> NURSE STATION</div>
+    <a href="admin_dashboard.html" style="color:white; text-decoration:none; font-size:0.8rem;">Exit to Dashboard</a>
+</header>
+
+<div class="container">
+    <div id="successNote" class="success-msg">Data successfully synced to Patient Profile!</div>
+
+    <div class="card">
+        <h3><i class="fas fa-user-injured"></i> Select Patient</h3>
+        <select id="patientSelect" onchange="loadPatientData()">
+            <option value="">-- Choose Patient in Care --</option>
+        </select>
+    </div>
+
+    <div id="inputForm" style="display:none;">
+        <div class="card">
+            <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
+            <div class="vitals-input-grid">
+                <div class="form-group"><label>BP (mmHg)</label><input type="text" id="v_bp" placeholder="120/80"></div>
+                <div class="form-group"><label>Heart Rate (bpm)</label><input type="number" id="v_hr" placeholder="72"></div>
+                <div class="form-group"><label>Temp (°C)</label><input type="number" step="0.1" id="v_temp" placeholder="36.5"></div>
+                <div class="form-group"><label>SPO2 (%)</label><input type="number" id="v_o2" placeholder="98"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-brain"></i> Glasgow Coma Scale (GCS)</h3>
+            <div class="gcs-grid">
+                <div class="gcs-box"><label>Eye (1-4)</label><input type="number" id="g_eye" min="1" max="4"></div>
+                <div class="gcs-box"><label>Verbal (1-5)</label><input type="number" id="g_verbal" min="1" max="5"></div>
+                <div class="gcs-box"><label>Motor (1-6)</label><input type="number" id="g_motor" min="1" max="6"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-pills"></i> Pain Scale</h3>
+            <div class="pain-display" id="painVal">0</div>
+            <input type="range" id="painSlider" class="pain-slider" min="0" max="10" value="0" oninput="updatePainLabel(this.value)">
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#888;">
+                <span>No Pain</span>
+                <span>Moderate</span>
+                <span>Worst Possible</span>
+            </div>
+        </div>
+
+        <button class="btn-save" onclick="saveNurseData()"><i class="fas fa-save"></i> UPDATE MEDICAL RECORD</button>
+    </div>
+</div>
+
+<script>
+    let patients = JSON.parse(localStorage.getItem('patients')) || [];
+    const select = document.getElementById('patientSelect');
+
+    // Populate dropdown with patients who are not discharged
+    function populateDropdown() {
+        patients.forEach((p, index) => {
+            if (p.status !== 'DISCHARGED') {
+                let opt = document.createElement('option');
+                opt.value = index;
+                opt.innerHTML = `${p.name} (Bed: ${p.bed || 'Unassigned'})`;
+                select.appendChild(opt);
+            }
+        });
+    }
+
+    function loadPatientData() {
+        const idx = select.value;
+        if (idx === "") {
+            document.getElementById('inputForm').style.display = 'none';
+            return;
+        }
+        
+        const p = patients[idx];
+        document.getElementById('inputForm').style.display = 'block';
+
+        // Pre-fill existing data if it exists
+        document.getElementById('v_bp').value = p.vitals?.bp || '';
+        document.getElementById('v_hr').value = p.vitals?.hr || '';
+        document.getElementById('v_temp').value = p.vitals?.temp || '';
+        document.getElementById('v_o2').value = p.vitals?.o2 || '';
+        document.getElementById('g_eye').value = p.gcs?.eye || '';
+        document.getElementById('g_verbal').value = p.gcs?.verbal || '';
+        document.getElementById('g_motor').value = p.gcs?.motor || '';
+        document.getElementById('painSlider').value = p.painScale || 0;
+        updatePainLabel(p.painScale || 0);
+    }
+
+    function updatePainLabel(val) {
+        document.getElementById('painVal').innerText = val;
+    }
+
+    function saveNurseData() {
+        const idx = select.value;
+        
+        patients[idx].vitals = {
+            bp: document.getElementById('v_bp').value,
+            hr: document.getElementById('v_hr').value,
+            temp: document.getElementById('v_temp').value,
+            o2: document.getElementById('v_o2').value
+        };
+
+        patients[idx].gcs = {
+            eye: document.getElementById('g_eye').value,
+            verbal: document.getElementById('g_verbal').value,
+            motor: document.getElementById('g_motor').value
+        };
+
+        patients[idx].painScale = document.getElementById('painSlider').value;
+
+        localStorage.setItem('patients', JSON.stringify(patients));
+        
+        // Show success message
+        const note = document.getElementById('successNote');
+        note.style.display = 'block';
+        window.scrollTo(0,0);
+        setTimeout(() => { note.style.display = 'none'; }, 3000);
+    }
+
+    window.onload = populateDropdown;
+</script>
+
+</body>
+</html>
