@@ -110,16 +110,13 @@
 
     const params = new URLSearchParams(window.location.search);
     const pId = params.get('id');
-    let currentPath = 'patients'; // Default path
+    let currentPath = 'patients'; 
 
     function loadProfile() {
         if (!pId) return;
 
-        // Try looking in 'patients' first
         db.ref('patients/' + pId).on('value', (snapshot) => {
             let p = snapshot.val();
-            
-            // If not found in 'patients', try 'appointments'
             if (!p) {
                 db.ref('appointments/' + pId).once('value', (snap) => {
                     if (snap.val()) {
@@ -138,7 +135,6 @@
 
     function renderProfile(p) {
         const container = document.getElementById('profileContainer');
-        
         let managementLabel = "Patient Management";
         let statusButton = '';
 
@@ -236,9 +232,7 @@
             });
         } else if (type === 'doctor') {
             title.innerText = "Assign Doctor in Charge";
-            // Get doctors from localStorage to match your hospitalDoctors registry
             const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
-            
             if (doctors.length === 0) {
                 options.innerHTML = `<div style="padding:20px; color:#888; font-size:0.8rem;">No doctors found in local registry.</div>`;
             } else {
@@ -257,14 +251,17 @@
         document.getElementById('selectorModal').style.display = 'flex';
     }
 
+    // CLOUD UPDATE LOGIC
     function updateField(field, value, isBed = false) {
         let updates = {};
         updates[field] = value;
         if (isBed) updates['status'] = 'IN TREATMENT';
 
+        // Direct push to Firebase Cloud
         db.ref(currentPath + '/' + pId).update(updates).then(() => {
+            console.log("Cloud synced: " + field + " updated to " + value);
             closeModal();
-        });
+        }).catch(err => alert("Cloud Sync Failed: " + err.message));
     }
 
     function handleDischargeCheck(level) {
@@ -275,8 +272,13 @@
         }
     }
 
+    // CLOUD DISCHARGE LOGIC
     function finalizeDischarge() {
-        db.ref(currentPath + '/' + pId).update({ status: 'DISCHARGED', isDischarged: true }).then(() => {
+        db.ref(currentPath + '/' + pId).update({ 
+            status: 'DISCHARGED', 
+            isDischarged: true,
+            bed: 'NONE' // Frees the bed in the cloud
+        }).then(() => {
             window.location.href = 'admin_dashboard.html';
         });
     }
