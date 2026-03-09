@@ -156,85 +156,87 @@
 </footer>
 
 <script>
-    // --- FIREBASE CONFIGURATION ---
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
-        // Add your apiKey and other fields from Firebase Console here
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     let currentFilter = 'ALL';
-    let cachedPatients = []; // To store data from cloud for searching/filtering
+    let cachedPatients = [];
+    let dataStore = { patients: {}, appointments: {} };
 
     function loadRecordsFromCloud(filter = 'ALL') {
         currentFilter = filter;
         const tbody = document.getElementById('recordsTableBody');
-        
-        // Use '.on' to listen for real-time changes across all devices
-        db.ref('appointments').on('value', (snapshot) => {
-            const data = snapshot.val();
-            tbody.innerHTML = '';
-            cachedPatients = [];
+        const paths = ['patients', 'appointments'];
 
-            if (!data) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records found.</td></tr>';
-                return;
-            }
-
-            // Convert Firebase object to Array and store IDs
-            Object.keys(data).forEach(id => {
-                const p = data[id];
-                p.firebaseID = id; // Keep track of the ID for deleting/viewing
-                cachedPatients.push(p);
-
-                const isDischarged = p.status === 'DISCHARGED' || p.isDischarged === true;
-                if (filter === 'ACTIVE' && isDischarged) return;
-                if (filter === 'DISCHARGED' && !isDischarged) return;
-
-                const name = p.name || "Unknown";
-                const contact = p.contact || "N/A";
-                const time = p.timestamp || "N/A";
-                const detail = p.doctor || p.dept || "General";
-                const subtext = p.age ? `${p.age}Y | ${p.sex}` : "New Entry";
-
-                const row = `
-                    <tr>
-                        <td>
-                            <div class="patient-info">
-                                <div class="patient-avatar">
-                                    <i class="fas fa-user-injured"></i>
-                                </div>
-                                <div>
-                                    <strong>${name}</strong><br>
-                                    <small style="color:#888">${subtext}</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${contact}</td>
-                        <td>${time}</td>
-                        <td>
-                            <span style="font-weight:bold; color: var(--pgh-emerald)">
-                                ${detail}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
-                                ${isDischarged ? 'Discharged' : 'Active'}
-                            </span>
-                        </td>
-                        <td>
-                            <div style="display:flex;">
-                                <button class="action-btn" onclick="viewDetails('${id}')">View</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('${id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                tbody.insertAdjacentHTML('beforeend', row);
+        paths.forEach(path => {
+            db.ref(path).on('value', (snapshot) => {
+                dataStore[path] = snapshot.val() || {};
+                renderMergedData();
             });
+        });
+    }
+
+    function renderMergedData() {
+        const tbody = document.getElementById('recordsTableBody');
+        tbody.innerHTML = '';
+        cachedPatients = [];
+
+        // Combine both data sources
+        const combined = { ...dataStore.appointments, ...dataStore.patients };
+
+        if (Object.keys(combined).length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888">No matching records found.</td></tr>';
+            return;
+        }
+
+        Object.keys(combined).forEach(id => {
+            const p = combined[id];
+            p.firebaseID = id;
+            p.sourcePath = dataStore.patients[id] ? 'patients' : 'appointments';
+            cachedPatients.push(p);
+
+            const isDischarged = p.status === 'DISCHARGED' || p.isDischarged === true;
+            if (currentFilter === 'ACTIVE' && isDischarged) return;
+            if (currentFilter === 'DISCHARGED' && !isDischarged) return;
+
+            const name = p.name || "Unknown";
+            const contact = p.contact || "N/A";
+            const time = p.timestamp || p.arrived || "N/A";
+            const detail = p.dept || p.level || "General";
+            const subtext = p.age ? `${p.age}Y | ${p.sex}` : "New Entry";
+
+            const row = `
+                <tr>
+                    <td>
+                        <div class="patient-info">
+                            <div class="patient-avatar"><i class="fas fa-user-injured"></i></div>
+                            <div>
+                                <strong>${name}</strong><br>
+                                <small style="color:#888">${subtext}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${contact}</td>
+                    <td>${time}</td>
+                    <td><span style="font-weight:bold; color: var(--pgh-emerald)">${detail}</span></td>
+                    <td>
+                        <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
+                            ${isDischarged ? 'Discharged' : 'Active'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display:flex;">
+                            <button class="action-btn" onclick="viewDetails('${id}')">View</button>
+                            <button class="action-btn btn-delete" onclick="deleteRecord('${id}', '${p.sourcePath}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
         });
     }
 
@@ -256,9 +258,9 @@
         document.getElementById('detailsModal').style.display = 'flex';
     }
 
-    function deleteRecord(id) {
+    function deleteRecord(id, path) {
         if(confirm("Are you sure you want to permanently delete this record from the cloud?")) {
-            db.ref('appointments/' + id).remove();
+            db.ref(path + '/' + id).remove();
         }
     }
 
@@ -267,7 +269,8 @@
     function switchTab(type, element) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
-        loadRecordsFromCloud(type);
+        currentFilter = type;
+        renderMergedData();
     }
 
     function searchRecords() {
