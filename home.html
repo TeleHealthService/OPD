@@ -26,6 +26,7 @@
             overflow-x: hidden;
         }
 
+        /* [ START OF UNIVERSAL CSS - MATCHED ] */
         h1, h2, h3, h4 { 
             margin: 0 0 15px; 
             text-transform: uppercase; 
@@ -104,6 +105,18 @@
         }
         nav ul li a.active-nav { background: var(--pgh-emerald); border: 1px solid rgba(255,255,255,0.2); }
 
+        @media (min-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.4rem; }
+            .brand-text h2 { font-size: 1.2rem; }
+            .header-feedback { font-size: 0.75rem; padding: 12px 25px; }
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
+            nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
+        }
+        /* [ END OF UNIVERSAL CSS ] */
+
+        /* --- Page Specific Elements --- */
         .hero-section {
             padding: 80px 5%;
             text-align: center;
@@ -113,8 +126,7 @@
             background-position: center;
             color: white;
         }
-
-        .hero-section h1 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; color: white; }
+        .hero-section h1 { color: white; border: none; } /* Ensure Hero H1 doesn't have a border */
         .hero-section p { font-size: 0.9rem; margin-bottom: 30px; opacity: 0.9; line-height: 1.4; }
 
         .btn-consult-main {
@@ -136,23 +148,25 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 6px solid var(--pgh-emerald); }
-
         .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; }
         .dot.active { background: var(--pgh-emerald); width: 25px; border-radius: 10px; }
 
         label { display: block; margin: 15px 0 5px; font-weight: 600; color: var(--pgh-dark-green); font-size: 0.85rem; }
         select, input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.9rem; background: var(--light-gray); outline: none; }
-        
         .input-error { border: 2.5px solid var(--error-red) !important; background: #fff5f5; }
 
         .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
         .btn-back { background: none; border: none; color: #777; margin-top: 15px; width: 100%; cursor: pointer; text-decoration: underline; font-size: 0.8rem; }
 
-        footer { background: #f4f4f4; padding: 30px 5%; margin-top: 50px; border-top: 1px solid #ddd; }
-        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .footer-col h4 { color: var(--pgh-dark-green); font-size: 0.9rem; margin-bottom: 10px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { color: #555; text-decoration: none; font-size: 0.75rem; margin-bottom: 5px; display: block; }
+        footer { background: #f4f4f4; padding: 40px 5%; margin-top: 40px; border-top: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
+        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -217,6 +231,10 @@
                 </div>
                 <label>Contact Number</label>
                 <input type="tel" id="patientContact" placeholder="e.g., 09123456789" class="required-field">
+                
+                <label>Email Address (For Medical Certificate)</label>
+                <input type="email" id="patientEmail" placeholder="e.g., juan@example.com" class="required-field">
+                
                 <button type="button" class="btn-next" onclick="validateAndGo(2)">Next: Specialist</button>
             </div>
 
@@ -239,6 +257,10 @@
                 <h3>Schedule</h3>
                 <label>Preferred Date</label>
                 <input type="date" id="appDate" class="required-field">
+                
+                <label>Preferred Time</label>
+                <input type="time" id="appTime" class="required-field">
+                
                 <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Symptoms</button>
                 <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
             </div>
@@ -279,24 +301,21 @@
             <p>customer.care@opd.com.ph</p>
         </div>
     </div>
- <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | Providing Care Beyond Boundaries</p>
+    <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | Providing Care Beyond Boundaries</p>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
 <script>
-    // 1. Firebase Configuration
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. Load Doctors (Still from localStorage for now, as requested)
     const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
 
     function initDropdowns() {
@@ -344,7 +363,6 @@
         window.scrollTo(0, 0);
     }
 
-    // --- UPDATED DATA STORAGE: FIREBASE PUSH ---
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
 
@@ -353,16 +371,17 @@
             age: document.getElementById('patientAge').value,
             sex: document.getElementById('patientGender').value,
             contact: document.getElementById('patientContact').value,
+            email: document.getElementById('patientEmail').value,
             doctor: document.getElementById('docSelect').value,
             dept: document.getElementById('deptSelect').value,
             timestamp: document.getElementById('appDate').value,
+            time: document.getElementById('appTime').value,
             symptoms: document.getElementById('appSymptoms').value,
             status: 'Active',
             isDischarged: false,
-            submittedAt: Date.now() // Added for better sorting
+            submittedAt: Date.now()
         };
 
-        // Push to Firebase 'appointments' node
         db.ref('appointments').push(newRecord)
             .then(() => {
                 alert("Success! Your appointment request has been sent to the hospital.");
@@ -378,4 +397,3 @@
 </script>
 </body>
 </html>
-
