@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Patient Referral | General Hospital Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --pgh-black: #020202;
+            --pgh-dark-green: #0D2818;
+            --pgh-emerald: #04471C;
+            --white: #ffffff;
+            --light-gray: #f4f7f6;
+            --accent-gold: #f39c12;
+        }
+
+        * { box-sizing: border-box; transition: 0.3s ease; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; }
+
+        /* --- Header & Nav (Consistent with Dashboard/Analytics) --- */
+        header { 
+            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
+            background-size: cover;
+            background-position: center;
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            border-bottom: 4px solid var(--pgh-emerald); 
+        }
+        
+        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
+        .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
+        .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
+
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+        nav ul { list-style: none; margin: 0; padding: 10px 15px; display: flex; gap: 8px; }
+        nav ul li a { color: white; text-decoration: none; padding: 6px 15px; display: inline-block; font-size: 0.7rem; text-transform: uppercase; font-weight: 600; border-radius: 50px; background: rgba(255,255,255,0.1); }
+        .active-nav { background: var(--pgh-emerald) !important; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* --- Content Layout --- */
+        .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
+        
+        .page-header { margin-bottom: 20px; }
+        h1 { color: var(--pgh-dark-green); text-transform: uppercase; font-size: 1.3rem; margin: 0; }
+        
+        .referral-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--pgh-emerald);
+        }
+
+        h3 { 
+            font-size: 0.9rem; 
+            color: var(--pgh-dark-green); 
+            text-transform: uppercase;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Form Elements */
+        .form-section { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #eee;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--pgh-emerald);
+            background: #fff;
+        }
+
+        .grid-half { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 600px) { .grid-half { grid-template-columns: 1fr 1fr; } }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--pgh-emerald);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(4, 71, 28, 0.2);
+        }
+
+        .btn-submit:active { transform: scale(0.98); background: var(--pgh-dark-green); }
+
+        footer { text-align: center; padding: 25px; color: #999; font-size: 0.65rem; }
+
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--pgh-dark-green);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="Logo" class="hospital-logo">
+    <div class="brand-text">
+        <h2>General Hospital</h2>
+        <small>Health Informatics Division</small>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="admin_dashboard.html">ER Dashboard</a></li>
+        <li><a href="patient_record.html">Records</a></li>
+        <li><a href="referral.html" class="active-nav">Referral</a></li>
+        <li><a href="admin_analytics.html">Analytics</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Patient Referral</h1>
+    </div>
+
+    <div class="referral-card">
+        <form id="referralForm">
+            <h3><i class="fas fa-user-injured"></i> Patient Information</h3>
+            <div class="grid-half">
+                <div class="form-group">
+                    <label>Patient Full Name</label>
+                    <input type="text" id="patientName" placeholder="Juan Dela Cruz" required>
+                </div>
+                <div class="form-group">
+                    <label>Case/Ticket ID</label>
+                    <input type="text" id="caseId" placeholder="ER-2026-001" required>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;"><i class="fas fa-hospital-alt"></i> Transfer Details</h3>
+            <div class="form-group">
+                <label>Referring To</label>
+                <select id="targetDept" required>
+                    <option value="">Select Department/Facility</option>
+                    <option value="ICU">Intensive Care Unit (ICU)</option>
+                    <option value="OPD">Outpatient Department (OPD)</option>
+                    <option value="Surgery">Surgical Department</option>
+                    <option value="Radiology">Radiology/Imaging</option>
+                    <option value="External">External Hospital Facility</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Priority Level</label>
+                <select id="priority" required>
+                    <option value="Routine">Routine</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Emergency">Emergency (Immediate)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Reason for Referral / Clinical Notes</label>
+                <textarea id="notes" rows="4" placeholder="Brief clinical summary and reason for transfer..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Generate Referral</button>
+        </form>
+    </div>
+</div>
+
+<div id="successToast" class="success-toast">Referral Processed Successfully</div>
+
+<footer>
+    &copy; 2026 General Hospital Health Informatics Division
+</footer>
+
+<script>
+    document.getElementById('referralForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        // Logical processing (simulated)
+        const toast = document.getElementById('successToast');
+        toast.style.display = 'block';
+        
+        // Log to console (simulating database save)
+        console.log("Referral Created for:", document.getElementById('patientName').value);
+
+        setTimeout(() => {
+            toast.style.display = 'none';
+            // Reset form
+            document.getElementById('referralForm').reset();
+        }, 3000);
+    };
+</script>
+
+</body>
+</html>
