@@ -114,7 +114,7 @@
 
         <div class="form-group">
             <label>Patient Instructions (Home Care)</label>
-            <textarea id="instructions" rows="3" placeholder="E.g. Take meds twice a day, avoid heavy lifting..." required></textarea>
+            <textarea id="instructions" rows="3" placeholder="E.g. Take meds twice a day..." required></textarea>
         </div>
 
         <div class="form-group">
@@ -129,31 +129,91 @@
     </form>
 </div>
 
-<script>
-    // 1. Extract Patient ID from URL
-    const params = new URLSearchParams(window.location.search);
-    const patientIdx = params.get('id');
-    let patients = JSON.parse(localStorage.getItem('patients')) || [];
-    const p = patients[patientIdx];
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-    // 2. Load Patient Data into view
-    if (p) {
-        document.getElementById('disp-name').innerText = p.name;
-        document.getElementById('disp-case').innerText = `#ER-2026-${1000 + parseInt(patientIdx)}`;
-        document.getElementById('disp-admitted').innerText = p.arrived || 'N/A';
-        document.getElementById('disp-bed').innerText = p.bed || 'No Bed Assigned';
-    } else {
-        alert("Critical Error: Patient record not found.");
-        window.location.href = "admin_dashboard.html";
+<script>
+    // --- EMAILJS CONFIGURATION ---
+    const PUBLIC_KEY = "PASTE_YOUR_PUBLIC_KEY_HERE"; // Found in EmailJS Account tab
+    const SERVICE_ID = "service_fthy8gn";            // Your connected service
+    const TEMPLATE_ID = "6ai45dt";                   // Your saved certificate template
+
+    emailjs.init(PUBLIC_KEY);
+
+    // --- FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const params = new URLSearchParams(window.location.search);
+    const pId = params.get('id');
+    let currentPath = 'patients';
+    let patientData = null;
+
+    function loadDischargeData() {
+        if (!pId) {
+            alert("No Patient ID provided.");
+            window.location.href = "admin_dashboard.html";
+            return;
+        }
+
+        db.ref('patients/' + pId).once('value', (snapshot) => {
+            let p = snapshot.val();
+            if (!p) {
+                db.ref('appointments/' + pId).once('value', (snap) => {
+                    if (snap.val()) {
+                        currentPath = 'appointments';
+                        patientData = snap.val();
+                        displayInfo(patientData);
+                    } else {
+                        alert("Record not found.");
+                        window.location.href = "admin_dashboard.html";
+                    }
+                });
+            } else {
+                currentPath = 'patients';
+                patientData = p;
+                displayInfo(p);
+            }
+        });
     }
 
-    // 3. Handle Discharge Submission
+    function displayInfo(p) {
+        document.getElementById('disp-name').innerText = p.name || 'Unknown';
+        document.getElementById('disp-case').innerText = `#ER-2026-${pId.substring(pId.length - 5).toUpperCase()}`;
+        document.getElementById('disp-admitted').innerText = p.arrived || p.timestamp || 'N/A';
+        document.getElementById('disp-bed').innerText = p.bed || 'No Bed Assigned';
+    }
+
+    function sendMedicalCertificate(details) {
+        if (!patientData || !patientData.email) {
+            console.warn("Patient has no email. Skipping certificate send.");
+            return;
+        }
+
+        const templateParams = {
+            to_name: patientData.name,
+            to_email: patientData.email,
+            diagnosis: details.summary,
+            instructions: details.instructions,
+            follow_up: details.followUpDate || "None scheduled",
+            case_id: pId.substring(pId.length - 5).toUpperCase(),
+            date: details.clearedTime
+        };
+
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+            .then(() => console.log('Email sent successfully!'))
+            .catch((err) => console.error('Email failed:', err));
+    }
+
     document.getElementById('dischargeForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Update the specific patient record
-        patients[patientIdx].status = 'READY FOR DISCHARGE';
-        patients[patientIdx].dischargeDetails = {
+        const dischargeDetails = {
             summary: document.getElementById('summary').value,
             notes: document.getElementById('notes').value,
             instructions: document.getElementById('instructions').value,
@@ -161,12 +221,17 @@
             clearedTime: new Date().toLocaleString()
         };
 
-        // Save back to LocalStorage
-        localStorage.setItem('patients', JSON.stringify(patients));
-
-        alert("Clinical summary saved. Patient is now listed as Ready for Discharge.");
-        window.location.href = "admin_dashboard.html";
+        db.ref(currentPath + '/' + pId).update({
+            status: 'READY FOR DISCHARGE',
+            dischargeDetails: dischargeDetails
+        }).then(() => {
+            sendMedicalCertificate(dischargeDetails);
+            alert("Summary saved and Certificate emailed to patient.");
+            window.location.href = "admin_dashboard.html";
+        }).catch(err => alert("Error saving: " + err.message));
     });
+
+    window.onload = loadDischargeData;
 </script>
 
 </body>
