@@ -240,7 +240,7 @@
             });
         } else if (type === 'level') {
             title.innerText = "Set Triage Level";
-            ['NORMAL', 'STABLE', 'URGENT', 'CRITICAL'].forEach(l => {
+            ['NORMAL', 'STABLE', 'URGENT'].forEach(l => {
                 options.innerHTML += `<div class="opt-btn" onclick="updateField('level', '${l}')">${l}</div>`;
             });
         } else if (type === 'doctor') {
