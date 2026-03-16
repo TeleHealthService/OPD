@@ -8,8 +8,9 @@
     <style>
         :root {
             --pgh-black: #020202;
-               --pgh-dark-green: #006400;  /* Changed from #0D2818 (Was very dark) */
-    --pgh-emerald: #4CAF50;     /* Changed from #04471C (Was deep forest green) */
+            /* Updated to Lighter Green Palette */
+            --pgh-dark-green: #2D5A41;  
+            --pgh-emerald: #4CAF50;    
             --white: #ffffff;
             --light-gray: #f4f7f6;
             --urgent-red: #e74c3c;
@@ -25,19 +26,26 @@
         }
 
         header { 
-    /* Changed 0.85 opacity to 0.4 for a much lighter, clearer photo */
-    background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
-    background-size: cover; 
-    background-position: center; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    gap: 12px; 
-    border-bottom: 4px solid var(--pgh-emerald); 
-}
+            /* Lightened Background Overlay (0.4 opacity) */
+            background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
+            background-size: cover; 
+            background-position: center; 
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 12px; 
+            border-bottom: 4px solid var(--pgh-emerald); 
+        }
         
-        .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
+        /* Alignment Fix: Moves text closer to logo */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .hospital-logo { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
@@ -90,10 +98,12 @@
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="hospital-logo">
-    <div class="brand-text">
-        <h2>General Hospital</h2>
-        <small>Emergency Admissions</small>
+    <div class="header-left">
+        <img src="logo.png" alt="Logo" class="hospital-logo">
+        <div class="brand-text">
+            <h2>General Hospital</h2>
+            <small>Emergency Admissions</small>
+        </div>
     </div>
 </header>
 
@@ -168,7 +178,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
 <script>
-    // Firebase Configuration
     const firebaseConfig = {
         databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
         projectId: "general-hospital-74691"
@@ -197,7 +206,6 @@
             timestamp: new Date().toISOString()
         };
 
-        // Saving to the 'patients' node in your Realtime Database
         db.ref('patients').push(newPatient)
             .then(() => {
                 alert("Patient " + newPatient.name + " added successfully to the queue.");
