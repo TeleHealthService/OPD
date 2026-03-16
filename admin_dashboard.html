@@ -273,6 +273,7 @@
         let occupiedBeds = [];
 
         allPatients.forEach(p => {
+            // Skip discharged patients to keep the dashboard clean
             if (p.isDischarged || p.status === 'DISCHARGED') return;
 
             stats.total++;
@@ -283,12 +284,13 @@
 
             if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
-            // 1. Logic for the background color (Red for Critical, etc.)
+            // 1. Logic for the background color (based on the Triage Level)
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
             
-            // 2. FETCH COMPLAINT: Pulls the "complaint" field from your Firebase appointments
-            // If it's empty, it falls back to "NO COMPLAINT"
-            const patientComplaint = p.complaint || p.reason || 'NO COMPLAINT';
+            // 2. THE FIX: Fallback chain for past entries
+            // This looks for 'complaint', then 'reason', then 'diagnosis', 
+            // and finally defaults to the 'level' (like STABLE) if nothing else is found.
+            const displayState = p.complaint || p.reason || p.diagnosis || p.level || 'N/A';
 
             const vitalsText = p.vitals ? 
                 `<span class="vitals-pill">BP ${p.vitals.bp}</span><span class="vitals-pill">O2 ${p.vitals.o2}%</span>` : 
@@ -302,7 +304,7 @@
                     </td>
                     <td>${p.arrived || '--:--'}</td>
                     
-                    <td><span class="level-pill ${levelClass}">${patientComplaint}</span></td>
+                    <td><span class="level-pill ${levelClass}">${displayState}</span></td>
                     
                     <td>${vitalsText}</td>
                     <td style="font-weight:900; color:var(--pgh-emerald)">${p.bed || '---'}</td>
@@ -317,6 +319,7 @@
         document.getElementById('countReady').innerText = stats.ready;
         renderBeds(occupiedBeds);
     }
+    
     function getStatusColor(status) {
         if(status === 'WAITING') return '#f39c12';
         if(status === 'IN TREATMENT') return '#3498db';
