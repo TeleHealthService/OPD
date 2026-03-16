@@ -235,7 +235,7 @@
 
         if (type === 'bed') {
             title.innerText = "Assign ER Bed";
-            ['A1','A2','A3','B1','B2','B3','C1','C2','C3'].forEach(b => {
+            ['A1','A2','A3','B1','B2','B3','C1','C2','C3', 'D1','D2','D3'].forEach(b => {
                 options.innerHTML += `<div class="opt-btn" onclick="updateField('bed', '${b}', true)"><i class="fas fa-bed"></i> Bed ${b}</div>`;
             });
         } else if (type === 'level') {
