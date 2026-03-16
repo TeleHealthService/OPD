@@ -21,9 +21,17 @@
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
 
         header { 
-            background: linear-gradient(rgba(13, 40, 24, 0.85), rgba(13, 40, 24, 0.85)), url('bg1.png');
-            background-size: cover; background-position: center; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald); 
-        }
+    /* Changed 0.85 opacity to 0.4 for a much lighter, clearer photo */
+    background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
+    background-size: cover; 
+    background-position: center; 
+    padding: 15px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 12px; 
+    border-bottom: 4px solid var(--pgh-emerald); 
+}
         .header-left { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
         .brand-text h2 { margin: 0; font-size: 1rem; color: var(--white); text-transform: uppercase; line-height: 1.1; }
