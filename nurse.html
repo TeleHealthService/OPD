@@ -15,14 +15,17 @@
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); }
         
         header { 
-            background: var(--pgh-dark-green); 
-            padding: 15px; 
-            color: white; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 4px solid var(--pgh-emerald);
-        }
+    /* Changed 0.85 opacity to 0.4 for a much lighter, clearer photo */
+    background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
+    background-size: cover; 
+    background-position: center; 
+    padding: 15px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 12px; 
+    border-bottom: 4px solid var(--pgh-emerald); 
+}
 
         .container { padding: 20px; max-width: 800px; margin: 0 auto; }
         .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
