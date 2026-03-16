@@ -272,33 +272,48 @@
         let stats = { total: 0, wait: 0, treat: 0, ready: 0 };
         let occupiedBeds = [];
 
-        allPatients.forEach(p => {
-            if (p.isDischarged || p.status === 'DISCHARGED') return;
+        // Inside the render() function, locate the loop and update the levelClass and row generation:
 
-            stats.total++;
-            if (p.status === 'WAITING') stats.wait++;
-            if (p.status === 'IN TREATMENT') stats.treat++;
-            if (p.status === 'READY FOR DISCHARGE') stats.ready++;
-            if (p.bed) occupiedBeds.push(p.bed);
+allPatients.forEach(p => {
+    if (p.isDischarged || p.status === 'DISCHARGED') return;
 
-            if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
+    stats.total++;
+    if (p.status === 'WAITING') stats.wait++;
+    if (p.status === 'IN TREATMENT') stats.treat++;
+    if (p.status === 'READY FOR DISCHARGE') stats.ready++;
+    if (p.bed) occupiedBeds.push(p.bed);
 
-            const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
-            const vitalsText = p.vitals ? 
-                `<span class="vitals-pill">BP ${p.vitals.bp}</span><span class="vitals-pill">O2 ${p.vitals.o2}%</span>` : 
-                `<span style="color:#bbb; font-style:italic; font-size:0.7rem;">Clinical summary pending...</span>`;
+    if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
-            tbody.innerHTML += `
-                <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
-                    <td><div style="font-weight:800; color:var(--pgh-dark-green);">${p.name || 'Anonymous'}</div><div style="font-size:0.6rem; color:#aaa">ID: ${p.firebaseId.substring(1,7)}</div></td>
-                    <td>${p.arrived || '--:--'}</td>
-                    <td><span class="level-pill ${levelClass}">${p.level || 'STABLE'}</span></td>
-                    <td>${vitalsText}</td>
-                    <td style="font-weight:900; color:var(--pgh-emerald)">${p.bed || '---'}</td>
-                    <td><span style="font-weight:800; color:#555; font-size:0.7rem;"><i class="fas fa-circle" style="font-size:0.4rem; margin-right:5px; vertical-align:middle; color:${getStatusColor(p.status)}"></i>${p.status || 'WAITING'}</span></td>
-                </tr>
-            `;
-        });
+    // Keep the color logic based on the numeric/categorical level
+    const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
+    
+    // FETCH THE COMPLAINT: Fallback to 'No Complaint' if the field is missing in DB
+    const patientComplaint = p.complaint || p.reason || 'NO COMPLAINT';
+
+    const vitalsText = p.vitals ? 
+        `<span class="vitals-pill">BP ${p.vitals.bp}</span><span class="vitals-pill">O2 ${p.vitals.o2}%</span>` : 
+        `<span style="color:#bbb; font-style:italic; font-size:0.7rem;">Clinical summary pending...</span>`;
+
+    tbody.innerHTML += `
+        <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
+            <td>
+                <div style="font-weight:800; color:var(--pgh-dark-green);">${p.name || 'Anonymous'}</div>
+                <div style="font-size:0.6rem; color:#aaa">ID: ${p.firebaseId.substring(1,7)}</div>
+            </td>
+            <td>${p.arrived || '--:--'}</td>
+            <td><span class="level-pill ${levelClass}">${patientComplaint}</span></td>
+            <td>${vitalsText}</td>
+            <td style="font-weight:900; color:var(--pgh-emerald)">${p.bed || '---'}</td>
+            <td>
+                <span style="font-weight:800; color:#555; font-size:0.7rem;">
+                    <i class="fas fa-circle" style="font-size:0.4rem; margin-right:5px; vertical-align:middle; color:${getStatusColor(p.status)}"></i>
+                    ${p.status || 'WAITING'}
+                </span>
+            </td>
+        </tr>
+    `;
+});
 
         document.getElementById('countTotal').innerText = stats.total;
         document.getElementById('countWait').innerText = stats.wait;
