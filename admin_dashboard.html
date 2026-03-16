@@ -283,10 +283,11 @@
 
             if (currentFilter !== 'ALL' && p.status !== currentFilter) return;
 
-            // Keeps the background color logic (Red for Critical, etc.)
+            // 1. Logic for the background color (Red for Critical, etc.)
             const levelClass = p.level === 'CRITICAL' ? 'bg-crit' : (p.level === 'URGENT' ? 'bg-urgent' : 'bg-normal');
             
-            // NEW: This gets the complaint from your database fields
+            // 2. FETCH COMPLAINT: Pulls the "complaint" field from your Firebase appointments
+            // If it's empty, it falls back to "NO COMPLAINT"
             const patientComplaint = p.complaint || p.reason || 'NO COMPLAINT';
 
             const vitalsText = p.vitals ? 
@@ -295,7 +296,10 @@
 
             tbody.innerHTML += `
                 <tr onclick="location.href='patient_status.html?id=${p.firebaseId}'" style="cursor:pointer">
-                    <td><div style="font-weight:800; color:var(--pgh-dark-green);">${p.name || 'Anonymous'}</div><div style="font-size:0.6rem; color:#aaa">ID: ${p.firebaseId.substring(1,7)}</div></td>
+                    <td>
+                        <div style="font-weight:800; color:var(--pgh-dark-green);">${p.name || 'Anonymous'}</div>
+                        <div style="font-size:0.6rem; color:#aaa">ID: ${p.firebaseId.substring(1,7)}</div>
+                    </td>
                     <td>${p.arrived || '--:--'}</td>
                     
                     <td><span class="level-pill ${levelClass}">${patientComplaint}</span></td>
