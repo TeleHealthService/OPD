@@ -12,30 +12,23 @@
     <style>
         :root {
             --pgh-black: #020202;
-    --pgh-dark-green: #006400;  /* Changed from #0D2818 (Was very dark) */
-    --pgh-emerald: #4CAF50;     /* Changed from #04471C (Was deep forest green) */
+            --pgh-dark-green: #006400; 
+            --pgh-emerald: #4CAF50;     
             --white: #ffffff;
             --light-gray: #f4f7f6;
-            --chart-green: #2ecc71;
             --chart-blue: #3498db;
             --chart-orange: #f39c12;
             --urgent-red: #e74c3c;
+            --stable-green: #004d00;
         }
 
         * { box-sizing: border-box; transition: 0.3s ease; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light-gray); color: var(--pgh-black); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
 
         header { 
-    /* Changed 0.85 opacity to 0.4 for a much lighter, clearer photo */
-    background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
-    background-size: cover; 
-    background-position: center; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    gap: 12px; 
-    border-bottom: 4px solid var(--pgh-emerald);  
+            background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
+            background-size: cover; background-position: center; padding: 15px; 
+            display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 4px solid var(--pgh-emerald);  
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 40px; height: 40px; object-fit: contain; }
@@ -53,8 +46,8 @@
         .page-header h1 { color: var(--pgh-dark-green); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
         
         #lastUpdated { font-size: 0.65rem; color: #888; font-weight: 700; text-transform: uppercase; background: white; padding: 5px 12px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .sync-pulse { border: 1px solid var(--chart-green); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        .sync-pulse { border: 1px solid var(--pgh-emerald); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
 
         .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .overview-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--pgh-emerald); position: relative; overflow: hidden; }
@@ -123,7 +116,7 @@
         <div class="overview-card" id="statusCard" style="border-left-color: var(--pgh-emerald);">
             <h4>Unit Status</h4>
             <div class="value" id="valEmergency">NORMAL</div>
-            <div class="sub-text" id="emergencyTrend" style="color: var(--urgent-red);">Status Monitor Active</div>
+            <div class="sub-text" id="emergencyTrend" style="color: #888;">Live Monitor Active</div>
         </div>
     </div>
 
@@ -142,12 +135,20 @@
             </div>
             <ul class="triage-stat-list">
                 <li class="triage-item">
-                    <div class="triage-label"><span class="dot" style="background: var(--urgent-red);"></span> High Acuity (Critical)</div>
+                    <div class="triage-label"><span class="dot" style="background: var(--urgent-red);"></span> Critical</div>
                     <strong id="countCritical">0</strong>
                 </li>
                 <li class="triage-item">
-                    <div class="triage-label"><span class="dot" style="background: var(--chart-blue);"></span> Standard / Stable</div>
+                    <div class="triage-label"><span class="dot" style="background: var(--chart-orange);"></span> Urgent</div>
+                    <strong id="countUrgent">0</strong>
+                </li>
+                <li class="triage-item">
+                    <div class="triage-label"><span class="dot" style="background: var(--stable-green);"></span> Stable</div>
                     <strong id="countStable">0</strong>
+                </li>
+                <li class="triage-item">
+                    <div class="triage-label"><span class="dot" style="background: var(--pgh-emerald);"></span> Normal</div>
+                    <strong id="countNormal">0</strong>
                 </li>
             </ul>
         </div>
@@ -177,20 +178,16 @@
                 datasets: [{
                     label: 'New Admissions',
                     data: [],
-                    borderColor: '#04471C',
-                    backgroundColor: 'rgba(4, 71, 28, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#04471C'
+                    borderColor: '#006400',
+                    backgroundColor: 'rgba(0, 100, 0, 0.1)',
+                    fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#006400'
                 }]
             },
             options: { 
-                responsive: true, 
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { stepSize: 1 } },
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
                     x: { grid: { display: false } }
                 }
             }
@@ -200,70 +197,50 @@
         triageChart = new Chart(ctxTriage, {
             type: 'doughnut',
             data: {
-                labels: ['Critical', 'Standard/Stable'],
+                labels: ['Critical', 'Urgent', 'Stable', 'Normal'],
                 datasets: [{
-                    data: [0, 0],
-                    backgroundColor: ['#e74c3c', '#3498db'],
-                    borderWidth: 0,
-                    hoverOffset: 10
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ['#e74c3c', '#f39c12', '#004d00', '#4CAF50'],
+                    borderWidth: 0
                 }]
             },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                cutout: '70%',
-                animation: { duration: 500 },
-                plugins: { legend: { display: false } } 
-            }
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } }
         });
     }
 
-    // UPDATED CLOUD ANALYTICS LOGIC
     function updateAnalytics() {
         const patientsRef = db.ref('patients');
         const appointmentsRef = db.ref('appointments');
 
-        Promise.all([
-            patientsRef.once('value'),
-            appointmentsRef.once('value')
-        ]).then((snapshots) => {
+        Promise.all([patientsRef.once('value'), appointmentsRef.once('value')]).then((snapshots) => {
             const patientsData = snapshots[0].val() || {};
             const appointmentsData = snapshots[1].val() || {};
 
-            // Merge all data for complete view
-            const allPatients = [
-                ...Object.values(patientsData),
-                ...Object.values(appointmentsData)
-            ];
+            const allPatients = [...Object.values(patientsData), ...Object.values(appointmentsData)];
 
-            if (allPatients.length === 0) {
-                document.getElementById('lastUpdated').innerText = "NO DATA FOUND";
-                return;
-            }
-
-            // 1. Filter for Active vs Discharged
             const active = allPatients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
             const dischargedTodayCount = allPatients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
             
-            // 2. Triage Severity Mix
-            const criticalCount = active.filter(p => p.level === 'CRITICAL').length;
-            const standardCount = active.length - criticalCount;
+            // COUNTING 4 LEVELS
+            const criticalCount = active.filter(p => (p.level || '').toUpperCase() === 'CRITICAL').length;
+            const urgentCount = active.filter(p => (p.level || '').toUpperCase() === 'URGENT').length;
+            const stableCount = active.filter(p => (p.level || '').toUpperCase() === 'STABLE').length;
+            const normalCount = active.filter(p => (p.level || '').toUpperCase() === 'NORMAL' || !p.level).length;
 
-            // 3. UI Updates
             document.getElementById('valActive').innerText = active.length;
             document.getElementById('valDischarged').innerText = dischargedTodayCount;
             
             const occupancy = Math.round((active.length / 12) * 100);
             document.getElementById('valOccupancy').innerText = occupancy + "%";
             
-            // 4. Unit Status Alert Logic
+            // Unit Status Alert
             const statusVal = document.getElementById('valEmergency');
             const statusCard = document.getElementById('statusCard');
-            if (criticalCount >= 3 || occupancy >= 85) {
+            if (criticalCount >= 2 || occupancy >= 85) {
                 statusVal.innerText = "CRITICAL";
                 statusVal.style.color = "var(--urgent-red)";
                 statusCard.style.borderLeftColor = "var(--urgent-red)";
-            } else if (occupancy >= 60) {
+            } else if (occupancy >= 60 || urgentCount >= 3) {
                 statusVal.innerText = "BUSY";
                 statusVal.style.color = "var(--chart-orange)";
                 statusCard.style.borderLeftColor = "var(--chart-orange)";
@@ -274,16 +251,16 @@
             }
 
             document.getElementById('countCritical').innerText = criticalCount;
-            document.getElementById('countStable').innerText = standardCount;
+            document.getElementById('countUrgent').innerText = urgentCount;
+            document.getElementById('countStable').innerText = stableCount;
+            document.getElementById('countNormal').innerText = normalCount;
             
-            // 5. Visual Sync Feedback
             const lastUp = document.getElementById('lastUpdated');
             lastUp.innerText = "LIVE SYNC: " + new Date().toLocaleTimeString();
             lastUp.classList.add('sync-pulse');
             setTimeout(() => lastUp.classList.remove('sync-pulse'), 2000);
 
-            // 6. Chart Updates
-            triageChart.data.datasets[0].data = [criticalCount, standardCount];
+            triageChart.data.datasets[0].data = [criticalCount, urgentCount, stableCount, normalCount];
             triageChart.update();
 
             updateInfluxData(allPatients);
@@ -293,26 +270,20 @@
     function updateInfluxData(patients) {
         const hourlyCounts = {};
         patients.forEach(p => {
-            if(p.arrived || p.timestamp) {
-                const timeStr = p.arrived || p.timestamp;
+            const timeStr = p.arrived || p.timestamp;
+            if(timeStr && timeStr.includes(':')) {
                 const hour = timeStr.split(':')[0] + ":00 " + (timeStr.includes('PM') && !timeStr.startsWith('12') ? 'PM' : 'AM');
                 hourlyCounts[hour] = (hourlyCounts[hour] || 0) + 1;
             }
         });
-
-        const sortedHours = Object.keys(hourlyCounts).sort((a, b) => {
-            return new Date('1970/01/01 ' + a) - new Date('1970/01/01 ' + b);
-        });
-
+        const sortedHours = Object.keys(hourlyCounts).sort((a, b) => new Date('1970/01/01 ' + a) - new Date('1970/01/01 ' + b));
         influxChart.data.labels = sortedHours;
         influxChart.data.datasets[0].data = sortedHours.map(h => hourlyCounts[h]);
         influxChart.update();
     }
 
-    // Listen to changes on both nodes
     db.ref('patients').on('value', updateAnalytics);
     db.ref('appointments').on('value', updateAnalytics);
-
     window.onload = initCharts;
 </script>
 </body>
