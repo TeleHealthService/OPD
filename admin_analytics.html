@@ -18,7 +18,6 @@
             --light-gray: #f4f7f6;
             --chart-blue: #3498db;
             --chart-orange: #f39c12;
-            --urgent-red: #e74c3c;
             --stable-green: #004d00;
         }
 
@@ -135,10 +134,6 @@
             </div>
             <ul class="triage-stat-list">
                 <li class="triage-item">
-                    <div class="triage-label"><span class="dot" style="background: var(--urgent-red);"></span> Critical</div>
-                    <strong id="countCritical">0</strong>
-                </li>
-                <li class="triage-item">
                     <div class="triage-label"><span class="dot" style="background: var(--chart-orange);"></span> Urgent</div>
                     <strong id="countUrgent">0</strong>
                 </li>
@@ -197,10 +192,10 @@
         triageChart = new Chart(ctxTriage, {
             type: 'doughnut',
             data: {
-                labels: ['Critical', 'Urgent', 'Stable', 'Normal'],
+                labels: ['Urgent', 'Stable', 'Normal'],
                 datasets: [{
-                    data: [0, 0, 0, 0],
-                    backgroundColor: ['#e74c3c', '#f39c12', '#004d00', '#4CAF50'],
+                    data: [0, 0, 0],
+                    backgroundColor: ['#f39c12', '#004d00', '#4CAF50'],
                     borderWidth: 0
                 }]
             },
@@ -221,8 +216,7 @@
             const active = allPatients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
             const dischargedTodayCount = allPatients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
             
-            // COUNTING 4 LEVELS
-            const criticalCount = active.filter(p => (p.level || '').toUpperCase() === 'CRITICAL').length;
+            // COUNTING 3 LEVELS
             const urgentCount = active.filter(p => (p.level || '').toUpperCase() === 'URGENT').length;
             const stableCount = active.filter(p => (p.level || '').toUpperCase() === 'STABLE').length;
             const normalCount = active.filter(p => (p.level || '').toUpperCase() === 'NORMAL' || !p.level).length;
@@ -236,10 +230,10 @@
             // Unit Status Alert
             const statusVal = document.getElementById('valEmergency');
             const statusCard = document.getElementById('statusCard');
-            if (criticalCount >= 2 || occupancy >= 85) {
+            if (occupancy >= 85 || urgentCount >= 5) {
                 statusVal.innerText = "CRITICAL";
-                statusVal.style.color = "var(--urgent-red)";
-                statusCard.style.borderLeftColor = "var(--urgent-red)";
+                statusVal.style.color = "#e74c3c";
+                statusCard.style.borderLeftColor = "#e74c3c";
             } else if (occupancy >= 60 || urgentCount >= 3) {
                 statusVal.innerText = "BUSY";
                 statusVal.style.color = "var(--chart-orange)";
@@ -250,7 +244,6 @@
                 statusCard.style.borderLeftColor = "var(--pgh-emerald)";
             }
 
-            document.getElementById('countCritical').innerText = criticalCount;
             document.getElementById('countUrgent').innerText = urgentCount;
             document.getElementById('countStable').innerText = stableCount;
             document.getElementById('countNormal').innerText = normalCount;
@@ -260,7 +253,7 @@
             lastUp.classList.add('sync-pulse');
             setTimeout(() => lastUp.classList.remove('sync-pulse'), 2000);
 
-            triageChart.data.datasets[0].data = [criticalCount, urgentCount, stableCount, normalCount];
+            triageChart.data.datasets[0].data = [urgentCount, stableCount, normalCount];
             triageChart.update();
 
             updateInfluxData(allPatients);
