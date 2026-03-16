@@ -216,7 +216,7 @@
             const active = allPatients.filter(p => p.status !== 'DISCHARGED' && !p.isDischarged);
             const dischargedTodayCount = allPatients.filter(p => p.status === 'DISCHARGED' || p.isDischarged).length;
             
-            // COUNTING 3 LEVELS
+            // COUNTING 3 LEVELS (CRITICAL REMOVED)
             const urgentCount = active.filter(p => (p.level || '').toUpperCase() === 'URGENT').length;
             const stableCount = active.filter(p => (p.level || '').toUpperCase() === 'STABLE').length;
             const normalCount = active.filter(p => (p.level || '').toUpperCase() === 'NORMAL' || !p.level).length;
@@ -227,14 +227,11 @@
             const occupancy = Math.round((active.length / 12) * 100);
             document.getElementById('valOccupancy').innerText = occupancy + "%";
             
-            // Unit Status Alert
+            // Updated Unit Status logic (Critical Removed)
             const statusVal = document.getElementById('valEmergency');
             const statusCard = document.getElementById('statusCard');
-            if (occupancy >= 85 || urgentCount >= 5) {
-                statusVal.innerText = "CRITICAL";
-                statusVal.style.color = "#e74c3c";
-                statusCard.style.borderLeftColor = "#e74c3c";
-            } else if (occupancy >= 60 || urgentCount >= 3) {
+            
+            if (occupancy >= 80 || urgentCount >= 4) {
                 statusVal.innerText = "BUSY";
                 statusVal.style.color = "var(--chart-orange)";
                 statusCard.style.borderLeftColor = "var(--chart-orange)";
