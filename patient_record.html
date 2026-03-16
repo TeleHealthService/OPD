@@ -134,7 +134,7 @@
                     <th>Patient Identification</th>
                     <th>Contact</th>
                     <th>Last Entry</th>
-                    <th>Level / Dept</th>
+                    <th>Department</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -209,7 +209,7 @@
             const name = p.name || "Unknown";
             const contact = p.contact || "N/A";
             const time = p.timestamp || p.arrived || "N/A";
-            const detail = p.dept || p.level || "General";
+            const dept = p.dept || "General";
             const subtext = p.age ? `${p.age}Y | ${p.sex}` : "New Patient";
 
             const row = `
@@ -225,7 +225,7 @@
                     </td>
                     <td style="color:#555; font-weight:600;">${contact}</td>
                     <td style="color:#777; font-size:0.75rem;">${time}</td>
-                    <td><span style="font-weight:800; color: var(--pgh-emerald); font-size:0.75rem;">${detail}</span></td>
+                    <td><span style="font-weight:800; color: var(--pgh-emerald); font-size:0.75rem;">${dept}</span></td>
                     <td>
                         <span class="status-pill ${isDischarged ? 'status-discharged' : 'status-active'}">
                             ${isDischarged ? 'Discharged' : 'Active'}
@@ -250,7 +250,7 @@
         body.innerHTML = `
             <div class="detail-row"><span class="detail-label">Demographics:</span> <span>${p.age || 'N/A'}Y / ${p.sex || 'N/A'}</span></div>
             <div class="detail-row"><span class="detail-label">Contact:</span> <span>${p.contact || 'N/A'}</span></div>
-            <div class="detail-row"><span class="detail-label">Unit/Dept:</span> <span>${p.dept || p.level || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Department:</span> <span>${p.dept || 'N/A'}</span></div>
             <div class="detail-row"><span class="detail-label">Physician:</span> <span>${p.doctor || 'Unassigned'}</span></div>
             <div class="detail-row"><span class="detail-label">Assessment:</span> <span>${p.symptoms || 'No records'}</span></div>
             <div class="detail-row" style="background:var(--light-gray); padding:12px; border-radius:10px; margin-top:15px; border:1px solid #ddd;">
