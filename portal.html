@@ -119,7 +119,7 @@
             box-shadow: 0 0 8px rgba(4, 71, 28, 0.2);
         }
 
-        .btn-login {
+        .btn-login, .btn-register {
             width: 100%;
             background: var(--pgh-emerald);
             color: white;
@@ -133,7 +133,7 @@
             box-shadow: 0 4px 15px rgba(4, 71, 28, 0.3);
         }
 
-        .btn-login:hover {
+        .btn-login:hover, .btn-register:hover {
             background: var(--pgh-dark-green);
             transform: translateY(-2px);
         }
@@ -183,6 +183,39 @@
             background: var(--pgh-emerald);
             color: white;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
     </style>
 </head>
 <body>
@@ -212,9 +245,9 @@
 
             <form id="loginForm">
                 <div class="input-group">
-                    <label for="uid">Patient ID / Email</label>
+                    <label for="uid">Email Address</label>
                     <i class="fas fa-user"></i>
-                    <input type="text" id="uid" placeholder="Enter your ID" required>
+                    <input type="email" id="uid" placeholder="Enter your email" required>
                 </div>
 
                 <div class="input-group">
@@ -235,13 +268,38 @@
 
             <div style="text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666;">
                 Don't have a Patient Account? <br>
-                <a href="#" style="color: var(--pgh-emerald); font-weight: bold; text-decoration: none;">Register Now</a>
+                <a href="javascript:void(0)" id="openRegister" style="color: var(--pgh-emerald); font-weight: bold; text-decoration: none;">Register Now</a>
             </div>
         </div>
         
         <p style="margin-top: 30px; font-size: 0.7rem; color: #aaa; text-align: center; max-width: 300px;">
             By signing in, you agree to our <strong>Data Privacy Notice</strong> and <strong>Terms of Service</strong>.
         </p>
+    </div>
+</div>
+
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 style="color: var(--pgh-dark-green); margin-bottom: 20px;">Create Account</h2>
+        <form id="registerForm">
+            <div class="input-group">
+                <label for="regName">Full Name</label>
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="regName" placeholder="Juan Dela Cruz" required>
+            </div>
+            <div class="input-group">
+                <label for="regEmail">Email Address</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="regEmail" placeholder="email@example.com" required>
+            </div>
+            <div class="input-group">
+                <label for="regPass">Create Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regPass" placeholder="Minimum 6 characters" required minlength="6">
+            </div>
+            <button type="submit" class="btn-register" id="regBtn">REGISTER</button>
+        </form>
     </div>
 </div>
 
@@ -273,12 +331,54 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // Modal Control
+    const modal = document.getElementById("registerModal");
+    const openBtn = document.getElementById("openRegister");
+    const closeBtn = document.querySelector(".close-modal");
+
+    openBtn.onclick = () => modal.style.display = "flex";
+    closeBtn.onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+
+    // Registration Logic
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        const regBtn = document.getElementById('regBtn');
+
+        regBtn.innerText = "CREATING...";
+        regBtn.disabled = true;
+
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+            const user = userCredential.user;
+
+            await db.ref('users/' + user.uid).set({
+                displayName: name,
+                email: email,
+                role: 'patient',
+                status: 'new',
+                createdAt: new Date().toLocaleString()
+            });
+
+            alert("Account created successfully!");
+            window.location.href = "home.html";
+        } catch (error) {
+            alert(error.message);
+            regBtn.innerText = "REGISTER";
+            regBtn.disabled = false;
+        }
+    });
+
+    // Login Logic
     const loginForm = document.getElementById('loginForm');
     const signInBtn = document.getElementById('signInBtn');
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const email = document.getElementById('uid').value;
         const password = document.getElementById('pass').value;
         const rememberMe = document.getElementById('rememberMe').checked;
@@ -292,34 +392,17 @@
                 firebase.auth.Auth.Persistence.SESSION;
             
             await auth.setPersistence(persistence);
-
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
-            const userRef = db.ref('users/' + user.uid);
-            const snapshot = await userRef.once('value');
-            const now = new Date().toLocaleString();
-
-            if (!snapshot.exists()) {
-                await userRef.set({
-                    email: user.email,
-                    role: 'patient',
-                    firstLogin: now,
-                    lastLogin: now,
-                    status: 'new'
-                });
-            } else {
-                await userRef.update({
-                    lastLogin: now,
-                    status: 'returning'
-                });
-            }
+            await db.ref('users/' + user.uid).update({
+                lastLogin: new Date().toLocaleString(),
+                status: 'returning'
+            });
 
             window.location.href = "home.html";
-
         } catch (error) {
-            console.error("Auth Error:", error);
-            alert("Login Failed: " + error.message);
+            alert(error.message);
             signInBtn.innerText = "SIGN IN";
             signInBtn.disabled = false;
         }
