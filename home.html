@@ -9,8 +9,8 @@
     <style>
         :root {
             --pgh-black: #020202;
-    --pgh-dark-green: #006400;  /* Changed from #0D2818 (Was very dark) */
-    --pgh-emerald: #4CAF50;   
+            --pgh-dark-green: #006400;
+            --pgh-emerald: #4CAF50;   
             --white: #ffffff;
             --light-gray: #f8f9fa;
             --error-red: #e74c3c;
@@ -26,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* [ START OF UNIVERSAL CSS - MATCHED ] */
+        /* [ UNIVERSAL HEADER & NAVIGATION ] */
         h1, h2, h3, h4 { 
             margin: 0 0 15px; 
             text-transform: uppercase; 
@@ -37,18 +37,17 @@
         h2 { font-size: 1.2rem; color: var(--pgh-dark-green); border-bottom: 3px solid var(--pgh-emerald); padding-bottom: 8px; margin-top: 25px; }
         h3 { font-size: 1rem; color: var(--pgh-emerald); }
 
-       header { 
-    /* Changed 0.85 opacity to 0.4 for a much lighter, clearer photo */
-    background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
-    background-size: cover; 
-    background-position: center; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    gap: 12px; 
-    border-bottom: 4px solid var(--pgh-emerald); 
-}
+        header { 
+            background: linear-gradient(rgba(13, 40, 24, 0.4), rgba(13, 40, 24, 0.4)), url('bg1.png');
+            background-size: cover; 
+            background-position: center; 
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 12px; 
+            border-bottom: 4px solid var(--pgh-emerald); 
+        }
 
         .brand-container { display: flex; align-items: center; gap: 12px; }
         .hospital-logo { width: 45px; height: 45px; object-fit: contain; }
@@ -56,97 +55,40 @@
         .brand-text small { color: rgba(255, 255, 255, 0.8); font-size: 0.65rem; display: block; }
 
         .header-feedback {
-            text-decoration: none;
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 10px 18px;
-            border-radius: 50px;
-            background: var(--pgh-emerald);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
+            text-decoration: none; color: white; font-size: 0.65rem; font-weight: 700;
+            text-transform: uppercase; padding: 10px 18px; border-radius: 50px;
+            background: var(--pgh-emerald); backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; gap: 8px;
         }
 
-        nav { 
-            background: var(--pgh-dark-green); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            padding: 12px 5%;
-        }
-
-        nav ul { 
-            list-style: none; 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: space-between; 
-            gap: 8px; 
-        }
-
+        nav { background: var(--pgh-dark-green); position: sticky; top: 0; z-index: 1000; padding: 12px 5%; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: space-between; gap: 8px; }
         nav ul li { flex: 1; }
         nav ul li a { 
-            color: white; 
-            text-decoration: none; 
-            padding: 10px 5px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.55rem; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            border-radius: 50px; 
-            background: rgba(255,255,255,0.1);
-            text-align: center;
-            min-height: 35px;
+            color: white; text-decoration: none; padding: 10px 5px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.55rem; 
+            text-transform: uppercase; font-weight: 700; border-radius: 50px; 
+            background: rgba(255,255,255,0.1); text-align: center; min-height: 35px;
         }
         nav ul li a.active-nav { background: var(--pgh-emerald); border: 1px solid rgba(255,255,255,0.2); }
 
-        @media (min-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            h2 { font-size: 1.4rem; }
-            .brand-text h2 { font-size: 1.2rem; }
-            .header-feedback { font-size: 0.75rem; padding: 12px 25px; }
-            nav ul { justify-content: flex-start; gap: 12px; }
-            nav ul li { flex: 0 1 auto; }
-            nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
-        }
-        /* [ END OF UNIVERSAL CSS ] */
-
-        /* --- Page Specific Elements --- */
+        /* [ PAGE CONTENT ] */
         .hero-section {
-            padding: 80px 5%;
-            text-align: center;
+            padding: 80px 5%; text-align: center;
             background: linear-gradient(rgba(13, 40, 24, 0.8), rgba(13, 40, 24, 0.8)), 
                         url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
+            background-size: cover; background-position: center; color: white;
         }
         .hero-section h1 { color: white; border: none; }
-        .hero-section p { font-size: 0.9rem; margin-bottom: 30px; opacity: 0.9; line-height: 1.4; }
-
         .btn-consult-main {
-            background: var(--pgh-emerald);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            border: 2px solid var(--white);
-            cursor: pointer;
-            text-transform: uppercase;
+            background: var(--pgh-emerald); color: white; padding: 15px 40px;
+            border-radius: 50px; font-size: 1rem; font-weight: 700; border: 2px solid var(--white);
+            cursor: pointer; text-transform: uppercase;
         }
 
         .main-container { padding: 30px 20px; max-width: 800px; margin: 0 auto; display: none; }
         .step-container { display: none; animation: fadeIn 0.4s ease-out; }
         .step-container.active { display: block; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 6px solid var(--pgh-emerald); }
@@ -158,15 +100,18 @@
         select, input, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.9rem; background: var(--light-gray); outline: none; }
         .input-error { border: 2.5px solid var(--error-red) !important; background: #fff5f5; }
 
-        .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-next { width: 100%; background: var(--pgh-emerald); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; text-transform: uppercase; }
         .btn-back { background: none; border: none; color: #777; margin-top: 15px; width: 100%; cursor: pointer; text-decoration: underline; font-size: 0.8rem; }
 
         footer { background: #f4f4f4; padding: 40px 5%; margin-top: 40px; border-top: 1px solid #ddd; }
         .footer-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
         .footer-col h4 { color: var(--pgh-dark-green); text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid var(--pgh-emerald); display: inline-block; }
-        .footer-col a, .footer-col p { display: block; color: #555; text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; }
-
+        
         @media (min-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            nav ul { justify-content: flex-start; gap: 12px; }
+            nav ul li { flex: 0 1 auto; }
+            nav ul li a { font-size: 0.75rem; padding: 10px 25px; }
             .footer-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
@@ -215,12 +160,11 @@
             <div class="step-container active" id="step1">
                 <h3>Patient Information</h3>
                 <label>Full Name</label>
-                <input type="text" id="patientName" placeholder="e.g., Juan Dela Cruz" class="required-field">
-                
+                <input type="text" id="patientName" placeholder="Juan Dela Cruz" class="required-field">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div>
                         <label>Age</label>
-                        <input type="number" id="patientAge" placeholder="e.g., 25" class="required-field">
+                        <input type="number" id="patientAge" placeholder="25" class="required-field">
                     </div>
                     <div>
                         <label>Sex</label>
@@ -232,11 +176,9 @@
                     </div>
                 </div>
                 <label>Contact Number</label>
-                <input type="tel" id="patientContact" placeholder="e.g., 09123456789" class="required-field">
-                
+                <input type="tel" id="patientContact" placeholder="09123456789" class="required-field">
                 <label>Email Address</label>
-                <input type="email" id="patientEmail" placeholder="e.g., juan@example.com" class="required-field">
-                
+                <input type="email" id="patientEmail" placeholder="juan@example.com" class="required-field">
                 <button type="button" class="btn-next" onclick="validateAndGo(2)">Next: Specialist</button>
             </div>
 
@@ -244,9 +186,8 @@
                 <h3>Select Specialist</h3>
                 <label>Medical Department</label>
                 <select class="required-field" id="deptSelect" onchange="filterDoctors()">
-                    <option value="">-- Select Specialty --</option>
+                    <option value="">-- Loading Specialties... --</option>
                 </select>
-
                 <label>Available Doctors</label>
                 <select class="required-field" id="docSelect">
                     <option value="">-- Choose a Physician --</option>
@@ -259,10 +200,8 @@
                 <h3>Schedule</h3>
                 <label>Preferred Date</label>
                 <input type="date" id="appDate" class="required-field">
-                
                 <label>Preferred Time</label>
                 <input type="time" id="appTime" class="required-field">
-                
                 <button type="button" class="btn-next" onclick="validateAndGo(4)">Next: Symptoms</button>
                 <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
             </div>
@@ -277,7 +216,7 @@
 
             <div class="step-container" id="step5">
                 <h3>Confirm</h3>
-                <p style="font-size: 0.85rem; background: #eee; padding: 15px; border-radius: 8px;">Please verify your details. Once submitted, a coordinator will contact you via your provided number.</p>
+                <p style="font-size: 0.85rem; background: #eee; padding: 15px; border-radius: 8px;">Please verify your details. Once submitted, our team will review your request.</p>
                 <button type="submit" class="btn-next" style="background: var(--pgh-dark-green);">Confirm Appointment</button>
                 <button type="button" class="btn-back" onclick="goToStep(4)">Back</button>
             </div>
@@ -289,21 +228,21 @@
     <div class="footer-grid">
         <div class="footer-col">
             <h4>Services</h4>
-            <a href="#">Consultations & Check-ups</a>
+            <a href="#">Consultations</a>
             <a href="#">E-Prescriptions</a>
             <a href="#">Urgent Care</a>
         </div>
         <div class="footer-col">
             <h4>Location</h4>
-            <p>Tinamnan Lucban,Quezon, Philippines</p>
-            <p>Direct: Quezon Avenue Corner P. Paterno 4328 Lucban, Quezon</p>
+            <p>Quezon Avenue Corner P. Paterno</p>
+            <p>Lucban, Quezon</p>
         </div>
         <div class="footer-col">
-            <h4>Patient Relations</h4>
+            <h4>Contact</h4>
             <p>customer.care@opd.com.ph</p>
         </div>
     </div>
-    <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal | Providing Care Beyond Boundaries</p>
+    <p style="text-align: center; margin-top: 35px; font-size: 0.75rem; color: #999;">&copy; 2026 General Hospital OPD Portal</p>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -318,29 +257,43 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const doctors = JSON.parse(localStorage.getItem('hospitalDoctors')) || [];
+    let allDoctors = []; // Holds the live list from Firebase
 
+    // 1. Load Departments and Doctors from Firebase
     function initDropdowns() {
         const deptSelect = document.getElementById('deptSelect');
-        const uniqueSpecs = [...new Set(doctors.map(d => d.spec))];
         
-        uniqueSpecs.forEach(spec => {
-            const opt = new Option(spec, spec);
-            deptSelect.add(opt);
+        db.ref('doctors').once('value', (snapshot) => {
+            const doctorsData = snapshot.val();
+            if (!doctorsData) {
+                deptSelect.innerHTML = '<option value="">-- No Doctors Available --</option>';
+                return;
+            }
+
+            allDoctors = Object.values(doctorsData);
+            const uniqueSpecs = [...new Set(allDoctors.map(d => d.spec))];
+            
+            deptSelect.innerHTML = '<option value="">-- Select Specialty --</option>';
+            uniqueSpecs.forEach(spec => {
+                const opt = new Option(spec, spec);
+                deptSelect.add(opt);
+            });
         });
     }
 
+    // 2. Filter Doctors based on selected Department
     function filterDoctors() {
         const dept = document.getElementById('deptSelect').value;
         const docSelect = document.getElementById('docSelect');
         docSelect.innerHTML = '<option value="">-- Choose a Physician --</option>';
 
-        const filtered = doctors.filter(d => d.spec === dept);
+        const filtered = allDoctors.filter(d => d.spec === dept);
         filtered.forEach(d => {
             docSelect.add(new Option(d.name, d.name));
         });
     }
 
+    // 3. Navigation Functions
     function startAppointment() {
         document.getElementById('hero').style.display = 'none';
         document.getElementById('formContainer').style.display = 'block';
@@ -365,6 +318,7 @@
         window.scrollTo(0, 0);
     }
 
+    // 4. Submit to Firebase
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
 
@@ -376,22 +330,22 @@
             email: document.getElementById('patientEmail').value,
             doctor: document.getElementById('docSelect').value,
             dept: document.getElementById('deptSelect').value,
-            timestamp: document.getElementById('appDate').value,
-            time: document.getElementById('appTime').value,
+            appDate: document.getElementById('appDate').value,
+            appTime: document.getElementById('appTime').value,
             symptoms: document.getElementById('appSymptoms').value,
             status: 'Active',
-            isDischarged: false,
+            triageLevel: 'Pending', // New field for clinical dashboard
             submittedAt: Date.now()
         };
 
         db.ref('appointments').push(newRecord)
             .then(() => {
-                alert("Success! Your appointment request has been sent to the hospital.");
+                alert("Success! Your appointment request has been sent.");
                 location.reload();
             })
             .catch((error) => {
                 console.error("Firebase Error:", error);
-                alert("Storage Error: Check your internet connection or Firebase rules.");
+                alert("Submission failed. Please check your internet or Firebase rules.");
             });
     };
 
@@ -399,4 +353,3 @@
 </script>
 </body>
 </html>
-
