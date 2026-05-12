@@ -210,7 +210,6 @@
                 <p class="subtitle">Patient Management System</p>
             </div>
 
-            <!-- Removed action attribute to handle redirect via JS -->
             <form id="loginForm">
                 <div class="input-group">
                     <label for="uid">Patient ID / Email</label>
@@ -255,25 +254,24 @@
     </a>
 </footer>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-    // Replace this config with your actual credentials from Firebase Console
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "your-project.firebaseapp.com",
-        projectId: "your-project-id",
-        storageBucket: "your-project.appspot.com",
+        apiKey: "YOUR_API_KEY", 
+        authDomain: "general-hospital-74691.firebaseapp.com",
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        projectId: "general-hospital-74691",
+        storageBucket: "general-hospital-74691.appspot.com",
         messagingSenderId: "YOUR_SENDER_ID",
         appId: "YOUR_APP_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
+    const db = firebase.database();
 
     const loginForm = document.getElementById('loginForm');
     const signInBtn = document.getElementById('signInBtn');
@@ -289,40 +287,38 @@
         signInBtn.disabled = true;
 
         try {
-            // Manage Persistence (Remember User Logic)
-            const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+            const persistence = rememberMe ? 
+                firebase.auth.Auth.Persistence.LOCAL : 
+                firebase.auth.Auth.Persistence.SESSION;
+            
             await auth.setPersistence(persistence);
 
-            // Auth Sign In
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
-            // Database Entry Logic (Store and Check New vs Old)
-            const userRef = db.collection('users').doc(user.uid);
-            const doc = await userRef.get();
+            const userRef = db.ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
+            const now = new Date().toLocaleString();
 
-            if (!doc.exists) {
-                // NEW USER: Store details for the first time
+            if (!snapshot.exists()) {
                 await userRef.set({
                     email: user.email,
                     role: 'patient',
-                    firstLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    firstLogin: now,
+                    lastLogin: now,
                     status: 'new'
                 });
-                alert("New User Registered Successfully!");
             } else {
-                // OLD USER: Just update the last login time
                 await userRef.update({
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: now,
                     status: 'returning'
                 });
             }
 
-            // Redirect to home
             window.location.href = "home.html";
 
         } catch (error) {
+            console.error("Auth Error:", error);
             alert("Login Failed: " + error.message);
             signInBtn.innerText = "SIGN IN";
             signInBtn.disabled = false;
