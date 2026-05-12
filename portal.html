@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --pgh-black: #020202; /* Primary Black accent */
-    --pgh-dark-green: #006400;  /* Changed from #0D2818 (Was very dark) */
-    --pgh-emerald: #4CAF50;   
+            --pgh-black: #020202;
+            --pgh-dark-green: #006400;
+            --pgh-emerald: #4CAF50;
             --white: #ffffff;
             --glass: rgba(255, 255, 255, 0.9);
         }
@@ -24,16 +24,15 @@
             overflow-x: hidden;
         }
 
-        /* --- Background / Hero Section --- */
         .portal-wrapper {
             display: flex;
             min-height: 100vh;
-            flex-direction: column; /* Mobile First */
+            flex-direction: column;
         }
 
         .hero-side {
             background: linear-gradient(rgba(13, 40, 24, 0.7), rgba(2, 2, 2, 0.8)), 
-                        url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=2000'); /* Professional Hospital Image */
+                        url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=2000');
             background-size: cover;
             background-position: center;
             color: white;
@@ -45,7 +44,6 @@
             text-align: center;
         }
 
-        /* --- Login Form Side --- */
         .login-side {
             background: var(--white);
             padding: 40px 20px;
@@ -65,7 +63,6 @@
             border-top: 5px solid var(--pgh-emerald);
         }
 
-        /* --- Logo & Branding --- */
         .brand-container {
             text-align: center;
             margin-bottom: 30px;
@@ -84,7 +81,6 @@
             overflow: hidden;
         }
 
-        /* INSERT YOUR LOGO PATH IN THE SRC BELOW */
         .actual-logo {
             width: 100%;
             height: 100%;
@@ -94,7 +90,6 @@
         h1 { color: var(--pgh-dark-green); font-size: 1.5rem; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
         p.subtitle { color: #666; font-size: 0.85rem; margin-top: 5px; }
 
-        /* --- Input Fields --- */
         .input-group {
             margin-bottom: 20px;
             position: relative;
@@ -124,7 +119,6 @@
             box-shadow: 0 0 8px rgba(4, 71, 28, 0.2);
         }
 
-        /* --- Buttons --- */
         .btn-login {
             width: 100%;
             background: var(--pgh-emerald);
@@ -156,7 +150,6 @@
             display: inline-block;
         }
 
-        /* --- Desktop Layout Change --- */
         @media (min-width: 992px) {
             .portal-wrapper { flex-direction: row; }
             .hero-side { flex: 1.2; padding: 60px; text-align: left; align-items: flex-start; }
@@ -170,7 +163,7 @@
             text-align: center;
             font-size: 0.75rem;
             color: #888;
-            background: #f9f9f9; /* Light contrast from the white body */
+            background: #f9f9f9;
             border-top: 1px solid #eee;
         }
 
@@ -217,7 +210,8 @@
                 <p class="subtitle">Patient Management System</p>
             </div>
 
-            <form action="home.html">
+            <!-- Removed action attribute to handle redirect via JS -->
+            <form id="loginForm">
                 <div class="input-group">
                     <label for="uid">Patient ID / Email</label>
                     <i class="fas fa-user"></i>
@@ -232,12 +226,12 @@
 
                 <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 20px;">
                     <label style="font-weight: normal; cursor: pointer;">
-                        <input type="checkbox" style="width: auto; margin-right: 5px;"> Remember Me
+                        <input type="checkbox" id="rememberMe" style="width: auto; margin-right: 5px;"> Remember Me
                     </label>
                     <a href="#" style="color: var(--pgh-emerald); text-decoration: none;">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn-login">SIGN IN</button>
+                <button type="submit" class="btn-login" id="signInBtn">SIGN IN</button>
             </form>
 
             <div style="text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666;">
@@ -260,5 +254,81 @@
         <i class="fas fa-user-shield"></i> ADMIN LOGIN
     </a>
 </footer>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    // Replace this config with your actual credentials from Firebase Console
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "your-project.firebaseapp.com",
+        projectId: "your-project-id",
+        storageBucket: "your-project.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginForm = document.getElementById('loginForm');
+    const signInBtn = document.getElementById('signInBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('uid').value;
+        const password = document.getElementById('pass').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        signInBtn.innerText = "VERIFYING...";
+        signInBtn.disabled = true;
+
+        try {
+            // Manage Persistence (Remember User Logic)
+            const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+            await auth.setPersistence(persistence);
+
+            // Auth Sign In
+            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            // Database Entry Logic (Store and Check New vs Old)
+            const userRef = db.collection('users').doc(user.uid);
+            const doc = await userRef.get();
+
+            if (!doc.exists) {
+                // NEW USER: Store details for the first time
+                await userRef.set({
+                    email: user.email,
+                    role: 'patient',
+                    firstLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'new'
+                });
+                alert("New User Registered Successfully!");
+            } else {
+                // OLD USER: Just update the last login time
+                await userRef.update({
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'returning'
+                });
+            }
+
+            // Redirect to home
+            window.location.href = "home.html";
+
+        } catch (error) {
+            alert("Login Failed: " + error.message);
+            signInBtn.innerText = "SIGN IN";
+            signInBtn.disabled = false;
+        }
+    });
+</script>
+
 </body>
 </html>
