@@ -11,7 +11,6 @@
             --pgh-dark-green: #006400;
             --pgh-emerald: #4CAF50;
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.9);
         }
 
         * { box-sizing: border-box; transition: all 0.3s ease; }
@@ -63,206 +62,91 @@
             border-top: 5px solid var(--pgh-emerald);
         }
 
-        .brand-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        .brand-container { text-align: center; margin-bottom: 30px; }
 
         .logo-placeholder {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px;
-            background: #f0f0f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--pgh-emerald);
-            overflow: hidden;
+            width: 100px; height: 100px; margin: 0 auto 15px;
+            background: #f0f0f0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--pgh-emerald); overflow: hidden;
         }
 
-        .actual-logo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .actual-logo { width: 100%; height: 100%; object-fit: cover; }
 
         h1 { color: var(--pgh-dark-green); font-size: 1.5rem; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
         p.subtitle { color: #666; font-size: 0.85rem; margin-top: 5px; }
 
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 40px;
-            color: var(--pgh-emerald);
-        }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group i { position: absolute; left: 15px; top: 40px; color: var(--pgh-emerald); }
 
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: var(--pgh-dark-green); }
         
         input {
-            width: 100%;
-            padding: 12px 12px 12px 40px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #fdfdfd;
-            font-size: 1rem;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--pgh-emerald);
-            box-shadow: 0 0 8px rgba(4, 71, 28, 0.2);
+            width: 100%; padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd; border-radius: 8px;
+            background: #fdfdfd; font-size: 1rem;
         }
 
         .btn-login, .btn-register {
-            width: 100%;
-            background: var(--pgh-emerald);
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(4, 71, 28, 0.3);
+            width: 100%; background: var(--pgh-emerald); color: white;
+            padding: 15px; border: none; border-radius: 8px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            margin-top: 10px; box-shadow: 0 4px 15px rgba(4, 71, 28, 0.3);
         }
 
-        .btn-login:hover, .btn-register:hover {
-            background: var(--pgh-dark-green);
-            transform: translateY(-2px);
+        .btn-login:hover, .btn-register:hover { background: var(--pgh-dark-green); transform: translateY(-2px); }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px); align-items: center; justify-content: center;
         }
 
-        .emergency-btn {
-            background: #e74c3c;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-top: 20px;
-            display: inline-block;
+        .modal-content {
+            background-color: white; padding: 40px; border-radius: 15px;
+            width: 90%; max-width: 450px; position: relative;
         }
+
+        .close-modal { position: absolute; right: 20px; top: 20px; font-size: 1.5rem; cursor: pointer; color: #888; }
 
         @media (min-width: 992px) {
             .portal-wrapper { flex-direction: row; }
             .hero-side { flex: 1.2; padding: 60px; text-align: left; align-items: flex-start; }
             .login-side { flex: 0.8; }
-            h1 { font-size: 2rem; }
         }
 
-        footer {
-            padding: 30px 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #888;
-            background: #f9f9f9;
-            border-top: 1px solid #eee;
-        }
-
-        .admin-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: var(--pgh-emerald);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 16px;
-            border: 1px solid var(--pgh-emerald);
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .admin-link:hover {
-            background: var(--pgh-emerald);
-            color: white;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 450px;
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #888;
-        }
+        footer { padding: 30px; text-align: center; font-size: 0.75rem; color: #888; background: #f9f9f9; }
     </style>
 </head>
 <body>
 
 <div class="portal-wrapper">
     <div class="hero-side">
-        <h2 style="font-size: 3rem; margin-bottom: 10px;">Service.</h2>
-        <h2 style="font-size: 3rem; margin-top: 0; color: #7bed9f;">Excellence.</h2>
+        <h2 style="font-size: 3rem; margin-bottom: 10px;">Service. Excellence.</h2>
         <p style="max-width: 500px; font-size: 1.1rem; line-height: 1.8; opacity: 0.9;">
-            Welcome to the Integrated Outpatient Department Portal. 
-            Experience world-class healthcare management designed for your convenience.
+            Welcome to the Integrated Outpatient Department Portal.
         </p>
-        <a href="tel:+63287230101" class="emergency-btn">
-            <i class="fas fa-phone-alt"></i> EMERGENCY HOTLINE
-        </a>
     </div>
 
     <div class="login-side">
         <div class="login-card">
             <div class="brand-container">
-                <div class="logo-placeholder">
-                    <img src="logo.png" alt="Hospital Logo" class="actual-logo">
-                </div>
+                <div class="logo-placeholder"><img src="logo.png" alt="Logo" class="actual-logo"></div>
                 <h1>General Hospital</h1>
                 <p class="subtitle">Patient Management System</p>
             </div>
 
             <form id="loginForm">
                 <div class="input-group">
-                    <label for="uid">Email Address</label>
+                    <label>Email Address</label>
                     <i class="fas fa-user"></i>
-                    <input type="email" id="uid" placeholder="Enter your email" required>
+                    <input type="email" id="loginEmail" placeholder="Enter email" required>
                 </div>
-
                 <div class="input-group">
-                    <label for="pass">Secure Password</label>
+                    <label>Secure Password</label>
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="pass" placeholder="••••••••" required>
+                    <input type="password" id="loginPass" placeholder="••••••••" required>
                 </div>
-
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 20px;">
-                    <label style="font-weight: normal; cursor: pointer;">
-                        <input type="checkbox" id="rememberMe" style="width: auto; margin-right: 5px;"> Remember Me
-                    </label>
-                    <a href="#" style="color: var(--pgh-emerald); text-decoration: none;">Forgot Password?</a>
-                </div>
-
                 <button type="submit" class="btn-login" id="signInBtn">SIGN IN</button>
             </form>
 
@@ -271,10 +155,6 @@
                 <a href="javascript:void(0)" id="openRegister" style="color: var(--pgh-emerald); font-weight: bold; text-decoration: none;">Register Now</a>
             </div>
         </div>
-        
-        <p style="margin-top: 30px; font-size: 0.7rem; color: #aaa; text-align: center; max-width: 300px;">
-            By signing in, you agree to our <strong>Data Privacy Notice</strong> and <strong>Terms of Service</strong>.
-        </p>
     </div>
 </div>
 
@@ -284,33 +164,26 @@
         <h2 style="color: var(--pgh-dark-green); margin-bottom: 20px;">Create Account</h2>
         <form id="registerForm">
             <div class="input-group">
-                <label for="regName">Full Name</label>
+                <label>Full Name</label>
                 <i class="fas fa-id-card"></i>
                 <input type="text" id="regName" placeholder="Juan Dela Cruz" required>
             </div>
             <div class="input-group">
-                <label for="regEmail">Email Address</label>
+                <label>Email Address</label>
                 <i class="fas fa-envelope"></i>
                 <input type="email" id="regEmail" placeholder="email@example.com" required>
             </div>
             <div class="input-group">
-                <label for="regPass">Create Password</label>
+                <label>Create Password</label>
                 <i class="fas fa-lock"></i>
-                <input type="password" id="regPass" placeholder="Minimum 6 characters" required minlength="6">
+                <input type="password" id="regPass" placeholder="Min 6 chars" required minlength="6">
             </div>
             <button type="submit" class="btn-register" id="regBtn">REGISTER</button>
         </form>
     </div>
 </div>
 
-<footer class="desktop-footer">
-    <div>
-        &copy; 2026 General Hospital Outpatient Department. Empowering Health Through Innovation.
-    </div>
-    <a href="admin_login.html" class="admin-link">
-        <i class="fas fa-user-shield"></i> ADMIN LOGIN
-    </a>
-</footer>
+<footer>&copy; 2026 General Hospital Outpatient Department.</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -318,20 +191,20 @@
 
 <script>
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY", 
+        apiKey: "AIzaSyBi-biOoGZ5SKa11R-qL1sPROv_s_ry6-0",
         authDomain: "general-hospital-74691.firebaseapp.com",
-        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com/",
+        databaseURL: "https://general-hospital-74691-default-rtdb.firebaseio.com",
         projectId: "general-hospital-74691",
-        storageBucket: "general-hospital-74691.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        storageBucket: "general-hospital-74691.firebasestorage.app",
+        messagingSenderId: "738110221541",
+        appId: "1:738110221541:web:8eb8b5929efa27f741780c",
+        measurementId: "G-XP2WQVDPJ1"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // Modal Control
     const modal = document.getElementById("registerModal");
     const openBtn = document.getElementById("openRegister");
     const closeBtn = document.querySelector(".close-modal");
@@ -340,74 +213,51 @@
     closeBtn.onclick = () => modal.style.display = "none";
     window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
 
-    // Registration Logic
-    const registerForm = document.getElementById('registerForm');
-    registerForm.addEventListener('submit', async (e) => {
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('regName').value;
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
-        const regBtn = document.getElementById('regBtn');
+        const btn = document.getElementById('regBtn');
 
-        regBtn.innerText = "CREATING...";
-        regBtn.disabled = true;
+        btn.innerText = "CREATING...";
+        btn.disabled = true;
 
         try {
             const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-
-            await db.ref('users/' + user.uid).set({
+            await db.ref('users/' + userCredential.user.uid).set({
                 displayName: name,
                 email: email,
                 role: 'patient',
-                status: 'new',
                 createdAt: new Date().toLocaleString()
             });
-
-            alert("Account created successfully!");
+            alert("Success! Welcome, " + name);
             window.location.href = "home.html";
         } catch (error) {
             alert(error.message);
-            regBtn.innerText = "REGISTER";
-            regBtn.disabled = false;
+            btn.innerText = "REGISTER";
+            btn.disabled = false;
         }
     });
 
-    // Login Logic
-    const loginForm = document.getElementById('loginForm');
-    const signInBtn = document.getElementById('signInBtn');
-
-    loginForm.addEventListener('submit', async (e) => {
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('uid').value;
-        const password = document.getElementById('pass').value;
-        const rememberMe = document.getElementById('rememberMe').checked;
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        const btn = document.getElementById('signInBtn');
 
-        signInBtn.innerText = "VERIFYING...";
-        signInBtn.disabled = true;
+        btn.innerText = "SIGNING IN...";
+        btn.disabled = true;
 
         try {
-            const persistence = rememberMe ? 
-                firebase.auth.Auth.Persistence.LOCAL : 
-                firebase.auth.Auth.Persistence.SESSION;
-            
-            await auth.setPersistence(persistence);
-            const userCredential = await auth.signInWithEmailAndPassword(email, password);
-            const user = userCredential.user;
-
-            await db.ref('users/' + user.uid).update({
-                lastLogin: new Date().toLocaleString(),
-                status: 'returning'
-            });
-
+            await auth.signInWithEmailAndPassword(email, pass);
             window.location.href = "home.html";
         } catch (error) {
             alert(error.message);
-            signInBtn.innerText = "SIGN IN";
-            signInBtn.disabled = false;
+            btn.innerText = "SIGN IN";
+            btn.disabled = false;
         }
     });
 </script>
-
 </body>
 </html>
